@@ -1,0 +1,78 @@
+
+services:
+  # Aplicação PHP/Laravel
+  app:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    container_name: jrinvest_app
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    networks:
+      - jrinvest_network
+    depends_on:
+      - db
+      - redis
+
+  # Servidor Web Nginx
+  nginx:
+    image: nginx:alpine
+    container_name: jrinvest_nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d/
+    networks:
+      - jrinvest_network
+    depends_on:
+      - app
+
+  # Banco de Dados MySQL
+  db:
+    image: mysql:8.0
+    container_name: jrinvest_db
+    restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_DATABASE: jrinvest
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: admin
+      MYSQL_USER: admin
+    volumes:
+      - ./.docker/mysql/dbdata:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - jrinvest_network
+
+  # Redis para Cache
+  redis:
+    image: redis:alpine
+    container_name: jrinvest_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - jrinvest_network
+
+  node:
+    image: node:18-alpine
+    container_name: jrinvest_node
+    volumes:
+      - ./:/var/www
+    working_dir: /var/www
+    ports:
+      - "5173:5173"
+    networks:
+      - jrinvest_network
+    command: sh -c "npm install && npm run dev -- --host"
+    environment:
+      - HOST=0.0.0.0
+
+networks:
+  jrinvest_network:
+    driver: bridge
