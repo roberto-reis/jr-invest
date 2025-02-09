@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import { ref, onMounted } from 'vue';
+import { initTheme } from '@/dark-mode';
 
 defineProps<{
     isOpen: boolean;
@@ -9,6 +11,23 @@ defineProps<{
 defineEmits<{
     (e: 'close'): void;
 }>();
+
+const isDark = ref(false);
+
+onMounted(() => {
+    isDark.value = initTheme();
+});
+
+const toggleDarkMode = () => {
+    isDark.value = !isDark.value;
+    if (isDark.value) {
+        document.documentElement.classList.add('dark');
+        localStorage.theme = 'dark';
+    } else {
+        document.documentElement.classList.remove('dark');
+        localStorage.theme = 'light';
+    }
+};
 </script>
 
 <template>
@@ -43,7 +62,24 @@ defineEmits<{
                     </svg>
                 </button>
             </div>
-            <ul class="space-y-2 border-t border-gray-100 dark:border-gray-700 px-3">
+
+            <!-- Dark Mode Switch -->
+            <div class="px-3 mb-4 flex items-center justify-between border-t border-b border-gray-100 dark:border-gray-700 py-3">
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Modo Escuro</span>
+                <button
+                    @click="toggleDarkMode"
+                    class="relative inline-flex h-6 w-11 items-center rounded-full"
+                    :class="isDark ? 'bg-indigo-600' : 'bg-gray-200'"
+                >
+                    <span class="sr-only">Alternar tema</span>
+                    <span
+                        class="inline-block h-4 w-4 transform rounded-full bg-white transition"
+                        :class="isDark ? 'translate-x-6' : 'translate-x-1'"
+                    ></span>
+                </button>
+            </div>
+
+            <ul class="space-y-2 px-3">
                 <li class="mt-4">
                     <ResponsiveNavLink
                         :href="route('dashboard')"
