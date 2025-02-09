@@ -21,7 +21,28 @@ defineEmits<{
         class="bg-white shadow-lg dark:bg-gray-800"
     >
         <div class="h-full overflow-y-auto py-4">
-            <h2 class="mb-4 px-3 text-lg font-semibold text-gray-800 dark:text-white mt-1">JRinvest</h2>
+            <!-- Header com título e botão de fechar -->
+            <div class="mb-4 px-3 flex items-center justify-between">
+                <h2 class="text-lg font-semibold text-gray-800 dark:text-white">JRinvest</h2>
+                <button
+                    @click="$emit('close')"
+                    class="p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 rounded-lg"
+                >
+                    <svg
+                        class="h-6 w-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12"
+                        />
+                    </svg>
+                </button>
+            </div>
             <ul class="space-y-2 border-t border-gray-100 dark:border-gray-700 px-3">
                 <li class="mt-4">
                     <ResponsiveNavLink
