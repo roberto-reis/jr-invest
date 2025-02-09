@@ -6,6 +6,26 @@
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div class="flex h-16 justify-between">
                         <div class="flex">
+                            <!-- Botão Toggle Sidebar -->
+                            <button
+                                @click="toggleSidebar"
+                                class="inline-flex items-center justify-center p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                            >
+                                <svg
+                                    class="h-6 w-6"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M4 6h16M4 12h16M4 18h16"
+                                    />
+                                </svg>
+                            </button>
+
                             <!-- Logo -->
                             <div class="flex shrink-0 items-center">
                                 <Link :href="route('dashboard')">
@@ -176,7 +196,11 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
 
 const showingNavigationDropdown = ref(false);
+const emit = defineEmits(['toggle-sidebar']);
 
+const toggleSidebar = () => {
+    emit('toggle-sidebar');
+};
 </script>
 
 <style scoped>
