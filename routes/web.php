@@ -4,7 +4,8 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\Ativos\ListarController;
+use App\Http\Controllers\Admin\Ativo\ListarAtivosController;
+use App\Http\Controllers\Admin\Operacao\ListarOperacoesController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -27,7 +28,11 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->prefix('admin')->group(function () {
     Route::prefix('ativos')->group(function () {
-        Route::get('/', ListarController::class)->name('ativos.index');
+        Route::get('/', ListarAtivosController::class)->name('ativos.index');
+    });
+
+    Route::prefix('operacoes')->group(function () {
+        Route::get('/', ListarOperacoesController::class)->name('operacoes.index');
     });
 });
 
