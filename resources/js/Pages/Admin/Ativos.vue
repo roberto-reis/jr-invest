@@ -3,11 +3,16 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import NovoAtivo from '@/Components/Modal/NovoAtivo.vue';
+import EditarAtivo from '@/Components/Modal/EditarAtivo.vue';
+import VisualizarAtivo from '@/Components/Modal/VisualizarAtivo.vue';
 
 const search = ref('');
 const currentPage = ref(1);
 const perPage = ref(10);
 const showNovoAtivoModal = ref(false);
+const showEditarAtivoModal = ref(false);
+const showVisualizarAtivoModal = ref(false);
+const ativoSelecionado = ref(null);
 
 // Dados de exemplo para a tabela (substitua depois pelos dados reais do backend)
 const ativos = [
@@ -19,6 +24,22 @@ const handleNovoAtivo = (data: any) => {
     // Aqui você implementa a lógica para salvar o novo ativo
     console.log('Novo ativo:', data);
     showNovoAtivoModal.value = false;
+};
+
+const handleEditarAtivo = (ativo: any) => {
+    ativoSelecionado.value = ativo;
+    showEditarAtivoModal.value = true;
+};
+
+const handleSubmitEdicao = (data: any) => {
+    // Aqui você implementa a lógica para salvar as alterações do ativo
+    console.log('Ativo editado:', data);
+    showEditarAtivoModal.value = false;
+};
+
+const handleVisualizarAtivo = (ativo: any) => {
+    ativoSelecionado.value = ativo;
+    showVisualizarAtivoModal.value = true;
 };
 </script>
 
@@ -123,13 +144,19 @@ const handleNovoAtivo = (data: any) => {
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm">
                                         <div class="flex gap-2">
-                                            <button class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                                            <button
+                                                @click="handleVisualizarAtivo(ativo)"
+                                                class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                                            >
                                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                 </svg>
                                             </button>
-                                            <button class="text-yellow-600 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300">
+                                            <button
+                                                @click="handleEditarAtivo(ativo)"
+                                                class="text-yellow-600 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300"
+                                            >
                                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                                 </svg>
@@ -191,6 +218,21 @@ const handleNovoAtivo = (data: any) => {
                     :show="showNovoAtivoModal"
                     @close="showNovoAtivoModal = false"
                     @submit="handleNovoAtivo"
+                />
+
+                <!-- Modal de Editar Ativo -->
+                <EditarAtivo
+                    :show="showEditarAtivoModal"
+                    :ativo="ativoSelecionado"
+                    @close="showEditarAtivoModal = false"
+                    @submit="handleSubmitEdicao"
+                />
+
+                <!-- Modal de Visualizar Ativo -->
+                <VisualizarAtivo
+                    :show="showVisualizarAtivoModal"
+                    :ativo="ativoSelecionado"
+                    @close="showVisualizarAtivoModal = false"
                 />
             </div>
         </div>
