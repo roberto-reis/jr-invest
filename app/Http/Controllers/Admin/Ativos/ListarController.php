@@ -8,6 +8,6 @@ class ListarController
 {
     public function __invoke()
     {
-        return Inertia::render('Admin/Ativos');
+        return Inertia::render('Admin/Ativos/Index');
     }
 }
