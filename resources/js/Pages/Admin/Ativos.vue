@@ -2,16 +2,24 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import NovoAtivo from '@/Components/Modal/NovoAtivo.vue';
 
 const search = ref('');
 const currentPage = ref(1);
 const perPage = ref(10);
+const showNovoAtivoModal = ref(false);
 
 // Dados de exemplo para a tabela (substitua depois pelos dados reais do backend)
 const ativos = [
-    { ativo: 'BTC', classe: 'CRIPTO', descricao: '0,00256565', setor: 'Binance', data: '11/12/2021 23:27' },
-    { ativo: 'YXZK11', classe: 'FII', descricao: '20,00000000', setor: 'Clear', data: '11/12/2021 23:27' },
+    { ativo: 'BTC', classe: 'CRIPTO', descricao: 'Bitcoin', setor: 'CRIPTO', data: '11/12/2021 23:27' },
+    { ativo: 'URPR11', classe: 'FII', descricao: 'URCA PRIME RENDA', setor: 'Papel', data: '11/12/2021 23:27' },
 ];
+
+const handleNovoAtivo = (data: any) => {
+    // Aqui você implementa a lógica para salvar o novo ativo
+    console.log('Novo ativo:', data);
+    showNovoAtivoModal.value = false;
+};
 </script>
 
 <template>
@@ -25,7 +33,10 @@ const ativos = [
                     <div class="p-4">
                         <div class="flex flex-wrap items-center justify-between gap-4">
                             <div class="flex gap-2">
-                                <button class="rounded-md border border-blue-600 bg-white px-4 py-2 text-blue-600 hover:bg-blue-50 dark:border-blue-400 dark:bg-gray-700 dark:text-blue-400 dark:hover:bg-gray-600">
+                                <button
+                                    @click="showNovoAtivoModal = true"
+                                    class="rounded-md border border-blue-600 bg-white px-4 py-2 text-blue-600 hover:bg-blue-50 dark:border-blue-400 dark:bg-gray-700 dark:text-blue-400 dark:hover:bg-gray-600"
+                                >
                                     Novo Ativo
                                 </button>
                                 <button class="rounded-md border border-blue-600 bg-white px-4 py-2 text-blue-600 hover:bg-blue-50 dark:border-blue-400 dark:bg-gray-700 dark:text-blue-400 dark:hover:bg-gray-600">
@@ -134,10 +145,11 @@ const ativos = [
                             </tbody>
                         </table>
                     </div>
+                </div>
 
-                    <!-- Paginação -->
-                    <div class="border-t border-gray-200 bg-white px-4 py-3 dark:border-gray-700 dark:bg-gray-800 sm:px-6">
-                        <div class="flex items-center justify-between">
+                <!-- Card da paginação separado -->
+                <div class="mt-6 overflow-hidden">
+                    <div class="flex items-center justify-between">
                             <div class="flex items-center">
                                 <select
                                     v-model="perPage"
@@ -150,7 +162,7 @@ const ativos = [
                                 </select>
                             </div>
                             <div class="flex items-center gap-2">
-                                <button class="rounded-md bg-white px-3 py-1 text-sm text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
+                                <button class="rounded-md border border-gray-300 bg-white px-3 py-1 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
                                     Anterior
                                 </button>
                                 <div class="flex gap-1">
@@ -158,22 +170,28 @@ const ativos = [
                                         v-for="page in 6"
                                         :key="page"
                                         :class="[
-                                            'px-3 py-1 text-sm rounded-md',
+                                            'px-3 py-1 text-sm rounded-md border',
                                             currentPage === page
-                                                ? 'bg-blue-600 text-white'
-                                                : 'bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                                                ? 'bg-blue-600 text-white border-blue-600'
+                                                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600'
                                         ]"
                                     >
                                         {{ page }}
                                     </button>
                                 </div>
-                                <button class="rounded-md bg-white px-3 py-1 text-sm text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
+                                <button class="rounded-md border border-gray-300 bg-white px-3 py-1 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
                                     Próximo
                                 </button>
                             </div>
                         </div>
-                    </div>
                 </div>
+
+                <!-- Modal de Novo Ativo -->
+                <NovoAtivo
+                    :show="showNovoAtivoModal"
+                    @close="showNovoAtivoModal = false"
+                    @submit="handleNovoAtivo"
+                />
             </div>
         </div>
     </AuthenticatedLayout>
