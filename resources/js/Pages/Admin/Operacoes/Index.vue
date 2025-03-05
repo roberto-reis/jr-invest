@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import NovoAporte from './NovoOperacao.vue';
+import EditarOperacao from './EditarOperacao.vue';
 
 const search = ref('');
 const currentPage = ref(1);
@@ -33,11 +34,29 @@ const operacoes = [
 ];
 
 const showNovoAporteModal = ref(false);
+const showEditarOperacaoModal = ref(false);
+const operacaoSelecionada = ref(null);
 
 const handleNovoAporte = (data: any) => {
     // Aqui você implementa a lógica para salvar o novo aporte
     console.log('Novo aporte:', data);
     showNovoAporteModal.value = false;
+};
+
+const handleEditarOperacao = (operacao) => {
+    operacaoSelecionada.value = operacao;
+    showEditarOperacaoModal.value = true;
+};
+
+const handleSubmitEdicao = (data) => {
+    // Aqui você implementa a lógica para salvar as alterações da operação
+    console.log('Operação editada:', data);
+    showEditarOperacaoModal.value = false;
+};
+
+const handleVisualizarOperacao = (operacao) => {
+    // Implemente a lógica para visualizar a operação
+    console.log('Visualizar operação:', operacao);
 };
 </script>
 
@@ -153,13 +172,21 @@ const handleNovoAporte = (data: any) => {
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm">
                                         <div class="flex gap-2">
-                                            <button class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                                            <!-- Botão Visualizar -->
+                                            <button
+                                                @click="handleVisualizarOperacao(operacao)"
+                                                class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                                            >
                                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                 </svg>
                                             </button>
-                                            <button class="text-yellow-600 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300">
+                                            <!-- Botão Editar -->
+                                            <button
+                                                @click="handleEditarOperacao(operacao)"
+                                                class="text-yellow-600 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300"
+                                            >
                                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                                 </svg>
@@ -223,6 +250,14 @@ const handleNovoAporte = (data: any) => {
             :show="showNovoAporteModal"
             @close="showNovoAporteModal = false"
             @submit="handleNovoAporte"
+        />
+
+        <!-- Modal de Editar Operação -->
+        <EditarOperacao
+            :show="showEditarOperacaoModal"
+            :operacao="operacaoSelecionada"
+            @close="showEditarOperacaoModal = false"
+            @submit="handleSubmitEdicao"
         />
     </AuthenticatedLayout>
 </template>
