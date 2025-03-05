@@ -2,7 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import NovoAporte from './NovoAporte.vue';
+import NovoAporte from './NovoOperacao.vue';
 
 const search = ref('');
 const currentPage = ref(1);
@@ -56,7 +56,7 @@ const handleNovoAporte = (data: any) => {
                                     @click="showNovoAporteModal = true"
                                     class="rounded-md border border-green-600 bg-white px-4 py-2 text-green-600 hover:bg-green-50 dark:border-green-400 dark:bg-gray-700 dark:text-green-400 dark:hover:bg-gray-600"
                                 >
-                                    Novo Aporte
+                                    Nova Operação
                                 </button>
                                 <button class="rounded-md border border-red-600 bg-white px-4 py-2 text-red-600 hover:bg-red-50 dark:border-red-400 dark:bg-gray-700 dark:text-red-400 dark:hover:bg-gray-600">
                                     Nova Venda
