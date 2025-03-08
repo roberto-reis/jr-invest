@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import NovoRecebimento from './NovoRecebimento.vue';
+import VisualizarProvento from './VisualizarProvento.vue';
 
 const search = ref('');
 const currentPage = ref(1);
@@ -63,6 +64,7 @@ const proventos = [
 ];
 
 const showNovoRecebimentoModal = ref(false);
+const showVisualizarProventoModal = ref(false);
 const proventoSelecionado = ref(null);
 
 const handleNovoRecebimento = (data: any) => {
@@ -73,7 +75,7 @@ const handleNovoRecebimento = (data: any) => {
 
 const handleVisualizarProvento = (provento) => {
     proventoSelecionado.value = provento;
-    // Implementar visualização
+    showVisualizarProventoModal.value = true;
 };
 
 const handleEditarProvento = (provento) => {
@@ -272,6 +274,13 @@ const handleExcluirProvento = (provento) => {
             :show="showNovoRecebimentoModal"
             @close="showNovoRecebimentoModal = false"
             @submit="handleNovoRecebimento"
+        />
+
+        <!-- Modal de Visualizar Provento -->
+        <VisualizarProvento
+            :show="showVisualizarProventoModal"
+            :provento="proventoSelecionado"
+            @close="showVisualizarProventoModal = false"
         />
     </AuthenticatedLayout>
 </template>
