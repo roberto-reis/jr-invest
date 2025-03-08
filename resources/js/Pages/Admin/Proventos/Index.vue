@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import NovoRecebimento from './NovoRecebimento.vue';
 
 const search = ref('');
 const currentPage = ref(1);
@@ -60,6 +61,30 @@ const proventos = [
         yield: '1,20%'
     },
 ];
+
+const showNovoRecebimentoModal = ref(false);
+const proventoSelecionado = ref(null);
+
+const handleNovoRecebimento = (data: any) => {
+    // Aqui você implementa a lógica para salvar o novo recebimento
+    console.log('Novo recebimento:', data);
+    showNovoRecebimentoModal.value = false;
+};
+
+const handleVisualizarProvento = (provento) => {
+    proventoSelecionado.value = provento;
+    // Implementar visualização
+};
+
+const handleEditarProvento = (provento) => {
+    proventoSelecionado.value = provento;
+    // Implementar edição
+};
+
+const handleExcluirProvento = (provento) => {
+    proventoSelecionado.value = provento;
+    // Implementar exclusão
+};
 </script>
 
 <template>
@@ -74,6 +99,7 @@ const proventos = [
                         <div class="flex flex-wrap items-center justify-between gap-4">
                             <div class="flex gap-2">
                                 <button
+                                    @click="showNovoRecebimentoModal = true"
                                     class="rounded-md border border-green-600 bg-white px-4 py-2 text-green-600 hover:bg-green-50 dark:border-green-400 dark:bg-gray-700 dark:text-green-400 dark:hover:bg-gray-600"
                                 >
                                     Novo Recebimento
@@ -165,20 +191,29 @@ const proventos = [
                                     <td class="whitespace-nowrap px-6 py-4 text-sm">
                                         <div class="flex gap-2">
                                             <!-- Botão Visualizar -->
-                                            <button class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                                            <button
+                                                @click="handleVisualizarProvento(provento)"
+                                                class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                                            >
                                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                 </svg>
                                             </button>
                                             <!-- Botão Editar -->
-                                            <button class="text-yellow-600 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300">
+                                            <button
+                                                @click="handleEditarProvento(provento)"
+                                                class="text-yellow-600 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300"
+                                            >
                                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                                 </svg>
                                             </button>
                                             <!-- Botão Excluir -->
-                                            <button class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+                                            <button
+                                                @click="handleExcluirProvento(provento)"
+                                                class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+                                            >
                                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                 </svg>
@@ -231,6 +266,13 @@ const proventos = [
                 </div>
             </div>
         </div>
+
+        <!-- Modal de Novo Recebimento -->
+        <NovoRecebimento
+            :show="showNovoRecebimentoModal"
+            @close="showNovoRecebimentoModal = false"
+            @submit="handleNovoRecebimento"
+        />
     </AuthenticatedLayout>
 </template>
 
