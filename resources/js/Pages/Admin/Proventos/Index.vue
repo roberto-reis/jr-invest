@@ -5,6 +5,7 @@ import { ref, computed } from 'vue';
 import NovoRecebimento from './NovoRecebimento.vue';
 import VisualizarProvento from './VisualizarProvento.vue';
 import EditarProvento from './EditarProvento.vue';
+import ExcluirProvento from './ExcluirProvento.vue';
 
 const search = ref('');
 const currentPage = ref(1);
@@ -67,6 +68,7 @@ const proventos = [
 const showNovoRecebimentoModal = ref(false);
 const showVisualizarProventoModal = ref(false);
 const showEditarProventoModal = ref(false);
+const showExcluirProventoModal = ref(false);
 const proventoSelecionado = ref(null);
 
 const handleNovoRecebimento = (data: any) => {
@@ -93,7 +95,13 @@ const handleSubmitEdicao = (data) => {
 
 const handleExcluirProvento = (provento) => {
     proventoSelecionado.value = provento;
-    // Implementar exclusão
+    showExcluirProventoModal.value = true;
+};
+
+const handleConfirmarExclusao = () => {
+    // Aqui você implementa a lógica para excluir o provento
+    console.log('Excluindo provento:', proventoSelecionado.value);
+    showExcluirProventoModal.value = false;
 };
 </script>
 
@@ -297,6 +305,14 @@ const handleExcluirProvento = (provento) => {
             :provento="proventoSelecionado"
             @close="showEditarProventoModal = false"
             @submit="handleSubmitEdicao"
+        />
+
+        <!-- Modal de Excluir Provento -->
+        <ExcluirProvento
+            :show="showExcluirProventoModal"
+            :provento="proventoSelecionado"
+            @close="showExcluirProventoModal = false"
+            @confirm="handleConfirmarExclusao"
         />
     </AuthenticatedLayout>
 </template>
