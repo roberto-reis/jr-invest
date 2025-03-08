@@ -4,6 +4,7 @@ import { Head } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import NovoRecebimento from './NovoRecebimento.vue';
 import VisualizarProvento from './VisualizarProvento.vue';
+import EditarProvento from './EditarProvento.vue';
 
 const search = ref('');
 const currentPage = ref(1);
@@ -65,6 +66,7 @@ const proventos = [
 
 const showNovoRecebimentoModal = ref(false);
 const showVisualizarProventoModal = ref(false);
+const showEditarProventoModal = ref(false);
 const proventoSelecionado = ref(null);
 
 const handleNovoRecebimento = (data: any) => {
@@ -80,7 +82,13 @@ const handleVisualizarProvento = (provento) => {
 
 const handleEditarProvento = (provento) => {
     proventoSelecionado.value = provento;
-    // Implementar edição
+    showEditarProventoModal.value = true;
+};
+
+const handleSubmitEdicao = (data) => {
+    // Aqui você implementa a lógica para salvar as alterações do provento
+    console.log('Provento editado:', data);
+    showEditarProventoModal.value = false;
 };
 
 const handleExcluirProvento = (provento) => {
@@ -281,6 +289,14 @@ const handleExcluirProvento = (provento) => {
             :show="showVisualizarProventoModal"
             :provento="proventoSelecionado"
             @close="showVisualizarProventoModal = false"
+        />
+
+        <!-- Modal de Editar Provento -->
+        <EditarProvento
+            :show="showEditarProventoModal"
+            :provento="proventoSelecionado"
+            @close="showEditarProventoModal = false"
+            @submit="handleSubmitEdicao"
         />
     </AuthenticatedLayout>
 </template>
