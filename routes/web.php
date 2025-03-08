@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\Ativo\ListarAtivosController;
 use App\Http\Controllers\Admin\Operacao\ListarOperacoesController;
+use App\Http\Controllers\Admin\Provento\ListarProventosController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -33,6 +34,10 @@ Route::middleware('auth')->prefix('admin')->group(function () {
 
     Route::prefix('operacoes')->group(function () {
         Route::get('/', ListarOperacoesController::class)->name('operacoes.index');
+    });
+
+    Route::prefix('proventos')->group(function () {
+        Route::get('/', ListarProventosController::class)->name('proventos.index');
     });
 });
 
