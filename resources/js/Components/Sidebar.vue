@@ -90,8 +90,8 @@ const toggleDarkMode = () => {
                 </li>
                 <li>
                     <ResponsiveNavLink
-                        href="route('operacoes')"
-                        :active="route().current('operacoes')"
+                        :href="route('operacoes.index')"
+                        :active="route().current('operacoes.index')"
                     >
                         Operações
                     </ResponsiveNavLink>

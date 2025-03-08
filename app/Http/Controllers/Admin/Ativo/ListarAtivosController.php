@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Ativos;
+namespace App\Http\Controllers\Admin\Ativo;
 
 use Inertia\Inertia;
 
-class ListarController
+class ListarAtivosController
 {
     public function __invoke()
     {
