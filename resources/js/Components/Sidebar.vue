@@ -105,6 +105,14 @@ const toggleDarkMode = () => {
                     </ResponsiveNavLink>
                 </li>
                 <li>
+                    <ResponsiveNavLink
+                        :href="route('proventos.index')"
+                        :active="route().current('proventos.index')"
+                    >
+                        Proventos
+                    </ResponsiveNavLink>
+                </li>
+                <li>
                     <Link
                         href="route('portfolio')"
                         class="flex items-center rounded-lg p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
