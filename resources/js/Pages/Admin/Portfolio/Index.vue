@@ -120,10 +120,10 @@ const filteredItems = computed(() => {
                     </div>
                 </div>
 
-                <div class="overflow-hidden bg-white shadow-sm dark:bg-gray-800 sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                            <thead>
+                        <table class="min-w-full">
+                            <thead class="bg-gray-50 border-b border-gray-200 dark:bg-gray-700 dark:border-gray-600">
                                 <tr>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
                                         Ativo
@@ -132,7 +132,7 @@ const filteredItems = computed(() => {
                                         Classe
                                     </th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
-                                        Qtd.
+                                        Qtd
                                     </th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
                                         Preço Médio
@@ -151,30 +151,30 @@ const filteredItems = computed(() => {
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr v-for="(item, index) in filteredItems" :key="index" :class="index % 2 === 0 ? '' : 'bg-gray-50 dark:bg-gray-900'">
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
+                            <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+                                <tr v-for="(item, index) in filteredItems" :key="index">
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-300">
                                         {{ item.ativo }}
                                     </td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
                                         {{ item.classe }}
                                     </td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
                                         {{ item.qtd }}
                                     </td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
                                         {{ item.precoMedio }}
                                     </td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
                                         {{ item.custo }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-green-600 dark:text-green-400">
                                         {{ item.patrimonio }}
                                     </td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
                                         {{ item.percentualClasse }}
                                     </td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
                                         {{ item.percentualCarteira }}
                                     </td>
                                 </tr>
