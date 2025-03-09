@@ -113,12 +113,12 @@ const toggleDarkMode = () => {
                     </ResponsiveNavLink>
                 </li>
                 <li>
-                    <Link
-                        href="route('portfolio')"
-                        class="flex items-center rounded-lg p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                    <ResponsiveNavLink
+                        :href="route('portfolio.index')"
+                        :active="route().current('portfolio.index')"
                     >
-                        <span>Portifólio</span>
-                    </Link>
+                        Portfólio
+                    </ResponsiveNavLink>
                 </li>
                 <li>
                     <ResponsiveNavLink
