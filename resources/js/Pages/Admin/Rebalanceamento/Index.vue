@@ -2,6 +2,10 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import EditarClasseRebalanceamento from './EditarClasseRebalanceamento.vue';
+import EditarAtivoRebalanceamento from './EditarAtivoRebalanceamento.vue';
+import ExcluirClasseRebalanceamento from './ExcluirClasseRebalanceamento.vue';
+import ExcluirAtivoRebalanceamento from './ExcluirAtivoRebalanceamento.vue';
 
 // Estado para controlar a aba ativa
 const activeTab = ref('classe'); // 'classe' ou 'ativo'
@@ -28,6 +32,14 @@ const novoPercentualClasse = ref('');
 // Formulário para adicionar novo ativo
 const novoAtivo = ref('');
 const novoPercentualAtivo = ref('');
+
+// Estado para controlar os modais
+const showEditarClasseModal = ref(false);
+const classeSelecionada = ref(null);
+const showEditarAtivoModal = ref(false);
+const ativoSelecionado = ref(null);
+const showExcluirClasseModal = ref(false);
+const showExcluirAtivoModal = ref(false);
 
 // Função para incluir nova classe
 const incluirClasse = () => {
@@ -59,13 +71,50 @@ const incluirAtivo = () => {
     }
 };
 
-// Funções para editar e excluir
-const editarItem = (item) => {
-    console.log('Editar item:', item);
+// Funções para editar e excluir classes
+const editarClasse = (classe) => {
+    classeSelecionada.value = classe;
+    showEditarClasseModal.value = true;
 };
 
-const excluirItem = (item) => {
-    console.log('Excluir item:', item);
+const excluirClasse = (classe) => {
+    classeSelecionada.value = classe;
+    showExcluirClasseModal.value = true;
+};
+
+const handleSubmitEdicaoClasse = (data) => {
+    // Aqui você implementa a lógica para salvar as alterações da classe
+    console.log('Classe editada:', data);
+    showEditarClasseModal.value = false;
+};
+
+const handleConfirmarExclusaoClasse = () => {
+    // Aqui você implementa a lógica para excluir a classe
+    console.log('Excluindo classe:', classeSelecionada.value);
+    showExcluirClasseModal.value = false;
+};
+
+// Funções para editar e excluir ativos
+const editarAtivo = (ativo) => {
+    ativoSelecionado.value = ativo;
+    showEditarAtivoModal.value = true;
+};
+
+const excluirAtivo = (ativo) => {
+    ativoSelecionado.value = ativo;
+    showExcluirAtivoModal.value = true;
+};
+
+const handleSubmitEdicaoAtivo = (data) => {
+    // Aqui você implementa a lógica para salvar as alterações do ativo
+    console.log('Ativo editado:', data);
+    showEditarAtivoModal.value = false;
+};
+
+const handleConfirmarExclusaoAtivo = () => {
+    // Aqui você implementa a lógica para excluir o ativo
+    console.log('Excluindo ativo:', ativoSelecionado.value);
+    showExcluirAtivoModal.value = false;
 };
 </script>
 
@@ -178,7 +227,7 @@ const excluirItem = (item) => {
                                             <td class="whitespace-nowrap px-6 py-4 text-sm">
                                                 <div class="flex gap-2">
                                                     <button
-                                                        @click="editarItem(classe)"
+                                                        @click="editarClasse(classe)"
                                                         class="text-yellow-600 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300"
                                                     >
                                                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -186,7 +235,7 @@ const excluirItem = (item) => {
                                                         </svg>
                                                     </button>
                                                     <button
-                                                        @click="excluirItem(classe)"
+                                                        @click="excluirClasse(classe)"
                                                         class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
                                                     >
                                                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -283,7 +332,7 @@ const excluirItem = (item) => {
                                             <td class="whitespace-nowrap px-6 py-4 text-sm">
                                                 <div class="flex gap-2">
                                                     <button
-                                                        @click="editarItem(ativo)"
+                                                        @click="editarAtivo(ativo)"
                                                         class="text-yellow-600 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300"
                                                     >
                                                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -291,7 +340,7 @@ const excluirItem = (item) => {
                                                         </svg>
                                                     </button>
                                                     <button
-                                                        @click="excluirItem(ativo)"
+                                                        @click="excluirAtivo(ativo)"
                                                         class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
                                                     >
                                                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -309,6 +358,38 @@ const excluirItem = (item) => {
                 </div>
             </div>
         </div>
+
+        <!-- Modal de Editar Classe de Rebalanceamento -->
+        <EditarClasseRebalanceamento
+            :show="showEditarClasseModal"
+            :classe="classeSelecionada"
+            @close="showEditarClasseModal = false"
+            @submit="handleSubmitEdicaoClasse"
+        />
+
+        <!-- Modal de Editar Ativo de Rebalanceamento -->
+        <EditarAtivoRebalanceamento
+            :show="showEditarAtivoModal"
+            :ativo="ativoSelecionado"
+            @close="showEditarAtivoModal = false"
+            @submit="handleSubmitEdicaoAtivo"
+        />
+
+        <!-- Modal de Excluir Classe de Rebalanceamento -->
+        <ExcluirClasseRebalanceamento
+            :show="showExcluirClasseModal"
+            :classe="classeSelecionada"
+            @close="showExcluirClasseModal = false"
+            @confirm="handleConfirmarExclusaoClasse"
+        />
+
+        <!-- Modal de Excluir Ativo de Rebalanceamento -->
+        <ExcluirAtivoRebalanceamento
+            :show="showExcluirAtivoModal"
+            :ativo="ativoSelecionado"
+            @close="showExcluirAtivoModal = false"
+            @confirm="handleConfirmarExclusaoAtivo"
+        />
     </AuthenticatedLayout>
 </template>
 
