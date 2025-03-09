@@ -121,12 +121,12 @@ const toggleDarkMode = () => {
                     </Link>
                 </li>
                 <li>
-                    <Link
-                        href="route('rebalanceamento')"
-                        class="flex items-center rounded-lg p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                    <ResponsiveNavLink
+                        :href="route('rebalanceamento.index')"
+                        :active="route().current('rebalanceamento.index')"
                     >
-                        <span>Rebalanceamento</span>
-                    </Link>
+                        Rebalanceamento
+                    </ResponsiveNavLink>
                 </li>
                 <li>
                     <Link

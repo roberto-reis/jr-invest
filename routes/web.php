@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\Ativo\ListarAtivosController;
 use App\Http\Controllers\Admin\Operacao\ListarOperacoesController;
 use App\Http\Controllers\Admin\Provento\ListarProventosController;
+use App\Http\Controllers\Admin\Rebalanceamento\ListarRebalanceamentoController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -38,6 +39,10 @@ Route::middleware('auth')->prefix('admin')->group(function () {
 
     Route::prefix('proventos')->group(function () {
         Route::get('/', ListarProventosController::class)->name('proventos.index');
+    });
+
+    Route::prefix('rebalanceamento')->group(function () {
+        Route::get('/', ListarRebalanceamentoController::class)->name('rebalanceamento.index');
     });
 });
 
