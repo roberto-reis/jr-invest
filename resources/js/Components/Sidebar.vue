@@ -1,21 +1,33 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { initTheme } from '@/dark-mode';
 
-defineProps<{
+const props = defineProps<{
     isOpen: boolean;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
     (e: 'close'): void;
+    (e: 'update:isOpen', value: boolean): void;
 }>();
 
 const isDark = ref(false);
 
 onMounted(() => {
     isDark.value = initTheme();
+
+    // Check localStorage for sidebar state on component mount
+    const sidebarState = localStorage.getItem('sidebarOpen');
+    if (sidebarState === 'true' && !props.isOpen) {
+        emit('update:isOpen', true);
+    }
+});
+
+// Watch for changes to isOpen prop and save to localStorage
+watch(() => props.isOpen, (newValue) => {
+    localStorage.setItem('sidebarOpen', newValue.toString());
 });
 
 const toggleDarkMode = () => {
