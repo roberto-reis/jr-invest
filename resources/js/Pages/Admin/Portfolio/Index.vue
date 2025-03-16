@@ -85,9 +85,17 @@ const filteredItems = computed(() => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                Portfólio
-            </h2>
+            <div class="flex justify-between">
+                <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                    Portfólio
+                </h2>
+                <!-- breadcrumbs -->
+                <div class="text-sm text-gray-600 dark:text-gray-400 flex items-center">
+                    <a href="#" class="hover:text-blue-500 dark:hover:text-blue-400">Início</a>
+                    <span class="mx-1">></span>
+                    <span class="text-gray-800 dark:text-gray-300">Portfólio</span>
+                </div>
+            </div>
         </template>
 
         <div class="py-12">
