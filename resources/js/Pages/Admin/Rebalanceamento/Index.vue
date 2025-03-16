@@ -6,9 +6,15 @@ import EditarClasseRebalanceamento from './EditarClasseRebalanceamento.vue';
 import EditarAtivoRebalanceamento from './EditarAtivoRebalanceamento.vue';
 import ExcluirClasseRebalanceamento from './ExcluirClasseRebalanceamento.vue';
 import ExcluirAtivoRebalanceamento from './ExcluirAtivoRebalanceamento.vue';
-
+import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 // Estado para controlar a aba ativa
 const activeTab = ref('classe'); // 'classe' ou 'ativo'
+
+// Breadcrumbs data
+const breadcrumbItems = [
+    { label: 'Início', url: route('dashboard') },
+    { label: 'Rebalanceamento' }
+];
 
 // Dados de exemplo para a tabela de classes
 const classesRebalanceamento = [
@@ -101,20 +107,24 @@ const handleConfirmarExclusaoAtivo = () => {
 </script>
 
 <template>
-    <Head title="Rebalanceamento" />
-
     <AuthenticatedLayout>
+        <Head title="Rebalanceamento" />
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                Rebalanceamento
-            </h2>
+            <div class="flex justify-between">
+                <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                    Rebalanceamento
+                </h2>
+
+                <!-- Use the Breadcrumbs component -->
+                <Breadcrumbs :items="breadcrumbItems" />
+            </div>
         </template>
 
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <!-- Abas -->
                 <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
-                    <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
+                    <ul class="flex flex-wrap -mb-px text-sm font-medium text-center dark:text-gray-300">
                         <li class="mr-2">
                             <button
                                 @click="activeTab = 'classe'"

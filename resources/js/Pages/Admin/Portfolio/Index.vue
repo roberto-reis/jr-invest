@@ -2,6 +2,13 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
+import Breadcrumbs from '@/Components/Breadcrumbs.vue';
+
+// Breadcrumbs data
+const breadcrumbItems = [
+    { label: 'Início', url: route('dashboard') },
+    { label: 'Portfólio' }
+];
 
 // Dados de exemplo para a tabela de portfólio
 const portfolioItems = [
@@ -81,20 +88,16 @@ const filteredItems = computed(() => {
 </script>
 
 <template>
-    <Head title="Portfólio" />
-
     <AuthenticatedLayout>
+        <Head title="Portfólio" />
         <template #header>
             <div class="flex justify-between">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
                     Portfólio
                 </h2>
-                <!-- breadcrumbs -->
-                <div class="text-sm text-gray-600 dark:text-gray-400 flex items-center">
-                    <a href="#" class="hover:text-blue-500 dark:hover:text-blue-400">Início</a>
-                    <span class="mx-1">></span>
-                    <span class="text-gray-800 dark:text-gray-300">Portfólio</span>
-                </div>
+
+                <!-- Use the Breadcrumbs component -->
+                <Breadcrumbs :items="breadcrumbItems" />
             </div>
         </template>
 
