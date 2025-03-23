@@ -1,21 +1,33 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { initTheme } from '@/dark-mode';
 
-defineProps<{
+const props = defineProps<{
     isOpen: boolean;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
     (e: 'close'): void;
+    (e: 'update:isOpen', value: boolean): void;
 }>();
 
 const isDark = ref(false);
 
 onMounted(() => {
     isDark.value = initTheme();
+
+    // Check localStorage for sidebar state on component mount
+    const sidebarState = localStorage.getItem('sidebarOpen');
+    if (sidebarState === 'true' && !props.isOpen) {
+        emit('update:isOpen', true);
+    }
+});
+
+// Watch for changes to isOpen prop and save to localStorage
+watch(() => props.isOpen, (newValue) => {
+    localStorage.setItem('sidebarOpen', newValue.toString());
 });
 
 const toggleDarkMode = () => {
@@ -113,20 +125,20 @@ const toggleDarkMode = () => {
                     </ResponsiveNavLink>
                 </li>
                 <li>
-                    <Link
-                        href="route('portfolio')"
-                        class="flex items-center rounded-lg p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                    <ResponsiveNavLink
+                        :href="route('portfolio.index')"
+                        :active="route().current('portfolio.index')"
                     >
-                        <span>Portifólio</span>
-                    </Link>
+                        Portfólio
+                    </ResponsiveNavLink>
                 </li>
                 <li>
-                    <Link
-                        href="route('rebalanceamento')"
-                        class="flex items-center rounded-lg p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                    <ResponsiveNavLink
+                        :href="route('rebalanceamento.index')"
+                        :active="route().current('rebalanceamento.index')"
                     >
-                        <span>Rebalanceamento</span>
-                    </Link>
+                        Rebalanceamento
+                    </ResponsiveNavLink>
                 </li>
                 <li>
                     <Link

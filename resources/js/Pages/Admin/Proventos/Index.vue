@@ -6,10 +6,17 @@ import NovoRecebimento from './NovoRecebimento.vue';
 import VisualizarProvento from './VisualizarProvento.vue';
 import EditarProvento from './EditarProvento.vue';
 import ExcluirProvento from './ExcluirProvento.vue';
+import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 
 const search = ref('');
 const currentPage = ref(1);
 const perPage = ref(10);
+
+// Breadcrumbs data
+const breadcrumbItems = [
+    { label: 'Início', url: route('dashboard') },
+    { label: 'Proventos' }
+];
 
 // Dados de exemplo para a tabela
 const proventos = [
@@ -108,6 +115,16 @@ const handleConfirmarExclusao = () => {
 <template>
     <AuthenticatedLayout>
         <Head title="Proventos" />
+        <template #header>
+            <div class="flex justify-between">
+                <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                    Proventos
+                </h2>
+
+                <!-- Use the Breadcrumbs component -->
+                <Breadcrumbs :items="breadcrumbItems" />
+            </div>
+        </template>
 
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">

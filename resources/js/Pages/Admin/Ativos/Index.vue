@@ -6,6 +6,7 @@ import NovoAtivo from '@/Pages/Admin/Ativos/NovoAtivo.vue';
 import EditarAtivo from '@/Pages/Admin/Ativos/EditarAtivo.vue';
 import VisualizarAtivo from '@/Pages/Admin/Ativos/VisualizarAtivo.vue';
 import ExcluirAtivo from '@/Pages/Admin/Ativos/ExcluirAtivo.vue';
+import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 
 const search = ref('');
 const currentPage = ref(1);
@@ -15,6 +16,12 @@ const showEditarAtivoModal = ref(false);
 const showVisualizarAtivoModal = ref(false);
 const showExcluirAtivoModal = ref(false);
 const ativoSelecionado = ref(null);
+
+// Breadcrumbs data
+const breadcrumbItems = [
+    { label: 'Início', url: route('dashboard') },
+    { label: 'Ativos' }
+];
 
 // Dados de exemplo para a tabela (substitua depois pelos dados reais do backend)
 const ativos = [
@@ -59,6 +66,16 @@ const handleConfirmarExclusao = () => {
 <template>
     <AuthenticatedLayout>
         <Head title="Ativos" />
+        <template #header>
+            <div class="flex justify-between">
+                <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                    Ativos
+                </h2>
+
+                <!-- Use the Breadcrumbs component -->
+                <Breadcrumbs :items="breadcrumbItems" />
+            </div>
+        </template>
 
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
