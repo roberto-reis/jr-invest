@@ -18,12 +18,12 @@ class ClasseAtivo extends Model
 
     protected $fillable = [
         'nome',
-        'nome_interno',
         'descricao',
+        'nome_interno',
     ];
 
     public function ativos()
     {
-        return $this->hasMany(Ativo::class, 'classe_ativo_uid', 'uid');
+        return $this->hasMany(Ativo::class, 'classe_ativo_id', 'id');
     }
 }
