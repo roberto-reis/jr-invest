@@ -18,7 +18,7 @@ class Operacao extends Model
     protected $icrementing = false;
 
     protected $fillable = [
-        'user_uid',
+        'user_id',
         'ativo_uid',
         'tipo_operacao_uid',
         'corretora_uid',
