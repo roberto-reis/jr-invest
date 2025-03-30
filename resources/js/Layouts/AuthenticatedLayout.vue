@@ -1,19 +1,45 @@
 <script setup lang="ts">
 import NavBar from '@/Components/NavBar.vue';
 import Sidebar from '@/Components/Sidebar.vue';
-import { ref } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
+import FlashMessage from '@/Components/FlashMessage.vue';
 
 const showingNavigationDropdown = ref(false);
 const sidebarOpen = ref(false);
 
 const toggleSidebar = () => {
     sidebarOpen.value = !sidebarOpen.value;
+};
+
+// Pegar as mensagens da sessão
+const flash = computed(() => usePage().props.flash);
+const showFlash = ref(false);
+const flashMessage = ref('');
+const flashType = ref('success');
+
+// Monitorar mudanças nas mensagens flash
+onMounted(() => {
+    if (flash.value && flash.value.success) {
+        flashMessage.value = flash.value.success;
+        flashType.value = 'success';
+        showFlash.value = true;
+    } else if (flash.value && flash.value.error) {
+        flashMessage.value = flash.value.error;
+        flashType.value = 'error';
+        showFlash.value = true;
+    }
+});
+
+// Fechar a mensagem flash
+const closeFlash = () => {
+    showFlash.value = false;
+    flashMessage.value = '';
 };
 </script>
 
@@ -43,6 +69,14 @@ const toggleSidebar = () => {
                 <slot />
             </main>
         </div>
+
+        <!-- Flash Message -->
+        <FlashMessage
+            :message="flashMessage"
+            :type="flashType"
+            :show="showFlash"
+            @close="closeFlash"
+        />
     </div>
 </template>
 

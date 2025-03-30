@@ -16,8 +16,8 @@ class NovaClasseAtivoController extends Controller
 
         ClasseAtivo::create($validated);
 
-        // Redirecionar para a página de listagem com mensagem de sucesso
-        return Redirect::route('classes-ativos.index')
+        // Certifique-se de usar 'success' como a chave da mensagem flash
+        return redirect()->route('classes-ativos.index')
             ->with('success', "Classe de ativo criada com sucesso!");
     }
 }
