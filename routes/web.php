@@ -4,11 +4,12 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\Ativo\NovoAtivoController;
 use App\Http\Controllers\Admin\Ativo\ListarAtivosController;
 use App\Http\Controllers\Admin\Operacao\ListarOperacoesController;
 use App\Http\Controllers\Admin\Provento\ListarProventosController;
-use App\Http\Controllers\Admin\Rebalanceamento\ListarRebalanceamentoController;
 use App\Http\Controllers\Admin\Portfolio\ListarPortfolioController;
+use App\Http\Controllers\Admin\Rebalanceamento\ListarRebalanceamentoController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -32,6 +33,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->prefix('admin')->group(function () {
     Route::prefix('ativos')->group(function () {
         Route::get('/', ListarAtivosController::class)->name('ativos.index');
+        Route::post('/', NovoAtivoController::class)->name('ativos.novo');
     });
 
     Route::prefix('operacoes')->group(function () {
