@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
+import NovaClasseModal from './NovaClasseModal.vue';
 
 const props = defineProps({
     classes: Array
@@ -15,6 +16,7 @@ const breadcrumbItems = [
 ];
 
 const search = ref('');
+const showNovaClasseModal = ref(false);
 
 // Filtra as classes com base na busca
 const filteredClasses = computed(() => {
@@ -28,8 +30,11 @@ const filteredClasses = computed(() => {
 });
 
 const openNovaClasseModal = () => {
-    // Implementar abertura do modal
-    console.log('Abrir modal de nova classe');
+    showNovaClasseModal.value = true;
+};
+
+const closeNovaClasseModal = () => {
+    showNovaClasseModal.value = false;
 };
 
 </script>
@@ -140,5 +145,12 @@ const openNovaClasseModal = () => {
                 </div>
             </div>
         </div>
+
+        <!-- Modal de Nova Classe -->
+        <NovaClasseModal
+            :show-modal="showNovaClasseModal"
+            @close="closeNovaClasseModal"
+        />
+
     </AuthenticatedLayout>
 </template>
