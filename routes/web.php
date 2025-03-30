@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\Operacao\ListarOperacoesController;
 use App\Http\Controllers\Admin\Provento\ListarProventosController;
 use App\Http\Controllers\Admin\Portfolio\ListarPortfolioController;
 use App\Http\Controllers\Admin\ClasseAtivo\NovaClasseAtivoController;
+use App\Http\Controllers\Admin\ClasseAtivo\UpdateClasseAtivoController;
 use App\Http\Controllers\Admin\ClasseAtivo\RemoverClasseAtivoController;
 use App\Http\Controllers\Admin\ClasseAtivo\ListarClassesAtivosController;
 use App\Http\Controllers\Admin\Rebalanceamento\ListarRebalanceamentoController;
@@ -37,6 +38,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::prefix('classes-ativos')->group(function () {
         Route::get('/', ListarClassesAtivosController::class)->name('classes-ativos.index');
         Route::post('/', NovaClasseAtivoController::class)->name('classes-ativos.store');
+        Route::put('/{uid}', UpdateClasseAtivoController::class)->name('classes-ativos.update');
         Route::delete('/{uid}', RemoverClasseAtivoController::class)->name('classes-ativos.delete');
     });
 
