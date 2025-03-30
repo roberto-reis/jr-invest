@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Admin\ClasseAtivo;
 
 use App\Models\ClasseAtivo;
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\CriarClasseAtivoRequest;
 
 class NovaClasseAtivoController extends Controller

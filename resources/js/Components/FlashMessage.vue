@@ -9,7 +9,7 @@ const props = defineProps({
     },
     duration: {
         type: Number,
-        default: 5000 // 5 segundos
+        default: 6000 // 6 segundos
     },
     show: {
         type: Boolean,
@@ -66,7 +66,7 @@ onUnmounted(() => {
         leave-from-class="opacity-100"
         leave-to-class="opacity-0"
     >
-        <div v-if="isVisible && message" class="fixed inset-x-0 top-20 z-50 flex justify-center px-4 sm:px-6 lg:px-8 pointer-events-none">
+        <div v-if="isVisible && message" class="fixed inset-x-0 top-14 z-50 flex justify-end px-4 sm:px-6 lg:px-8 pointer-events-none">
             <div
                 class="pointer-events-auto max-w-md w-full shadow-lg rounded-lg overflow-hidden"
                 :class="{

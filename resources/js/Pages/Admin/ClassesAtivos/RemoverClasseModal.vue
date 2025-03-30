@@ -14,7 +14,7 @@ const form = useForm({});
 
 const confirmarExclusao = () => {
     if (props.classe) {
-        form.delete(route('classes-ativos.destroy', props.classe.uid), {
+        form.delete(route('classes-ativos.delete', props.classe.uid), {
             preserveScroll: true,
             onSuccess: () => {
                 emit('close');
