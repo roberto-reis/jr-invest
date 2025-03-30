@@ -5,6 +5,7 @@ import { ref, computed } from 'vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 import NovaClasseModal from './NovaClasseModal.vue';
 import RemoverClasseModal from './RemoverClasseModal.vue';
+import EditarClasseModal from './EditarClasseModal.vue';
 
 const props = defineProps({
     classes: Array
@@ -19,7 +20,9 @@ const breadcrumbItems = [
 const search = ref('');
 const showNovaClasseModal = ref(false);
 const showRemoverClasseModal = ref(false);
+const showEditarClasseModal = ref(false);
 const classeParaRemover = ref(null);
+const classeParaEditar = ref(null);
 
 // Filtra as classes com base na busca
 const filteredClasses = computed(() => {
@@ -49,6 +52,17 @@ const openRemoverClasseModal = (classe) => {
 const closeRemoverClasseModal = () => {
     showRemoverClasseModal.value = false;
     classeParaRemover.value = null;
+};
+
+// Funções para o modal de editar classe
+const openEditarClasseModal = (classe) => {
+    classeParaEditar.value = classe;
+    showEditarClasseModal.value = true;
+};
+
+const closeEditarClasseModal = () => {
+    showEditarClasseModal.value = false;
+    classeParaEditar.value = null;
 };
 
 </script>
@@ -126,7 +140,9 @@ const closeRemoverClasseModal = () => {
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-center">
                                         <div class="flex justify-center space-x-3">
                                             <!-- Ícone de editar -->
-                                            <button class="text-yellow-500 hover:text-yellow-700 dark:text-yellow-400 dark:hover:text-yellow-300">
+                                            <button
+                                                @click="openEditarClasseModal(classe)"
+                                                class="text-yellow-500 hover:text-yellow-700 dark:text-yellow-400 dark:hover:text-yellow-300">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                                 </svg>
@@ -165,6 +181,13 @@ const closeRemoverClasseModal = () => {
             :show-modal="showRemoverClasseModal"
             :classe="classeParaRemover"
             @close="closeRemoverClasseModal"
+        />
+
+        <!-- Modal de Editar Classe -->
+        <EditarClasseModal
+            :show-modal="showEditarClasseModal"
+            :classe="classeParaEditar"
+            @close="closeEditarClasseModal"
         />
 
     </AuthenticatedLayout>
