@@ -65,7 +65,7 @@ const submitForm = () => {
                         autofocus
                         maxlength="255"
                     />
-                    <InputError :message="form.errors.nome" class="mt-2" />
+                    <InputError :message="form.errors.nome || form.errors.nome_interno" class="mt-2" />
                 </div>
 
                 <div class="mb-4">
