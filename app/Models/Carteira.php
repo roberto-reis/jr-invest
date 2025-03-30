@@ -19,7 +19,7 @@ class Carteira extends Model
     protected $icrementing = false;
 
     protected $fillable = [
-        'user_uid',
+        'user_id',
         'ativo_uid',
         'quantidade',
         'preco_medio',

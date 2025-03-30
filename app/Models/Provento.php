@@ -21,7 +21,7 @@ class Provento extends Model
     protected $icrementing = false;
 
     protected $fillable = [
-        'user_uid',
+        'user_id',
         'ativo_uid',
         'tipo_provento_uid',
         'corretora_uid',

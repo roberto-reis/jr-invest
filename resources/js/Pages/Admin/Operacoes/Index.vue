@@ -2,7 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import NovoAporte from './NovoOperacao.vue';
+import NovoAporte from './NovaOperacao.vue';
 import EditarOperacao from './EditarOperacao.vue';
 import VisualizarOperacao from './VisualizarOperacao.vue';
 import ExcluirOperacao from './ExcluirOperacao.vue';

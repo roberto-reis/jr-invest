@@ -17,7 +17,7 @@ class RebalanceamentoClasse extends Model
     protected $icrementing = false;
 
     protected $fillable = [
-        'user_uid',
+        'user_id',
         'classe_ativo_uid',
         'percentual',
     ];
