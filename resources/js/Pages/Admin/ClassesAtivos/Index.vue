@@ -4,6 +4,10 @@ import { Head } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 
+const props = defineProps({
+    classes: Array
+});
+
 // Breadcrumbs data
 const breadcrumbItems = [
     { label: 'Início', url: route('dashboard') },
@@ -11,6 +15,22 @@ const breadcrumbItems = [
 ];
 
 const search = ref('');
+
+// Filtra as classes com base na busca
+const filteredClasses = computed(() => {
+    if (!search.value || !props.classes) return props.classes || [];
+
+    const searchLower = search.value.toLowerCase();
+    return props.classes.filter(classe =>
+        classe.nome.toLowerCase().includes(searchLower) ||
+        (classe.descricao && classe.descricao.toLowerCase().includes(searchLower))
+    );
+});
+
+const openNovaClasseModal = () => {
+    // Implementar abertura do modal
+    console.log('Abrir modal de nova classe');
+};
 
 </script>
 
@@ -57,9 +77,68 @@ const search = ref('');
                     </div>
                 </div>
 
+                <!-- Tabela de Classes de Ativos -->
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="overflow-x-auto">
+                        <table v-if="filteredClasses && filteredClasses.length > 0" class="min-w-full">
+                            <thead class="bg-gray-50 border-b border-gray-200 dark:bg-gray-700 dark:border-gray-600">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                                        Nome
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                                        Descrição
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                                        AÇÕES
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+                                <tr v-for="classe in filteredClasses" :key="classe.uid">
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                        <div class="flex items-center">
+                                            {{ classe.nome }}
+                                        </div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
+                                        {{ classe.descricao || 'Sem descrição' }}
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-center">
+                                        <div class="flex justify-center space-x-3">
+                                            <!-- Ícone de visualizar -->
+                                            <button class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                            </button>
+
+                                            <!-- Ícone de editar -->
+                                            <button class="text-yellow-500 hover:text-yellow-700 dark:text-yellow-400 dark:hover:text-yellow-300">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                                </svg>
+                                            </button>
+
+                                            <!-- Ícone de excluir -->
+                                            <button class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div v-else class="p-6 text-center text-gray-500 dark:text-gray-400">
+                            <p v-if="search">Nenhuma classe encontrada com os termos pesquisados.</p>
+                            <p v-else>Nenhuma classe de ativo cadastrada. Clique em "Nova Classe" para adicionar.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-
     </AuthenticatedLayout>
 </template>
