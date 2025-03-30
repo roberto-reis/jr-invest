@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\Ativo\ListarAtivosController;
 use App\Http\Controllers\Admin\Operacao\ListarOperacoesController;
 use App\Http\Controllers\Admin\Provento\ListarProventosController;
 use App\Http\Controllers\Admin\Portfolio\ListarPortfolioController;
+use App\Http\Controllers\Admin\ClasseAtivo\ListarClassesAtivosController;
 use App\Http\Controllers\Admin\Rebalanceamento\ListarRebalanceamentoController;
 
 Route::get('/', function () {
@@ -31,6 +32,10 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->prefix('admin')->group(function () {
+    Route::prefix('classes-ativos')->group(function () {
+        Route::get('/', ListarClassesAtivosController::class)->name('classes-ativos.index');
+    });
+
     Route::prefix('ativos')->group(function () {
         Route::get('/', ListarAtivosController::class)->name('ativos.index');
         Route::post('/', NovoAtivoController::class)->name('ativos.novo');
