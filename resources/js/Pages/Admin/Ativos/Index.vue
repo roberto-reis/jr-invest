@@ -1,12 +1,22 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import NovoAtivo from '@/Pages/Admin/Ativos/NovoAtivo.vue';
 import EditarAtivo from '@/Pages/Admin/Ativos/EditarAtivo.vue';
 import VisualizarAtivo from '@/Pages/Admin/Ativos/VisualizarAtivo.vue';
 import ExcluirAtivo from '@/Pages/Admin/Ativos/ExcluirAtivo.vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
+
+// Define interface for ativo object
+interface Ativo {
+    ativo: string;
+    classe: string;
+    descricao: string;
+    setor: string;
+    data: string;
+    [key: string]: any; // Allow for other properties
+}
 
 const search = ref('');
 const currentPage = ref(1);
@@ -15,18 +25,24 @@ const showNovoAtivoModal = ref(false);
 const showEditarAtivoModal = ref(false);
 const showVisualizarAtivoModal = ref(false);
 const showExcluirAtivoModal = ref(false);
-const ativoSelecionado = ref(null);
+const ativoSelecionado = ref<Ativo | null>(null);
+
+const props = defineProps({
+    classes: {
+        type: Array,
+        default: () => []
+    },
+    ativos: {
+        type: Array as () => Ativo[],
+        default: () => []
+    }
+});
+
 
 // Breadcrumbs data
 const breadcrumbItems = [
     { label: 'Início', url: route('dashboard') },
     { label: 'Ativos' }
-];
-
-// Dados de exemplo para a tabela (substitua depois pelos dados reais do backend)
-const ativos = [
-    { ativo: 'BTC', classe: 'CRIPTO', descricao: 'Bitcoin', setor: 'CRIPTO', data: '11/12/2021 23:27' },
-    { ativo: 'URPR11', classe: 'FII', descricao: 'URCA PRIME RENDA', setor: 'Papel', data: '11/12/2021 23:27' },
 ];
 
 const handleNovoAtivo = (data: any) => {
@@ -61,6 +77,9 @@ const handleConfirmarExclusao = () => {
     console.log('Excluindo ativo:', ativoSelecionado.value);
     showExcluirAtivoModal.value = false;
 };
+
+console.log(props.ativos);
+
 </script>
 
 <template>
@@ -129,7 +148,7 @@ const handleConfirmarExclusao = () => {
                 <div class="overflow-hidden bg-white shadow-sm dark:bg-gray-800 sm:rounded-lg">
                     <!-- Tabela -->
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <table v-if="props.ativos.length > 0" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-700">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
@@ -153,7 +172,7 @@ const handleConfirmarExclusao = () => {
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-                                <tr v-for="ativo in ativos" :key="ativo.ativo">
+                                <tr v-for="ativo in props.ativos" :key="ativo.ativo">
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
                                         {{ ativo.ativo }}
                                     </td>
@@ -201,6 +220,9 @@ const handleConfirmarExclusao = () => {
                                 </tr>
                             </tbody>
                         </table>
+                        <div v-else class="p-6 text-center text-gray-500">
+                            <p>Nenhum ativo encontrado</p>
+                        </div>
                     </div>
                 </div>
 
@@ -248,6 +270,7 @@ const handleConfirmarExclusao = () => {
                     :show="showNovoAtivoModal"
                     @close="showNovoAtivoModal = false"
                     @submit="handleNovoAtivo"
+                    :classes="props.classes"
                 />
 
                 <!-- Modal de Editar Ativo -->

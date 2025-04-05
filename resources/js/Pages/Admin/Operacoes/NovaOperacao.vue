@@ -16,6 +16,10 @@ const emit = defineEmits<{
     (e: 'submit', data: any): void;
 }>();
 
+const closeModal = () => {
+    emit('close');
+};
+
 const form = ref({
     tipo_operacao: '',
     ativo: '',
@@ -32,7 +36,7 @@ const submit = () => {
 </script>
 
 <template>
-    <Modal :show="show" @click="emit('close')">
+    <Modal :show="show" @close="closeModal">
         <div class="p-6">
             <button @click="emit('close')" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

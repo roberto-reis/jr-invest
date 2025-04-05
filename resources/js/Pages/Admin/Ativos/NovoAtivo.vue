@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { useForm } from '@inertiajs/vue3';
 import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
@@ -7,16 +7,27 @@ import InputError from '@/Components/InputError.vue';
 import DefaultButton from '@/Components/DefaultButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 
-const props = defineProps<{
-    show: boolean;
-}>();
+const props = defineProps({
+    show: {
+        type: Boolean,
+        default: false
+    },
+    classes: {
+        type: Array,
+        default: () => []
+    }
+});
 
 const emit = defineEmits<{
     (e: 'close'): void;
     (e: 'submit', data: any): void;
 }>();
 
-const form = ref({
+const closeModal = () => {
+    emit('close');
+};
+
+const form = useForm({
     codigo: '',
     descricao: '',
     classe: '',
@@ -24,12 +35,18 @@ const form = ref({
 });
 
 const submit = () => {
-    emit('submit', form.value);
+    form.post(route('ativos.novo'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            form.reset();
+            emit('close');
+        },
+    });
 };
 </script>
 
 <template>
-    <Modal :show="show" @click="emit('close')">
+    <Modal :show="show" @close="closeModal">
         <div class="p-6">
             <button @click="emit('close')" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,9 +92,9 @@ const submit = () => {
                         required
                     >
                         <option value="">Selecione uma classe</option>
-                        <option value="CRIPTO">CRIPTO</option>
-                        <option value="FII">FII</option>
-                        <!-- Adicione mais opções conforme necessário -->
+                        <option v-for="classe in props.classes" :key="classe.id" :value="classe.id">
+                            {{ classe.nome }}
+                        </option>
                     </select>
                     <InputError class="mt-2" />
                 </div>

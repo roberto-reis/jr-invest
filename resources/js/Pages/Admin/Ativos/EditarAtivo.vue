@@ -21,6 +21,10 @@ const emit = defineEmits<{
     (e: 'submit', data: any): void;
 }>();
 
+const closeModal = () => {
+    emit('close');
+};
+
 const form = ref({
     codigo: '',
     descricao: '',
@@ -46,7 +50,7 @@ const submit = () => {
 </script>
 
 <template>
-    <Modal :show="show" @click="emit('close')">
+    <Modal :show="show" @close="closeModal">
         <div class="p-6">
             <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 Editar Ativo

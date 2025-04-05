@@ -16,6 +16,10 @@ const emit = defineEmits<{
     (e: 'submit', data: any): void;
 }>();
 
+const closeModal = () => {
+    emit('close');
+};
+
 const form = ref({
     ativo: '',
     tipo_provento: '',
@@ -43,7 +47,7 @@ const valorTotal = computed(() => {
 </script>
 
 <template>
-    <Modal :show="show" @click="emit('close')">
+    <Modal :show="show" @close="closeModal">
         <div class="p-6">
             <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 Novo Recebimento

@@ -16,13 +16,17 @@ const emit = defineEmits<{
     (e: 'confirm'): void;
 }>();
 
+const closeModal = () => {
+    emit('close');
+};
+
 const confirmarExclusao = () => {
     emit('confirm');
 };
 </script>
 
 <template>
-    <Modal :show="show" @click="emit('close')">
+    <Modal :show="show" @close="closeModal">
         <div class="p-6">
             <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 Excluir Ativo
