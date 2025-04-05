@@ -4,7 +4,7 @@ import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
+import DefaultButton from '@/Components/DefaultButton.vue';
 
 const props = defineProps<{
     show: boolean;
@@ -112,7 +112,7 @@ const submit = () => {
                     >
                         Cancelar
                     </button>
-                    <PrimaryButton>Salvar</PrimaryButton>
+                    <DefaultButton>Salvar</DefaultButton>
                 </div>
             </form>
         </div>

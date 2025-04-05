@@ -4,7 +4,8 @@ import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
+import DefaultButton from '@/Components/DefaultButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 const props = defineProps<{
     show: boolean;
@@ -174,15 +175,13 @@ const submit = () => {
                     <InputError class="mt-2" />
                 </div>
 
-                <div class="mt-6 flex justify-end">
-                    <button
-                        type="button"
-                        class="mr-3 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        @click="closeModal"
-                    >
+                <div class="mt-6 flex justify-end gap-3">
+                    <SecondaryButton @click="closeModal">
                         Cancelar
-                    </button>
-                    <PrimaryButton>Salvar</PrimaryButton>
+                    </SecondaryButton>
+                    <DefaultButton>
+                        Salvar
+                    </DefaultButton>
                 </div>
             </form>
         </div>

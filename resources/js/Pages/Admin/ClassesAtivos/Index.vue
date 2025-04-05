@@ -6,6 +6,7 @@ import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 import NovaClasseModal from './NovaClasseModal.vue';
 import RemoverClasseModal from './RemoverClasseModal.vue';
 import EditarClasseModal from './EditarClasseModal.vue';
+import GreenButton from '@/Components/GreenButton.vue';
 
 const props = defineProps({
     classes: Array
@@ -85,11 +86,9 @@ const closeEditarClasseModal = () => {
                 <div class="bg-white p-4 shadow-sm dark:bg-gray-800 sm:rounded-lg mb-4">
                     <div class="flex justify-between items-center">
                         <div>
-                            <button
-                                @click="openNovaClasseModal"
-                                class="rounded-md border border-green-600 bg-white px-4 py-2 text-green-600 hover:bg-green-50 dark:border-green-400 dark:bg-gray-700 dark:text-green-400 dark:hover:bg-gray-600">
+                            <GreenButton  @click="openNovaClasseModal">
                                 Nova Classe
-                            </button>
+                            </GreenButton>
                         </div>
 
                         <div class="flex-1 md:max-w-sm ml-4">

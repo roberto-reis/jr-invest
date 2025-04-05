@@ -2,7 +2,7 @@
 import { useForm } from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
+import DefaultButton from '@/Components/DefaultButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { ref, watch } from 'vue';
 
@@ -88,9 +88,9 @@ const submitForm = () => {
                     >
                         Cancelar
                     </button>
-                    <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                    <DefaultButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                         Salvar Alterações
-                    </PrimaryButton>
+                    </DefaultButton>
                 </div>
             </form>
         </div>
