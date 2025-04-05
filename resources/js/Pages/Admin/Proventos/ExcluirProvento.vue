@@ -13,7 +13,7 @@ const props = defineProps<{
         qtd: string;
         valor: string;
         valorTotal: string;
-    };
+    } | null;
 }>();
 
 const emit = defineEmits<{

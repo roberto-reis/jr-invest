@@ -10,7 +10,7 @@ const props = defineProps<{
         classe: string;
         setor: string;
         data: string;
-    };
+    } | null;
 }>();
 
 const emit = defineEmits<{

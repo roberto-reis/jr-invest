@@ -54,24 +54,24 @@ const handleNovoAporte = (data: any) => {
     showNovoAporteModal.value = false;
 };
 
-const handleEditarOperacao = (operacao) => {
+const handleEditarOperacao = (operacao: any) => {
     operacaoSelecionada.value = operacao;
     showEditarOperacaoModal.value = true;
 };
 
-const handleSubmitEdicao = (data) => {
+const handleSubmitEdicao = (data: any) => {
     // Aqui você implementa a lógica para salvar as alterações da operação
     console.log('Operação editada:', data);
     showEditarOperacaoModal.value = false;
 };
 
-const handleVisualizarOperacao = (operacao) => {
+const handleVisualizarOperacao = (operacao: any) => {
     // Atualiza para usar o modal
     operacaoSelecionada.value = operacao;
     showVisualizarOperacaoModal.value = true;
 };
 
-const handleExcluirOperacao = (operacao) => {
+const handleExcluirOperacao = (operacao: any) => {
     operacaoSelecionada.value = operacao;
     showExcluirOperacaoModal.value = true;
 };

@@ -64,17 +64,17 @@ const incluirAtivo = () => {
 };
 
 // Funções para editar e excluir classes
-const editarClasse = (classe) => {
+const editarClasse = (classe: any) => {
     classeSelecionada.value = classe;
     showEditarClasseModal.value = true;
 };
 
-const excluirClasse = (classe) => {
+const excluirClasse = (classe: any) => {
     classeSelecionada.value = classe;
     showExcluirClasseModal.value = true;
 };
 
-const handleSubmitEdicaoClasse = (data) => {
+const handleSubmitEdicaoClasse = (data: any) => {
     showEditarClasseModal.value = false;
 };
 
@@ -85,17 +85,17 @@ const handleConfirmarExclusaoClasse = () => {
 };
 
 // Funções para editar e excluir ativos
-const editarAtivo = (ativo) => {
+const editarAtivo = (ativo: any) => {
     ativoSelecionado.value = ativo;
     showEditarAtivoModal.value = true;
 };
 
-const excluirAtivo = (ativo) => {
+const excluirAtivo = (ativo: any) => {
     ativoSelecionado.value = ativo;
     showExcluirAtivoModal.value = true;
 };
 
-const handleSubmitEdicaoAtivo = (data) => {
+const handleSubmitEdicaoAtivo = (data: any) => {
     showEditarAtivoModal.value = false;
 };
 

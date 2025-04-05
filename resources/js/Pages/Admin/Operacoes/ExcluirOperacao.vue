@@ -11,7 +11,7 @@ const props = defineProps<{
         quantidade: string;
         valorTotal: string;
         data: string;
-    };
+    } | null;
 }>();
 
 const emit = defineEmits<{

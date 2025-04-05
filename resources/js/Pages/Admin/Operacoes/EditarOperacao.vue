@@ -18,7 +18,7 @@ const props = defineProps<{
         valorTotal: string;
         corretora: string;
         data: string;
-    };
+    } | null;
 }>();
 
 const emit = defineEmits<{

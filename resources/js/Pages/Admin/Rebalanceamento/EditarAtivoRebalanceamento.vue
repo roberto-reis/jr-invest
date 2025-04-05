@@ -13,7 +13,7 @@ const props = defineProps<{
         ativo: string;
         classe: string;
         percentualMeta: string;
-    };
+    } | null;
 }>();
 
 const emit = defineEmits<{

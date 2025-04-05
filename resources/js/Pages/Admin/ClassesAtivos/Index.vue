@@ -40,30 +40,16 @@ const openNovaClasseModal = () => {
     showNovaClasseModal.value = true;
 };
 
-const closeNovaClasseModal = () => {
-    showNovaClasseModal.value = false;
-};
-
 // Funções para o modal de remover classe
 const openRemoverClasseModal = (classe) => {
     classeParaRemover.value = classe;
     showRemoverClasseModal.value = true;
 };
 
-const closeRemoverClasseModal = () => {
-    showRemoverClasseModal.value = false;
-    classeParaRemover.value = null;
-};
-
 // Funções para o modal de editar classe
 const openEditarClasseModal = (classe) => {
     classeParaEditar.value = classe;
     showEditarClasseModal.value = true;
-};
-
-const closeEditarClasseModal = () => {
-    showEditarClasseModal.value = false;
-    classeParaEditar.value = null;
 };
 
 </script>
@@ -172,21 +158,21 @@ const closeEditarClasseModal = () => {
         <!-- Modal de Nova Classe -->
         <NovaClasseModal
             :show-modal="showNovaClasseModal"
-            @close="closeNovaClasseModal"
+            @close="showNovaClasseModal = false"
         />
 
         <!-- Modal de Remover Classe -->
         <RemoverClasseModal
             :show-modal="showRemoverClasseModal"
             :classe="classeParaRemover"
-            @close="closeRemoverClasseModal"
+            @close="showRemoverClasseModal = false"
         />
 
         <!-- Modal de Editar Classe -->
         <EditarClasseModal
             :show-modal="showEditarClasseModal"
             :classe="classeParaEditar"
-            @close="closeEditarClasseModal"
+            @close="showEditarClasseModal = false"
         />
 
     </AuthenticatedLayout>

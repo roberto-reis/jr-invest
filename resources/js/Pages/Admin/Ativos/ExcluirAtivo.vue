@@ -8,7 +8,7 @@ const props = defineProps<{
     ativo?: {
         ativo: string;
         descricao: string;
-    };
+    } | null;
 }>();
 
 const emit = defineEmits<{

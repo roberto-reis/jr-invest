@@ -81,7 +81,7 @@ const submitForm = () => {
                     <InputError :message="form.errors.descricao" class="mt-2" />
                 </div>
 
-                <div class="flex justify-end mt-6">
+                <div class="flex justify-end mt-6 gap-3">
                     <SecondaryButton @click="emit('close')">
                         Cancelar
                     </SecondaryButton>
