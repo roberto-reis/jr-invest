@@ -25,7 +25,7 @@ const showEditarClasseModal = ref(false);
 const classeParaRemover = ref(null);
 const classeParaEditar = ref(null);
 
-// Filtra as classes com base na busca
+// Filter classes based on search
 const filteredClasses = computed(() => {
     if (!search.value || !props.classes) return props.classes || [];
 
@@ -72,7 +72,7 @@ const openEditarClasseModal = (classe) => {
                 <div class="bg-white p-4 shadow-sm dark:bg-gray-800 sm:rounded-lg mb-4">
                     <div class="flex justify-between items-center">
                         <div>
-                            <GreenButton  @click="openNovaClasseModal">
+                            <GreenButton @click="openNovaClasseModal">
                                 Nova Classe
                             </GreenButton>
                         </div>
