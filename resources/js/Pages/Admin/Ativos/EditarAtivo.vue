@@ -46,12 +46,14 @@ watch(() => props.ativo, (newAtivo: any) => {
 }, { immediate: true });
 
 const submit = () => {
-    form.put(route('ativos.update', '345tryuu'), {
+    if (props.ativo) {
+        form.put(route('ativos.update', props.ativo.uid), {
         preserveScroll: true,
         onSuccess: () => {
             emit('close');
         },
     });
+    }
 };
 </script>
 

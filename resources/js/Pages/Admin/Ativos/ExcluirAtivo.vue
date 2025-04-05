@@ -3,11 +3,14 @@ import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import { useForm } from '@inertiajs/vue3';
+
 const props = defineProps<{
     show: boolean;
     ativo?: {
-        ativo: string;
-        descricao: string;
+        uid: string;
+        codigo: string;
+        nome: string;
     } | null;
 }>();
 
@@ -20,8 +23,17 @@ const closeModal = () => {
     emit('close');
 };
 
+const form = useForm({});
+
 const confirmarExclusao = () => {
-    emit('confirm');
+    if (props.ativo) {
+        form.delete(route('ativos.delete', props.ativo.uid), {
+            preserveScroll: true,
+            onSuccess: () => {
+                emit('confirm');
+            },
+        });
+    }
 };
 </script>
 
@@ -39,10 +51,10 @@ const confirmarExclusao = () => {
 
             <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
                 <p>
-                    Tem certeza que deseja excluir o ativo <strong class="text-gray-900 dark:text-gray-200">{{ ativo?.ativo }}</strong>?
+                    Tem certeza que deseja excluir o ativo <strong class="text-gray-900 dark:text-gray-200">{{ ativo?.codigo }}</strong>?
                 </p>
                 <p class="mt-1">
-                    {{ ativo?.descricao }}
+                    {{ ativo?.nome }}
                 </p>
                 <p class="mt-3 font-medium text-red-600 dark:text-red-400">
                     Esta ação não pode ser desfeita.

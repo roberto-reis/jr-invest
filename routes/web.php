@@ -5,8 +5,9 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\Ativo\NovoAtivoController;
-use App\Http\Controllers\Admin\Ativo\ListarAtivosController;
 use App\Http\Controllers\Admin\Ativo\UpdateAtivoController;
+use App\Http\Controllers\Admin\Ativo\ListarAtivosController;
+use App\Http\Controllers\Admin\Ativo\RemoverAtivoController;
 use App\Http\Controllers\Admin\Operacao\ListarOperacoesController;
 use App\Http\Controllers\Admin\Provento\ListarProventosController;
 use App\Http\Controllers\Admin\Portfolio\ListarPortfolioController;
@@ -47,6 +48,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
         Route::get('/', ListarAtivosController::class)->name('ativos.index');
         Route::post('/', NovoAtivoController::class)->name('ativos.novo');
         Route::put('/{uid}', UpdateAtivoController::class)->name('ativos.update');
+        Route::delete('/{uid}', RemoverAtivoController::class)->name('ativos.delete');
     });
 
     Route::prefix('operacoes')->group(function () {
