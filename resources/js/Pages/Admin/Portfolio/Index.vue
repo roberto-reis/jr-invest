@@ -131,7 +131,7 @@ const filteredItems = computed(() => {
                     </div>
                 </div>
 
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="overflow-x-auto">
                         <table class="min-w-full">
                             <thead class="bg-gray-50 border-b border-gray-200 dark:bg-gray-700 dark:border-gray-600">

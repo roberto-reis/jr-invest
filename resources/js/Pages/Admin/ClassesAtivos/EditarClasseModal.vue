@@ -5,6 +5,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import DefaultButton from '@/Components/DefaultButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { ref, watch } from 'vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 const props = defineProps({
     showModal: Boolean,
@@ -81,13 +82,10 @@ const submitForm = () => {
                 </div>
 
                 <div class="flex justify-end mt-6">
-                    <button
-                        type="button"
-                        @click="emit('close')"
-                        class="px-4 py-2 mr-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
-                    >
+                    <SecondaryButton @click="emit('close')">
                         Cancelar
-                    </button>
+                    </SecondaryButton>
+
                     <DefaultButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                         Salvar Alterações
                     </DefaultButton>

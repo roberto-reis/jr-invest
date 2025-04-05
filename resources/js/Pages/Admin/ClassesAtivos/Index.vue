@@ -110,7 +110,7 @@ const closeEditarClasseModal = () => {
                 </div>
 
                 <!-- Tabela de Classes de Ativos -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="overflow-x-auto">
                         <table v-if="filteredClasses && filteredClasses.length > 0" class="min-w-full">
                             <thead class="bg-gray-50 border-b border-gray-200 dark:bg-gray-700 dark:border-gray-600">

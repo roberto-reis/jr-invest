@@ -188,7 +188,7 @@ const handleConfirmarExclusaoAtivo = () => {
                         </form>
                     </div>
 
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="overflow-x-auto">
                             <table class="min-w-full">
                                 <thead class="bg-gray-50 border-b border-gray-200 dark:bg-gray-700 dark:border-gray-600">
@@ -241,7 +241,7 @@ const handleConfirmarExclusaoAtivo = () => {
 
                 <!-- Conteúdo da aba Por Ativo -->
                 <div v-if="activeTab === 'ativo'">
-                    <div class="bg-white p-4 shadow-sm dark:bg-gray-800 sm:rounded-lg mb-4">
+                    <div class="bg-white  p-4 shadow-sm dark:bg-gray-800 sm:rounded-lg mb-4">
                         <form @submit.prevent="incluirAtivo" class="flex flex-col md:flex-row gap-4 items-end">
                             <div class="flex-1">
                                 <label for="ativo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ativo</label>
@@ -280,7 +280,7 @@ const handleConfirmarExclusaoAtivo = () => {
                         </form>
                     </div>
 
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="overflow-x-auto">
                             <table class="min-w-full">
                                 <thead class="bg-gray-50 border-b border-gray-200 dark:bg-gray-700 dark:border-gray-600">
