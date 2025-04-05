@@ -7,16 +7,10 @@ import InputError from '@/Components/InputError.vue';
 import DefaultButton from '@/Components/DefaultButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 
-const props = defineProps({
-    show: {
-        type: Boolean,
-        default: false
-    },
-    classes: {
-        type: Array,
-        default: () => []
-    }
-});
+const props = defineProps<{
+    show: boolean;
+    classes: any[];
+}>();
 
 const emit = defineEmits<{
     (e: 'close'): void;
@@ -29,12 +23,13 @@ const closeModal = () => {
 
 const form = useForm({
     codigo: '',
-    descricao: '',
-    classe: '',
-    setor: ''
+    nome: '',
+    setor: '',
+    classe_ativo_uid: ''
 });
 
 const submit = () => {
+    console.log(form);
     form.post(route('ativos.novo'), {
         preserveScroll: true,
         onSuccess: () => {
@@ -68,35 +63,35 @@ const submit = () => {
                         required
                         autofocus
                     />
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" :message="form.errors.codigo" />
                 </div>
 
                 <div>
-                    <InputLabel for="descricao" value="Descrição" />
+                    <InputLabel for="nome" value="Nome" />
                     <TextInput
-                        id="descricao"
+                        id="nome"
                         type="text"
                         class="mt-1 block w-full"
-                        v-model="form.descricao"
+                        v-model="form.nome"
                         required
                     />
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" :message="form.errors.nome" />
                 </div>
 
                 <div>
-                    <InputLabel for="classe" value="Classe do Ativo" />
+                    <InputLabel for="classe_ativo_uid" value="Classe do Ativo" />
                     <select
-                        id="classe"
-                        v-model="form.classe"
+                        id="classe_ativo_uid"
+                        v-model="form.classe_ativo_uid"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
                         required
                     >
                         <option value="">Selecione uma classe</option>
-                        <option v-for="classe in props.classes" :key="classe.id" :value="classe.id">
+                        <option v-for="classe in props.classes" :key="classe.uid" :value="classe.uid">
                             {{ classe.nome }}
                         </option>
                     </select>
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" :message="form.errors.classe_ativo_uid" />
                 </div>
 
                 <div>
@@ -108,7 +103,7 @@ const submit = () => {
                         v-model="form.setor"
                         required
                     />
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" :message="form.errors.setor" />
                 </div>
 
                 <div class="mt-6 flex justify-end gap-3">

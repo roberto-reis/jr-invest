@@ -24,6 +24,11 @@ class Ativo extends Model
         'setor'
     ];
 
+    protected $casts = [
+        'created_at' => 'date:d/m/Y H:i:s',
+        'updated_at' => 'date:d/m/Y H:i:s',
+    ];
+
     public function classeAtivo()
     {
         return $this->belongsTo(ClasseAtivo::class, 'classe_ativo_uid');

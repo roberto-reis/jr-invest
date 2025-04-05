@@ -5,11 +5,11 @@ import Modal from '@/Components/Modal.vue';
 const props = defineProps<{
     show: boolean;
     ativo?: {
-        ativo: string;
-        descricao: string;
-        classe: string;
+        codigo: string;
+        nome: string;
+        classe_nome: string;
         setor: string;
-        data: string;
+        created_at: string;
     } | null;
 }>();
 
@@ -36,7 +36,7 @@ const closeModal = () => {
                         Código do Ativo
                     </h3>
                     <p class="mt-1 text-base text-gray-900 dark:text-gray-100">
-                        {{ ativo?.ativo }}
+                        {{ ativo?.codigo }}
                     </p>
                 </div>
 
@@ -45,7 +45,7 @@ const closeModal = () => {
                         Descrição
                     </h3>
                     <p class="mt-1 text-base text-gray-900 dark:text-gray-100">
-                        {{ ativo?.descricao }}
+                        {{ ativo?.nome }}
                     </p>
                 </div>
 
@@ -54,7 +54,7 @@ const closeModal = () => {
                         Classe do Ativo
                     </h3>
                     <p class="mt-1 text-base text-gray-900 dark:text-gray-100">
-                        {{ ativo?.classe }}
+                        {{ ativo?.classe_nome }}
                     </p>
                 </div>
 
@@ -72,7 +72,7 @@ const closeModal = () => {
                         Data de Cadastro
                     </h3>
                     <p class="mt-1 text-base text-gray-900 dark:text-gray-100">
-                        {{ ativo?.data }}
+                        {{ ativo?.created_at }}
                     </p>
                 </div>
 

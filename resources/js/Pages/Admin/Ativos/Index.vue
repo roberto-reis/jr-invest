@@ -10,12 +10,13 @@ import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 
 // Define interface for ativo object
 interface Ativo {
-    ativo: string;
-    classe: string;
-    descricao: string;
+    codigo: string;
+    classe_ativo_uid: string;
+    nome: string;
     setor: string;
-    data: string;
-    [key: string]: any; // Allow for other properties
+    created_at: string;
+    uid: string;
+    classe_nome: string;
 }
 
 const search = ref('');
@@ -77,8 +78,6 @@ const handleConfirmarExclusao = () => {
     console.log('Excluindo ativo:', ativoSelecionado.value);
     showExcluirAtivoModal.value = false;
 };
-
-console.log(props.ativos);
 
 </script>
 
@@ -172,21 +171,21 @@ console.log(props.ativos);
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-                                <tr v-for="ativo in props.ativos" :key="ativo.ativo">
+                                <tr v-for="ativo in props.ativos" :key="ativo.uid">
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ ativo.ativo }}
+                                        {{ ativo.codigo }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ ativo.classe }}
+                                        {{ ativo.classe_nome }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ ativo.descricao }}
+                                        {{ ativo.nome }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
                                         {{ ativo.setor }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ ativo.data }}
+                                        {{ ativo.created_at }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm">
                                         <div class="flex gap-2">
@@ -277,6 +276,7 @@ console.log(props.ativos);
                 <EditarAtivo
                     :show="showEditarAtivoModal"
                     :ativo="ativoSelecionado"
+                    :classes="props.classes"
                     @close="showEditarAtivoModal = false"
                     @submit="handleSubmitEdicao"
                 />

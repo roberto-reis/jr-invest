@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { watch } from 'vue';
+import { useForm } from '@inertiajs/vue3';
 import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
@@ -9,11 +10,13 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 const props = defineProps<{
     show: boolean;
     ativo?: {
-        ativo: string;
-        descricao: string;
-        classe: string;
+        uid: string;
+        codigo: string;
+        nome: string;
+        classe_ativo_uid: string;
         setor: string;
     } | null;
+    classes: any[];
 }>();
 
 const emit = defineEmits<{
@@ -25,27 +28,30 @@ const closeModal = () => {
     emit('close');
 };
 
-const form = ref({
+const form = useForm({
     codigo: '',
-    descricao: '',
-    classe: '',
+    nome: '',
+    classe_ativo_uid: '',
     setor: ''
 });
 
 // Atualiza o formulário quando o ativo é passado para o modal
-watch(() => props.ativo, (newAtivo) => {
+watch(() => props.ativo, (newAtivo: any) => {
     if (newAtivo) {
-        form.value = {
-            codigo: newAtivo.ativo,
-            descricao: newAtivo.descricao,
-            classe: newAtivo.classe,
-            setor: newAtivo.setor
-        };
+        form.codigo = newAtivo.codigo || '';
+        form.nome = newAtivo.nome || '';
+        form.classe_ativo_uid = newAtivo.classe_ativo_uid || '';
+        form.setor = newAtivo.setor || '';
     }
 }, { immediate: true });
 
 const submit = () => {
-    emit('submit', form.value);
+    form.put(route('ativos.update', '345tryuu'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            emit('close');
+        },
+    });
 };
 </script>
 
@@ -71,37 +77,35 @@ const submit = () => {
                         class="mt-1 block w-full"
                         v-model="form.codigo"
                         required
-                        readonly
                     />
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" :message="form.errors.codigo" />
                 </div>
 
                 <div>
-                    <InputLabel for="descricao" value="Descrição" />
+                    <InputLabel for="nome" value="Nome" />
                     <TextInput
-                        id="descricao"
+                        id="nome"
                         type="text"
                         class="mt-1 block w-full"
-                        v-model="form.descricao"
+                        v-model="form.nome"
                         required
                     />
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" :message="form.errors.nome" />
                 </div>
 
                 <div>
-                    <InputLabel for="classe" value="Classe do Ativo" />
+                    <InputLabel for="classe_ativo_uid" value="Classe do Ativo" />
                     <select
-                        id="classe"
-                        v-model="form.classe"
+                        id="classe_ativo_uid"
+                        v-model="form.classe_ativo_uid"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
                         required
                     >
-                        <option value="">Selecione uma classe</option>
-                        <option value="CRIPTO">CRIPTO</option>
-                        <option value="FII">FII</option>
-                        <!-- Adicione mais opções conforme necessário -->
+                        <option v-for="classe in props.classes" :key="classe.uid" :value="classe.uid">
+                            {{ classe.nome }}
+                        </option>
                     </select>
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" :message="form.errors.classe_ativo_uid" />
                 </div>
 
                 <div>
@@ -113,7 +117,7 @@ const submit = () => {
                         v-model="form.setor"
                         required
                     />
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" :message="form.errors.setor" />
                 </div>
 
                 <div class="mt-6 flex justify-end gap-3">
