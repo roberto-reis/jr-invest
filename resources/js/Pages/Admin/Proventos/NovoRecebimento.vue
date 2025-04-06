@@ -4,7 +4,8 @@ import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
+import DefaultButton from '@/Components/DefaultButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 const props = defineProps<{
     show: boolean;
@@ -15,6 +16,10 @@ const emit = defineEmits<{
     (e: 'submit', data: any): void;
 }>();
 
+const closeModal = () => {
+    emit('close');
+};
+
 const form = ref({
     ativo: '',
     tipo_provento: '',
@@ -23,10 +28,6 @@ const form = ref({
     quantidade: '',
     valor_unitario: '',
 });
-
-const closeModal = () => {
-    emit('close');
-};
 
 const submit = () => {
     emit('submit', form.value);
@@ -51,7 +52,11 @@ const valorTotal = computed(() => {
             <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 Novo Recebimento
             </h2>
-
+            <button @click="emit('close')" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
             <form @submit.prevent="submit" class="mt-6 space-y-6">
                 <div>
                     <InputLabel for="ativo" value="Ativo" />
@@ -144,15 +149,13 @@ const valorTotal = computed(() => {
                     </div>
                 </div>
 
-                <div class="mt-6 flex justify-end">
-                    <button
-                        type="button"
-                        class="mr-3 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        @click="closeModal"
-                    >
+                <div class="mt-6 flex justify-end gap-3">
+                    <SecondaryButton @click="emit('close')">
                         Cancelar
-                    </button>
-                    <PrimaryButton>Cadastrar</PrimaryButton>
+                    </SecondaryButton>
+                    <DefaultButton>
+                        Cadastrar
+                    </DefaultButton>
                 </div>
             </form>
         </div>

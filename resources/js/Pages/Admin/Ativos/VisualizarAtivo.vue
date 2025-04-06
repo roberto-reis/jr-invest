@@ -5,12 +5,12 @@ import Modal from '@/Components/Modal.vue';
 const props = defineProps<{
     show: boolean;
     ativo?: {
-        ativo: string;
-        descricao: string;
-        classe: string;
+        codigo: string;
+        nome: string;
+        classe_nome: string;
         setor: string;
-        data: string;
-    };
+        created_at: string;
+    } | null;
 }>();
 
 const emit = defineEmits<{
@@ -20,6 +20,7 @@ const emit = defineEmits<{
 const closeModal = () => {
     emit('close');
 };
+
 </script>
 
 <template>
@@ -35,7 +36,7 @@ const closeModal = () => {
                         Código do Ativo
                     </h3>
                     <p class="mt-1 text-base text-gray-900 dark:text-gray-100">
-                        {{ ativo?.ativo }}
+                        {{ ativo?.codigo }}
                     </p>
                 </div>
 
@@ -44,7 +45,7 @@ const closeModal = () => {
                         Descrição
                     </h3>
                     <p class="mt-1 text-base text-gray-900 dark:text-gray-100">
-                        {{ ativo?.descricao }}
+                        {{ ativo?.nome }}
                     </p>
                 </div>
 
@@ -53,7 +54,7 @@ const closeModal = () => {
                         Classe do Ativo
                     </h3>
                     <p class="mt-1 text-base text-gray-900 dark:text-gray-100">
-                        {{ ativo?.classe }}
+                        {{ ativo?.classe_nome }}
                     </p>
                 </div>
 
@@ -71,7 +72,7 @@ const closeModal = () => {
                         Data de Cadastro
                     </h3>
                     <p class="mt-1 text-base text-gray-900 dark:text-gray-100">
-                        {{ ativo?.data }}
+                        {{ ativo?.created_at }}
                     </p>
                 </div>
 
@@ -79,7 +80,7 @@ const closeModal = () => {
                     <button
                         type="button"
                         class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
-                        @click="closeModal"
+                        @click="emit('close')"
                     >
                         Fechar
                     </button>

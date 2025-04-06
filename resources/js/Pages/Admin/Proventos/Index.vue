@@ -84,23 +84,23 @@ const handleNovoRecebimento = (data: any) => {
     showNovoRecebimentoModal.value = false;
 };
 
-const handleVisualizarProvento = (provento) => {
+const handleVisualizarProvento = (provento: any) => {
     proventoSelecionado.value = provento;
     showVisualizarProventoModal.value = true;
 };
 
-const handleEditarProvento = (provento) => {
+const handleEditarProvento = (provento: any) => {
     proventoSelecionado.value = provento;
     showEditarProventoModal.value = true;
 };
 
-const handleSubmitEdicao = (data) => {
+const handleSubmitEdicao = (data: any) => {
     // Aqui você implementa a lógica para salvar as alterações do provento
     console.log('Provento editado:', data);
     showEditarProventoModal.value = false;
 };
 
-const handleExcluirProvento = (provento) => {
+const handleExcluirProvento = (provento: any) => {
     proventoSelecionado.value = provento;
     showExcluirProventoModal.value = true;
 };
