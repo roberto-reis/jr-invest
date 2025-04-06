@@ -1,19 +1,22 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { watch } from 'vue';
+import { useForm } from '@inertiajs/vue3';
 import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-
+import DefaultButton from '@/Components/DefaultButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 const props = defineProps<{
     show: boolean;
     ativo?: {
-        ativo: string;
-        descricao: string;
-        classe: string;
+        uid: string;
+        codigo: string;
+        nome: string;
+        classe_ativo_uid: string;
         setor: string;
-    };
+    } | null;
+    classes: any[];
 }>();
 
 const emit = defineEmits<{
@@ -21,31 +24,36 @@ const emit = defineEmits<{
     (e: 'submit', data: any): void;
 }>();
 
-const form = ref({
-    codigo: '',
-    descricao: '',
-    classe: '',
-    setor: ''
-});
-
-// Atualiza o formulário quando o ativo é passado para o modal
-watch(() => props.ativo, (newAtivo) => {
-    if (newAtivo) {
-        form.value = {
-            codigo: newAtivo.ativo,
-            descricao: newAtivo.descricao,
-            classe: newAtivo.classe,
-            setor: newAtivo.setor
-        };
-    }
-}, { immediate: true });
-
 const closeModal = () => {
     emit('close');
 };
 
+const form = useForm({
+    codigo: '',
+    nome: '',
+    classe_ativo_uid: '',
+    setor: ''
+});
+
+// Atualiza o formulário quando o ativo é passado para o modal
+watch(() => props.ativo, (newAtivo: any) => {
+    if (newAtivo) {
+        form.codigo = newAtivo.codigo || '';
+        form.nome = newAtivo.nome || '';
+        form.classe_ativo_uid = newAtivo.classe_ativo_uid || '';
+        form.setor = newAtivo.setor || '';
+    }
+}, { immediate: true });
+
 const submit = () => {
-    emit('submit', form.value);
+    if (props.ativo) {
+        form.put(route('ativos.update', props.ativo.uid), {
+        preserveScroll: true,
+        onSuccess: () => {
+            emit('close');
+        },
+    });
+    }
 };
 </script>
 
@@ -56,6 +64,12 @@ const submit = () => {
                 Editar Ativo
             </h2>
 
+            <button @click="emit('close')" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+
             <form @submit.prevent="submit" class="mt-6 space-y-6">
                 <div>
                     <InputLabel for="codigo" value="Código do Ativo" />
@@ -65,37 +79,35 @@ const submit = () => {
                         class="mt-1 block w-full"
                         v-model="form.codigo"
                         required
-                        readonly
                     />
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" :message="form.errors.codigo" />
                 </div>
 
                 <div>
-                    <InputLabel for="descricao" value="Descrição" />
+                    <InputLabel for="nome" value="Nome" />
                     <TextInput
-                        id="descricao"
+                        id="nome"
                         type="text"
                         class="mt-1 block w-full"
-                        v-model="form.descricao"
+                        v-model="form.nome"
                         required
                     />
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" :message="form.errors.nome" />
                 </div>
 
                 <div>
-                    <InputLabel for="classe" value="Classe do Ativo" />
+                    <InputLabel for="classe_ativo_uid" value="Classe do Ativo" />
                     <select
-                        id="classe"
-                        v-model="form.classe"
+                        id="classe_ativo_uid"
+                        v-model="form.classe_ativo_uid"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
                         required
                     >
-                        <option value="">Selecione uma classe</option>
-                        <option value="CRIPTO">CRIPTO</option>
-                        <option value="FII">FII</option>
-                        <!-- Adicione mais opções conforme necessário -->
+                        <option v-for="classe in props.classes" :key="classe.uid" :value="classe.uid">
+                            {{ classe.nome }}
+                        </option>
                     </select>
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" :message="form.errors.classe_ativo_uid" />
                 </div>
 
                 <div>
@@ -107,18 +119,14 @@ const submit = () => {
                         v-model="form.setor"
                         required
                     />
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" :message="form.errors.setor" />
                 </div>
 
-                <div class="mt-6 flex justify-end">
-                    <button
-                        type="button"
-                        class="mr-3 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        @click="closeModal"
-                    >
+                <div class="mt-6 flex justify-end gap-3">
+                    <SecondaryButton @click="emit('close')">
                         Cancelar
-                    </button>
-                    <PrimaryButton>Salvar</PrimaryButton>
+                    </SecondaryButton>
+                    <DefaultButton>Salvar</DefaultButton>
                 </div>
             </form>
         </div>

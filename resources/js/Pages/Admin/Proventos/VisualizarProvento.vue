@@ -12,7 +12,7 @@ const props = defineProps<{
         valor: string;
         valorTotal: string;
         yield: string;
-    };
+    } | null;
 }>();
 
 const emit = defineEmits<{

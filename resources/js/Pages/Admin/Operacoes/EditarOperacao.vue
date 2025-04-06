@@ -4,7 +4,8 @@ import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
+import DefaultButton from '@/Components/DefaultButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 const props = defineProps<{
     show: boolean;
@@ -17,13 +18,17 @@ const props = defineProps<{
         valorTotal: string;
         corretora: string;
         data: string;
-    };
+    } | null;
 }>();
 
 const emit = defineEmits<{
     (e: 'close'): void;
     (e: 'submit', data: any): void;
 }>();
+
+const closeModal = () => {
+    emit('close');
+};
 
 const form = ref({
     ativo: '',
@@ -57,10 +62,6 @@ const formatDateToLocal = (dateStr: string) => {
     return `${year}-${month}-${day}T${time}`;
 };
 
-const closeModal = () => {
-    emit('close');
-};
-
 const submit = () => {
     emit('submit', form.value);
 };
@@ -69,6 +70,11 @@ const submit = () => {
 <template>
     <Modal :show="show" @close="closeModal">
         <div class="p-6">
+            <button @click="emit('close')" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
             <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 Editar Operação
             </h2>
@@ -174,15 +180,13 @@ const submit = () => {
                     <InputError class="mt-2" />
                 </div>
 
-                <div class="mt-6 flex justify-end">
-                    <button
-                        type="button"
-                        class="mr-3 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        @click="closeModal"
-                    >
+                <div class="mt-6 flex justify-end gap-3">
+                    <SecondaryButton @click="emit('close')">
                         Cancelar
-                    </button>
-                    <PrimaryButton>Salvar</PrimaryButton>
+                    </SecondaryButton>
+                    <DefaultButton>
+                        Salvar
+                    </DefaultButton>
                 </div>
             </form>
         </div>

@@ -26,7 +26,6 @@ class CriarAtivoRequest extends FormRequest
             'nome' => 'required|string|max:255',
             'classe_ativo_uid' => 'required|string|exists:classes_ativos,uid',
             'setor' => 'required|string',
-            'descricao' => 'required|string|max:1000',
         ];
     }
 

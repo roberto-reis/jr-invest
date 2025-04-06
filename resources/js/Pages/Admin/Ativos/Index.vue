@@ -1,21 +1,42 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { Head, router } from '@inertiajs/vue3';
+import { ref, computed, watch } from 'vue';
 import NovoAtivo from '@/Pages/Admin/Ativos/NovoAtivo.vue';
 import EditarAtivo from '@/Pages/Admin/Ativos/EditarAtivo.vue';
 import VisualizarAtivo from '@/Pages/Admin/Ativos/VisualizarAtivo.vue';
 import ExcluirAtivo from '@/Pages/Admin/Ativos/ExcluirAtivo.vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
+import SearchInput from '@/Components/SearchInput.vue';
+import Pagination from '@/Components/Pagination.vue';
+import { Ativo, PaginatedData, ClasseAtivo } from '@/types';
 
-const search = ref('');
-const currentPage = ref(1);
-const perPage = ref(10);
 const showNovoAtivoModal = ref(false);
 const showEditarAtivoModal = ref(false);
 const showVisualizarAtivoModal = ref(false);
 const showExcluirAtivoModal = ref(false);
-const ativoSelecionado = ref(null);
+const ativoSelecionado = ref<Ativo | null>(null);
+const isLoading = ref(false);
+
+const props = defineProps({
+    classes: {
+        type: Array as () => ClasseAtivo[],
+        default: () => []
+    },
+    ativos: {
+        type: Object as () => PaginatedData<Ativo>,
+        default: () => ({
+            data: [],
+            current_page: 1,
+            last_page: 1,
+            per_page: 10,
+            total: 0,
+            from: 0,
+            to: 0,
+            links: []
+        })
+    }
+});
 
 // Breadcrumbs data
 const breadcrumbItems = [
@@ -23,26 +44,12 @@ const breadcrumbItems = [
     { label: 'Ativos' }
 ];
 
-// Dados de exemplo para a tabela (substitua depois pelos dados reais do backend)
-const ativos = [
-    { ativo: 'BTC', classe: 'CRIPTO', descricao: 'Bitcoin', setor: 'CRIPTO', data: '11/12/2021 23:27' },
-    { ativo: 'URPR11', classe: 'FII', descricao: 'URCA PRIME RENDA', setor: 'Papel', data: '11/12/2021 23:27' },
-];
-
-const handleNovoAtivo = (data: any) => {
-    // Aqui você implementa a lógica para salvar o novo ativo
-    console.log('Novo ativo:', data);
-    showNovoAtivoModal.value = false;
-};
-
 const handleEditarAtivo = (ativo: any) => {
     ativoSelecionado.value = ativo;
     showEditarAtivoModal.value = true;
 };
 
 const handleSubmitEdicao = (data: any) => {
-    // Aqui você implementa a lógica para salvar as alterações do ativo
-    console.log('Ativo editado:', data);
     showEditarAtivoModal.value = false;
 };
 
@@ -57,8 +64,6 @@ const handleExcluirAtivo = (ativo: any) => {
 };
 
 const handleConfirmarExclusao = () => {
-    // Aqui você implementa a lógica para excluir o ativo
-    console.log('Excluindo ativo:', ativoSelecionado.value);
     showExcluirAtivoModal.value = false;
 };
 </script>
@@ -95,31 +100,11 @@ const handleConfirmarExclusao = () => {
                                 </button>
                             </div>
                             <div class="flex-1 md:max-w-sm">
-                                <div class="relative">
-                                    <input
-                                        v-model="search"
-                                        type="text"
-                                        placeholder="Buscar..."
-                                        class="w-full rounded-md border-gray-300 pr-10 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                                    />
-                                    <button
-                                        class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-                                    >
-                                        <svg
-                                            class="h-5 w-5"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                                            />
-                                        </svg>
-                                    </button>
-                                </div>
+                                <SearchInput
+                                    route="ativos.index"
+                                    :only-params="['ativos']"
+                                    @update:loading="(val) => isLoading = val"
+                                />
                             </div>
                         </div>
                     </div>
@@ -129,7 +114,7 @@ const handleConfirmarExclusao = () => {
                 <div class="overflow-hidden bg-white shadow-sm dark:bg-gray-800 sm:rounded-lg">
                     <!-- Tabela -->
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <table v-if="props.ativos.data.length > 0" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-700">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
@@ -153,21 +138,21 @@ const handleConfirmarExclusao = () => {
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-                                <tr v-for="ativo in ativos" :key="ativo.ativo">
+                                <tr v-for="ativo in props.ativos.data" :key="ativo.uid">
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ ativo.ativo }}
+                                        {{ ativo.codigo }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ ativo.classe }}
+                                        {{ ativo.classe_nome }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ ativo.descricao }}
+                                        {{ ativo.nome }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
                                         {{ ativo.setor }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ ativo.data }}
+                                        {{ ativo.created_at }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm">
                                         <div class="flex gap-2">
@@ -201,59 +186,33 @@ const handleConfirmarExclusao = () => {
                                 </tr>
                             </tbody>
                         </table>
+                        <div v-else class="p-6 text-center text-gray-500">
+                            <p>Nenhum ativo encontrado</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Card da paginação separado -->
-                <div class="mt-6 overflow-hidden">
-                    <div class="flex items-center justify-between">
-                            <div class="flex items-center">
-                                <select
-                                    v-model="perPage"
-                                    class="rounded-md border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                                >
-                                    <option value="10">10</option>
-                                    <option value="25">25</option>
-                                    <option value="50">50</option>
-                                    <option value="100">100</option>
-                                </select>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <button class="rounded-md border border-gray-300 bg-white px-3 py-1 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
-                                    Anterior
-                                </button>
-                                <div class="flex gap-1">
-                                    <button
-                                        v-for="page in 6"
-                                        :key="page"
-                                        :class="[
-                                            'px-3 py-1 text-sm rounded-md border',
-                                            currentPage === page
-                                                ? 'bg-blue-600 text-white border-blue-600'
-                                                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600'
-                                        ]"
-                                    >
-                                        {{ page }}
-                                    </button>
-                                </div>
-                                <button class="rounded-md border border-gray-300 bg-white px-3 py-1 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
-                                    Próximo
-                                </button>
-                            </div>
-                        </div>
-                </div>
+                <!-- Use the Pagination component -->
+                <Pagination
+                    :data="props.ativos"
+                    route="ativos.index"
+                    :only-params="['ativos']"
+                    :preserve-params="['search']"
+                    @update:loading="(val) => isLoading = val"
+                />
 
                 <!-- Modal de Novo Ativo -->
                 <NovoAtivo
                     :show="showNovoAtivoModal"
                     @close="showNovoAtivoModal = false"
-                    @submit="handleNovoAtivo"
+                    :classes="props.classes"
                 />
 
                 <!-- Modal de Editar Ativo -->
                 <EditarAtivo
                     :show="showEditarAtivoModal"
                     :ativo="ativoSelecionado"
+                    :classes="props.classes"
                     @close="showEditarAtivoModal = false"
                     @submit="handleSubmitEdicao"
                 />

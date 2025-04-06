@@ -54,24 +54,24 @@ const handleNovoAporte = (data: any) => {
     showNovoAporteModal.value = false;
 };
 
-const handleEditarOperacao = (operacao) => {
+const handleEditarOperacao = (operacao: any) => {
     operacaoSelecionada.value = operacao;
     showEditarOperacaoModal.value = true;
 };
 
-const handleSubmitEdicao = (data) => {
+const handleSubmitEdicao = (data: any) => {
     // Aqui você implementa a lógica para salvar as alterações da operação
     console.log('Operação editada:', data);
     showEditarOperacaoModal.value = false;
 };
 
-const handleVisualizarOperacao = (operacao) => {
+const handleVisualizarOperacao = (operacao: any) => {
     // Atualiza para usar o modal
     operacaoSelecionada.value = operacao;
     showVisualizarOperacaoModal.value = true;
 };
 
-const handleExcluirOperacao = (operacao) => {
+const handleExcluirOperacao = (operacao: any) => {
     operacaoSelecionada.value = operacao;
     showExcluirOperacaoModal.value = true;
 };
@@ -110,9 +110,6 @@ const handleConfirmarExclusao = () => {
                                     class="rounded-md border border-green-600 bg-white px-4 py-2 text-green-600 hover:bg-green-50 dark:border-green-400 dark:bg-gray-700 dark:text-green-400 dark:hover:bg-gray-600"
                                 >
                                     Nova Operação
-                                </button>
-                                <button class="rounded-md border border-red-600 bg-white px-4 py-2 text-red-600 hover:bg-red-50 dark:border-red-400 dark:bg-gray-700 dark:text-red-400 dark:hover:bg-gray-600">
-                                    Nova Venda
                                 </button>
                                 <button class="rounded-md border border-gray-600 bg-white px-4 py-2 text-gray-600 hover:bg-gray-50 dark:border-gray-400 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600">
                                     Exportar
