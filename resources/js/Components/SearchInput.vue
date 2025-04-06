@@ -8,13 +8,15 @@ interface Props {
     minLength?: number;
     debounceTime?: number;
     onlyParams?: string[];
+    preserveParams?: string[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
     placeholder: 'Buscar...',
     minLength: 2,
     debounceTime: 300,
-    onlyParams: () => []
+    onlyParams: () => [],
+    preserveParams: () => ['page', 'per_page']
 });
 
 const emit = defineEmits(['update:loading']);
@@ -30,13 +32,29 @@ const debouncedSearch = (query: string) => {
 
     // Set a new timeout
     searchTimeout = setTimeout(() => {
+        // Get the current URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const params: Record<string, any> = {};
+
+        // Preserve specified parameters
+        if (props.preserveParams && props.preserveParams.length > 0) {
+            props.preserveParams.forEach(param => {
+                if (urlParams.has(param)) {
+                    params[param] = urlParams.get(param);
+                }
+            });
+        }
+
         if (query.length >= props.minLength) {
             isLoading.value = true;
             emit('update:loading', true);
 
+            // Add search parameter
+            params.search = query;
+
             router.get(
                 route(props.route),
-                { search: query },
+                params,
                 {
                     preserveState: true,
                     preserveScroll: true,
@@ -58,7 +76,7 @@ const debouncedSearch = (query: string) => {
 
             router.get(
                 route(props.route),
-                {},
+                params,
                 {
                     preserveState: true,
                     preserveScroll: true,
