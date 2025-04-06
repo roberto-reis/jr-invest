@@ -8,36 +8,9 @@ import VisualizarAtivo from '@/Pages/Admin/Ativos/VisualizarAtivo.vue';
 import ExcluirAtivo from '@/Pages/Admin/Ativos/ExcluirAtivo.vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 import SearchInput from '@/Components/SearchInput.vue';
+import Pagination from '@/Components/Pagination.vue';
+import { Ativo, PaginatedData, ClasseAtivo } from '@/types';
 
-// Define interface for ativo object
-interface Ativo {
-    codigo: string;
-    classe_ativo_uid: string;
-    nome: string;
-    setor: string;
-    created_at: string;
-    uid: string;
-    classe_nome: string;
-}
-
-// Define interface for paginated data
-interface PaginatedData<T> {
-    data: T[];
-    current_page: number;
-    last_page: number;
-    per_page: number;
-    total: number;
-    from: number;
-    to: number;
-    links: {
-        url: string | null;
-        label: string;
-        active: boolean;
-    }[];
-}
-
-const currentPage = ref(1);
-const perPage = ref(10);
 const showNovoAtivoModal = ref(false);
 const showEditarAtivoModal = ref(false);
 const showVisualizarAtivoModal = ref(false);
@@ -47,7 +20,7 @@ const isLoading = ref(false);
 
 const props = defineProps({
     classes: {
-        type: Array,
+        type: Array as () => ClasseAtivo[],
         default: () => []
     },
     ativos: {
@@ -63,21 +36,6 @@ const props = defineProps({
             links: []
         })
     }
-});
-
-// Computed for visible page links
-const pageLinks = computed(() => {
-    // Get available page numbers
-    const availablePages = [];
-    for (let i = 1; i <= props.ativos.last_page; i++) {
-        availablePages.push(i);
-    }
-    return availablePages;
-});
-
-// Watch for perPage changes
-watch(perPage, (newValue) => {
-    handlePageChange(1, newValue);
 });
 
 // Breadcrumbs data
@@ -107,30 +65,6 @@ const handleExcluirAtivo = (ativo: any) => {
 
 const handleConfirmarExclusao = () => {
     showExcluirAtivoModal.value = false;
-};
-
-const handlePageChange = (page: number, itemsPerPage: number = perPage.value) => {
-    isLoading.value = true;
-    currentPage.value = page;
-
-    router.get(
-        route('ativos.index'),
-        {
-            page: page,
-            per_page: itemsPerPage
-        },
-        {
-            preserveState: true,
-            preserveScroll: true,
-            only: ['ativos'],
-            onSuccess: () => {
-                isLoading.value = false;
-            },
-            onError: () => {
-                isLoading.value = false;
-            }
-        }
-    );
 };
 </script>
 
@@ -258,66 +192,14 @@ const handlePageChange = (page: number, itemsPerPage: number = perPage.value) =>
                     </div>
                 </div>
 
-                <!-- Card da paginação separado -->
-                <div v-if="props.ativos.data.length > 0" class="mt-6 overflow-hidden">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <select
-                                v-model="perPage"
-                                class="rounded-md border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                            >
-                                <option :value="10">10</option>
-                                <option :value="25">25</option>
-                                <option :value="50">50</option>
-                                <option :value="100">100</option>
-                            </select>
-                            <span class="ml-3 text-sm text-gray-500 dark:text-gray-400">
-                                Mostrando {{ props.ativos.from }} a {{ props.ativos.to }} de {{ props.ativos.total }} registros
-                            </span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button
-                                :disabled="props.ativos.current_page === 1"
-                                @click="handlePageChange(props.ativos.current_page - 1)"
-                                :class="[
-                                    'rounded-md border px-3 py-1 text-sm',
-                                    props.ativos.current_page === 1
-                                        ? 'border-gray-200 bg-gray-100 text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500'
-                                        : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
-                                ]"
-                            >
-                                Anterior
-                            </button>
-                            <div class="flex gap-1">
-                                <button
-                                    v-for="page in pageLinks"
-                                    :key="page"
-                                    @click="handlePageChange(page)"
-                                    :class="[
-                                        'px-3 py-1 text-sm rounded-md border',
-                                        props.ativos.current_page === page
-                                            ? 'bg-blue-600 text-white border-blue-600'
-                                            : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600'
-                                    ]"
-                                >
-                                    {{ page }}
-                                </button>
-                            </div>
-                            <button
-                                :disabled="props.ativos.current_page === props.ativos.last_page"
-                                @click="handlePageChange(props.ativos.current_page + 1)"
-                                :class="[
-                                    'rounded-md border px-3 py-1 text-sm',
-                                    props.ativos.current_page === props.ativos.last_page
-                                        ? 'border-gray-200 bg-gray-100 text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500'
-                                        : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
-                                ]"
-                            >
-                                Próximo
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <!-- Use the Pagination component -->
+                <Pagination
+                    :data="props.ativos"
+                    route="ativos.index"
+                    :only-params="['ativos']"
+                    :preserve-params="['search']"
+                    @update:loading="(val) => isLoading = val"
+                />
 
                 <!-- Modal de Novo Ativo -->
                 <NovoAtivo
