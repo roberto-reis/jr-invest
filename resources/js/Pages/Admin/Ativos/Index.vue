@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, router } from '@inertiajs/vue3';
-import { ref, computed, watch, onUnmounted } from 'vue';
+import { Head } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import NovoAtivo from '@/Pages/Admin/Ativos/NovoAtivo.vue';
 import EditarAtivo from '@/Pages/Admin/Ativos/EditarAtivo.vue';
 import VisualizarAtivo from '@/Pages/Admin/Ativos/VisualizarAtivo.vue';
 import ExcluirAtivo from '@/Pages/Admin/Ativos/ExcluirAtivo.vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
+import SearchInput from '@/Components/SearchInput.vue';
 
 // Define interface for ativo object
 interface Ativo {
@@ -19,7 +20,6 @@ interface Ativo {
     classe_nome: string;
 }
 
-const search = ref('');
 const currentPage = ref(1);
 const perPage = ref(10);
 const showNovoAtivoModal = ref(false);
@@ -28,7 +28,6 @@ const showVisualizarAtivoModal = ref(false);
 const showExcluirAtivoModal = ref(false);
 const ativoSelecionado = ref<Ativo | null>(null);
 const isLoading = ref(false);
-let searchTimeout: number | null = null;
 
 const props = defineProps({
     classes: {
@@ -48,72 +47,12 @@ const breadcrumbItems = [
     { label: 'Ativos' }
 ];
 
-const debouncedSearch = (query: string) => {
-    if (searchTimeout) clearTimeout(searchTimeout);
-
-    searchTimeout = setTimeout(() => {
-        if (query.length >= 2) {
-            isLoading.value = true;
-            router.get(
-                route('ativos.index'),
-                { search: query },
-                {
-                    preserveState: true,
-                    preserveScroll: true,
-                    only: ['ativos'],
-                    onSuccess: () => {
-                        isLoading.value = false;
-                    },
-                    onError: () => {
-                        isLoading.value = false;
-                    }
-                }
-            );
-        } else if (query.length === 0) {
-            isLoading.value = true;
-            router.get(
-                route('ativos.index'),
-                {},
-                {
-                    preserveState: true,
-                    preserveScroll: true,
-                    only: ['ativos'],
-                    onSuccess: () => {
-                        isLoading.value = false;
-                    },
-                    onError: () => {
-                        isLoading.value = false;
-                    }
-                }
-            );
-        }
-    }, 300); // 300ms delay
-};
-
-// Watch for changes in the search input
-watch(search, (newVal) => {
-    debouncedSearch(newVal);
-});
-
-// Clean up the timeout when the component is unmounted
-onUnmounted(() => {
-    if (searchTimeout) clearTimeout(searchTimeout);
-});
-
-const handleNovoAtivo = (data: any) => {
-    // Aqui você implementa a lógica para salvar o novo ativo
-    console.log('Novo ativo:', data);
-    showNovoAtivoModal.value = false;
-};
-
 const handleEditarAtivo = (ativo: any) => {
     ativoSelecionado.value = ativo;
     showEditarAtivoModal.value = true;
 };
 
 const handleSubmitEdicao = (data: any) => {
-    // Aqui você implementa a lógica para salvar as alterações do ativo
-    console.log('Ativo editado:', data);
     showEditarAtivoModal.value = false;
 };
 
@@ -128,8 +67,6 @@ const handleExcluirAtivo = (ativo: any) => {
 };
 
 const handleConfirmarExclusao = () => {
-    // Aqui você implementa a lógica para excluir o ativo
-    console.log('Excluindo ativo:', ativoSelecionado.value);
     showExcluirAtivoModal.value = false;
 };
 </script>
@@ -166,23 +103,11 @@ const handleConfirmarExclusao = () => {
                                 </button>
                             </div>
                             <div class="flex-1 md:max-w-sm">
-                                <div class="relative">
-                                    <input
-                                        v-model="search"
-                                        type="text"
-                                        placeholder="Buscar..."
-                                        class="w-full rounded-md border-gray-300 pr-10 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                                    />
-                                    <div class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
-                                        <svg v-if="isLoading" class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                        <svg v-else class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                        </svg>
-                                    </div>
-                                </div>
+                                <SearchInput
+                                    route="ativos.index"
+                                    :only-params="['ativos']"
+                                    @update:loading="(val) => isLoading = val"
+                                />
                             </div>
                         </div>
                     </div>
@@ -313,7 +238,6 @@ const handleConfirmarExclusao = () => {
                 <NovoAtivo
                     :show="showNovoAtivoModal"
                     @close="showNovoAtivoModal = false"
-                    @submit="handleNovoAtivo"
                     :classes="props.classes"
                 />
 
