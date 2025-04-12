@@ -31,6 +31,10 @@ class Operacao extends Model
         'valor_total',
     ];
 
+    protected $casts = [
+        'data_operacao' => 'date:d/m/Y',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_uid', 'uid');

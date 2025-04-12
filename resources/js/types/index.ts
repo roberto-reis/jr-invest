@@ -30,3 +30,18 @@ export interface ClasseAtivo {
     created_at: string;
     updated_at: string;
 }
+
+export interface Operacao {
+    uid: string;
+    ativo_uid: string;
+    corretora_uid: string;
+    tipo_operacao_uid: string;
+    data_operacao: string;
+    quantidade: number;
+    ativo_codigo: string;
+    classe_nome: string;
+    corretora_nome: string;
+    tipo_operacao_nome: string;
+    cotacao_preco: number;
+    valor_total: number;
+}

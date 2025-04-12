@@ -7,10 +7,12 @@ import EditarOperacao from './EditarOperacao.vue';
 import VisualizarOperacao from './VisualizarOperacao.vue';
 import ExcluirOperacao from './ExcluirOperacao.vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
+import { Operacao, PaginatedData } from '@/types';
+import Pagination from '@/Components/Pagination.vue';
+
 
 const search = ref('');
-const currentPage = ref(1);
-const perPage = ref(10);
+const isLoading = ref(false);
 
 // Breadcrumbs data
 const breadcrumbItems = [
@@ -18,29 +20,24 @@ const breadcrumbItems = [
     { label: 'Operações' }
 ];
 
-// Dados de exemplo para a tabela
-const operacoes = [
-    {
-        ativo: 'BTC',
-        operacao: 'Compra',
-        categoria: 'CRIPTO',
-        quantidade: '0,00256565',
-        cotacao: 'R$ 290.000,00',
-        valorTotal: 'R$ 600,00',
-        corretora: 'Binance',
-        data: '11/12/2021 23:27'
+const props = defineProps({
+    operacoes: {
+        type: Object as () => PaginatedData<Operacao>,
+        default: () => ({
+            data: [],
+            current_page: 1,
+            last_page: 1,
+            per_page: 10,
+            total: 0,
+            from: 0,
+            to: 0,
+            links: []
+        })
     },
-    {
-        ativo: 'YXZK11',
-        operacao: 'Venda',
-        categoria: 'FII',
-        quantidade: '20,00000000',
-        cotacao: 'R$ 50,00',
-        valorTotal: 'R$ 2.000,00',
-        corretora: 'Clear',
-        data: '11/12/2021 23:27'
-    },
-];
+    ativos: Array,
+    corretoras: Array,
+    tiposOperacoes: Array
+});
 
 const showNovoAporteModal = ref(false);
 const showEditarOperacaoModal = ref(false);
@@ -49,8 +46,6 @@ const showExcluirOperacaoModal = ref(false);
 const operacaoSelecionada = ref(null);
 
 const handleNovoAporte = (data: any) => {
-    // Aqui você implementa a lógica para salvar o novo aporte
-    console.log('Novo aporte:', data);
     showNovoAporteModal.value = false;
 };
 
@@ -137,7 +132,7 @@ const handleConfirmarExclusao = () => {
                 <!-- Card da tabela -->
                 <div class="overflow-hidden bg-white shadow-sm dark:bg-gray-800 sm:rounded-lg">
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <table v-if="props.operacoes.data.length > 0" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-700">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
@@ -170,36 +165,36 @@ const handleConfirmarExclusao = () => {
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-                                <tr v-for="operacao in operacoes" :key="operacao.ativo + operacao.data">
+                                <tr v-for="operacao in props.operacoes.data" :key="operacao.uid">
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ operacao.ativo }}
+                                        {{ operacao.ativo_codigo }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm">
                                         <span :class="{
                                             'rounded-full px-2 py-1 text-xs font-medium': true,
-                                            'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': operacao.operacao === 'Compra',
-                                            'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200': operacao.operacao === 'Venda'
+                                            'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': operacao.tipo_operacao_nome === 'Compra',
+                                            'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200': operacao.tipo_operacao_nome === 'Venda'
                                         }">
-                                            {{ operacao.operacao }}
+                                            {{ operacao.tipo_operacao_nome }}
                                         </span>
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ operacao.categoria }}
+                                        {{ operacao.classe_nome }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
                                         {{ operacao.quantidade }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ operacao.cotacao }}
+                                        {{ operacao.cotacao_preco }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ operacao.valorTotal }}
+                                        {{ operacao.valor_total }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ operacao.corretora }}
+                                        {{ operacao.corretora_nome }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ operacao.data }}
+                                        {{ operacao.data_operacao }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm">
                                         <div class="flex gap-2">
@@ -235,47 +230,19 @@ const handleConfirmarExclusao = () => {
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
-                </div>
-
-                <!-- Card da paginação separado -->
-                <div class="mt-6 overflow-hidden">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <select
-                                v-model="perPage"
-                                class="rounded-md border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                            >
-                                <option value="10">10</option>
-                                <option value="25">25</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                            </select>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button class="rounded-md border border-gray-300 bg-white px-3 py-1 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
-                                Anterior
-                            </button>
-                            <div class="flex gap-1">
-                                <button
-                                    v-for="page in 6"
-                                    :key="page"
-                                    :class="[
-                                        'px-3 py-1 text-sm rounded-md border',
-                                        currentPage === page
-                                            ? 'bg-blue-600 text-white border-blue-600'
-                                            : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600'
-                                    ]"
-                                >
-                                    {{ page }}
-                                </button>
-                            </div>
-                            <button class="rounded-md border border-gray-300 bg-white px-3 py-1 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
-                                Próximo
-                            </button>
+                        <div v-else class="p-6 text-center text-gray-500">
+                            <p>Nenhuma operação encontrada</p>
                         </div>
                     </div>
                 </div>
+                <!-- Use the Pagination component -->
+                <Pagination
+                    :data="props.operacoes"
+                    route="operacoes.index"
+                    :only-params="['operacoes']"
+                    :preserve-params="['search']"
+                    @update:loading="(val) => isLoading = val"
+                />
             </div>
         </div>
 
@@ -284,6 +251,9 @@ const handleConfirmarExclusao = () => {
             :show="showNovoAporteModal"
             @close="showNovoAporteModal = false"
             @submit="handleNovoAporte"
+            :ativos="props.ativos"
+            :corretoras="props.corretoras"
+            :tiposOperacoes="props.tiposOperacoes"
         />
 
         <!-- Modal de Editar Operação -->

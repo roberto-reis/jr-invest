@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\Ativo\UpdateAtivoController;
 use App\Http\Controllers\Admin\Ativo\ListarAtivosController;
 use App\Http\Controllers\Admin\Ativo\RemoverAtivoController;
 use App\Http\Controllers\Admin\Operacao\ListarOperacoesController;
+use App\Http\Controllers\Admin\Operacao\NovaOperacaoController;
 use App\Http\Controllers\Admin\Provento\ListarProventosController;
 use App\Http\Controllers\Admin\Portfolio\ListarPortfolioController;
 use App\Http\Controllers\Admin\ClasseAtivo\NovaClasseAtivoController;
@@ -53,6 +54,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
 
     Route::prefix('operacoes')->group(function () {
         Route::get('/', ListarOperacoesController::class)->name('operacoes.index');
+        Route::post('/', NovaOperacaoController::class)->name('operacoes.store');
     });
 
     Route::prefix('proventos')->group(function () {
