@@ -6,12 +6,13 @@ import InputError from '@/Components/InputError.vue';
 import DefaultButton from '@/Components/DefaultButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { useForm } from '@inertiajs/vue3';
+import { Ativo, Corretora, TipoOperacao } from '@/types';
 
 const props = defineProps<{
     show: boolean;
-    ativos: any[];
-    corretoras: any[];
-    tiposOperacoes: any[];
+    ativos: Ativo[];
+    corretoras: Corretora[];
+    tiposOperacoes: TipoOperacao[];
 }>();
 
 const emit = defineEmits<{

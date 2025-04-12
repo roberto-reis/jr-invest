@@ -27,8 +27,17 @@ export interface ClasseAtivo {
     uid: string;
     nome: string;
     descricao: string | null;
-    created_at: string;
-    updated_at: string;
+}
+
+export interface Corretora {
+    uid: string;
+    nome: string;
+}
+
+export interface TipoOperacao {
+    uid: string;
+    nome: string;
+    nome_interno: string;
 }
 
 export interface Operacao {

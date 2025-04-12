@@ -7,11 +7,10 @@ import EditarOperacao from './EditarOperacao.vue';
 import VisualizarOperacao from './VisualizarOperacao.vue';
 import ExcluirOperacao from './ExcluirOperacao.vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
-import { Operacao, PaginatedData } from '@/types';
+import { Operacao, PaginatedData, Ativo, Corretora, TipoOperacao } from '@/types';
 import Pagination from '@/Components/Pagination.vue';
+import SearchInput from '@/Components/SearchInput.vue';
 
-
-const search = ref('');
 const isLoading = ref(false);
 
 // Breadcrumbs data
@@ -34,9 +33,18 @@ const props = defineProps({
             links: []
         })
     },
-    ativos: Array,
-    corretoras: Array,
-    tiposOperacoes: Array
+    ativos: {
+        type: Array as () => Ativo[],
+        default: () => []
+    },
+    corretoras: {
+        type: Array as () => Corretora[],
+        default: () => []
+    },
+    tiposOperacoes: {
+        type: Array as () => TipoOperacao[],
+        default: () => []
+    }
 });
 
 const showNovoAporteModal = ref(false);
@@ -44,10 +52,6 @@ const showEditarOperacaoModal = ref(false);
 const showVisualizarOperacaoModal = ref(false);
 const showExcluirOperacaoModal = ref(false);
 const operacaoSelecionada = ref(null);
-
-const handleNovoAporte = (data: any) => {
-    showNovoAporteModal.value = false;
-};
 
 const handleEditarOperacao = (operacao: any) => {
     operacaoSelecionada.value = operacao;
@@ -111,19 +115,11 @@ const handleConfirmarExclusao = () => {
                                 </button>
                             </div>
                             <div class="flex-1 md:max-w-sm">
-                                <div class="relative">
-                                    <input
-                                        v-model="search"
-                                        type="text"
-                                        placeholder="Buscar..."
-                                        class="w-full rounded-md border-gray-300 pr-10 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                                    />
-                                    <button class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
-                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                        </svg>
-                                    </button>
-                                </div>
+                                <SearchInput
+                                    route="operacoes.index"
+                                    :only-params="['operacoes']"
+                                    @update:loading="(val) => isLoading = val"
+                                />
                             </div>
                         </div>
                     </div>
@@ -250,7 +246,6 @@ const handleConfirmarExclusao = () => {
         <NovoAporte
             :show="showNovoAporteModal"
             @close="showNovoAporteModal = false"
-            @submit="handleNovoAporte"
             :ativos="props.ativos"
             :corretoras="props.corretoras"
             :tiposOperacoes="props.tiposOperacoes"
