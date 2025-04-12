@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import NovoAporte from './NovaOperacao.vue';
 import EditarOperacao from './EditarOperacao.vue';
 import VisualizarOperacao from './VisualizarOperacao.vue';
@@ -51,9 +51,9 @@ const showNovoAporteModal = ref(false);
 const showEditarOperacaoModal = ref(false);
 const showVisualizarOperacaoModal = ref(false);
 const showExcluirOperacaoModal = ref(false);
-const operacaoSelecionada = ref(null);
+const operacaoSelecionada = ref<Operacao | null>(null);
 
-const handleEditarOperacao = (operacao: any) => {
+const handleEditarOperacao = (operacao: Operacao) => {
     operacaoSelecionada.value = operacao;
     showEditarOperacaoModal.value = true;
 };
@@ -64,13 +64,12 @@ const handleSubmitEdicao = (data: any) => {
     showEditarOperacaoModal.value = false;
 };
 
-const handleVisualizarOperacao = (operacao: any) => {
-    // Atualiza para usar o modal
+const handleVisualizarOperacao = (operacao: Operacao) => {
     operacaoSelecionada.value = operacao;
     showVisualizarOperacaoModal.value = true;
 };
 
-const handleExcluirOperacao = (operacao: any) => {
+const handleExcluirOperacao = (operacao: Operacao) => {
     operacaoSelecionada.value = operacao;
     showExcluirOperacaoModal.value = true;
 };

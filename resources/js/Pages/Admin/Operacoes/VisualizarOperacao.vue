@@ -1,19 +1,11 @@
 <script setup lang="ts">
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import { Operacao } from '@/types';
 
 const props = defineProps<{
     show: boolean;
-    operacao?: {
-        ativo: string;
-        operacao: string;
-        categoria: string;
-        quantidade: string;
-        cotacao: string;
-        valorTotal: string;
-        corretora: string;
-        data: string;
-    } | null;
+    operacao?: Operacao | null;
 }>();
 
 const emit = defineEmits<{
@@ -45,7 +37,7 @@ const closeModal = () => {
                             Ativo
                         </h3>
                         <p class="mt-1 text-base text-gray-900 dark:text-gray-100">
-                            {{ operacao?.ativo }}
+                            {{ operacao?.ativo_codigo }}
                         </p>
                     </div>
 
@@ -56,20 +48,20 @@ const closeModal = () => {
                         <p class="mt-1">
                             <span :class="{
                                 'rounded-full px-2 py-1 text-xs font-medium': true,
-                                'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': operacao?.operacao === 'Compra',
-                                'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200': operacao?.operacao === 'Venda'
+                                'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': operacao?.tipo_operacao_nome === 'Compra',
+                                'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200': operacao?.tipo_operacao_nome === 'Venda'
                             }">
-                                {{ operacao?.operacao }}
+                                {{ operacao?.tipo_operacao_nome }}
                             </span>
                         </p>
                     </div>
 
                     <div>
                         <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">
-                            Categoria
+                            Classe
                         </h3>
                         <p class="mt-1 text-base text-gray-900 dark:text-gray-100">
-                            {{ operacao?.categoria }}
+                            {{ operacao?.classe_nome }}
                         </p>
                     </div>
 
@@ -87,7 +79,7 @@ const closeModal = () => {
                             Cotação
                         </h3>
                         <p class="mt-1 text-base text-gray-900 dark:text-gray-100">
-                            {{ operacao?.cotacao }}
+                            {{ operacao?.cotacao_preco }}
                         </p>
                     </div>
 
@@ -96,7 +88,7 @@ const closeModal = () => {
                             Valor Total
                         </h3>
                         <p class="mt-1 text-base text-gray-900 dark:text-gray-100">
-                            {{ operacao?.valorTotal }}
+                            {{ operacao?.valor_total }}
                         </p>
                     </div>
 
@@ -105,7 +97,7 @@ const closeModal = () => {
                             Corretora
                         </h3>
                         <p class="mt-1 text-base text-gray-900 dark:text-gray-100">
-                            {{ operacao?.corretora }}
+                            {{ operacao?.corretora_nome }}
                         </p>
                     </div>
 
@@ -114,7 +106,7 @@ const closeModal = () => {
                             Data da Operação
                         </h3>
                         <p class="mt-1 text-base text-gray-900 dark:text-gray-100">
-                            {{ operacao?.data }}
+                            {{ operacao?.data_operacao }}
                         </p>
                     </div>
                 </div>
