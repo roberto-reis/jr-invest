@@ -57,7 +57,6 @@ const incluirClasse = () => {
 
 // Função para incluir novo ativo
 const incluirAtivo = () => {
-    console.log('Incluindo ativo:', formAtivo.data);
     formAtivo.post(route('rebalanceamento-ativo.store'), {
         onSuccess: () => {
             formAtivo.reset();
@@ -74,10 +73,6 @@ const editarClasse = (classe: any) => {
 const excluirClasse = (classe: any) => {
     classeSelecionada.value = classe;
     showExcluirClasseModal.value = true;
-};
-
-const handleSubmitEdicaoClasse = (data: any) => {
-    showEditarClasseModal.value = false;
 };
 
 // Funções para editar e excluir ativos
@@ -337,8 +332,8 @@ const handleSubmitEdicaoAtivo = (data: any) => {
         <EditarClasseRebalanceamento
             :show="showEditarClasseModal"
             :classe="classeSelecionada"
+            :classeAtivos="props.classeAtivos"
             @close="showEditarClasseModal = false"
-            @submit="handleSubmitEdicaoClasse"
         />
 
         <!-- Modal de Editar Ativo de Rebalanceamento -->
