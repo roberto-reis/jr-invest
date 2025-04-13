@@ -2,6 +2,7 @@
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Operacao } from '@/types';
+import { formatCurrency, formatNumber, formatDate } from '@/Utils/formatters';
 
 const props = defineProps<{
     show: boolean;
@@ -70,7 +71,7 @@ const closeModal = () => {
                             Quantidade
                         </h3>
                         <p class="mt-1 text-base text-gray-900 dark:text-gray-100">
-                            {{ operacao?.quantidade }}
+                            {{ operacao?.quantidade !== undefined ? formatNumber(operacao.quantidade) : '-' }}
                         </p>
                     </div>
 
@@ -79,7 +80,7 @@ const closeModal = () => {
                             Cotação
                         </h3>
                         <p class="mt-1 text-base text-gray-900 dark:text-gray-100">
-                            {{ operacao?.cotacao_preco }}
+                            {{ operacao?.cotacao_preco !== undefined ? formatCurrency(operacao.cotacao_preco) : '-' }}
                         </p>
                     </div>
 
@@ -88,7 +89,7 @@ const closeModal = () => {
                             Valor Total
                         </h3>
                         <p class="mt-1 text-base text-gray-900 dark:text-gray-100">
-                            {{ operacao?.valor_total }}
+                            {{ operacao?.valor_total !== undefined ? formatCurrency(operacao.valor_total) : '-' }}
                         </p>
                     </div>
 
@@ -106,7 +107,7 @@ const closeModal = () => {
                             Data da Operação
                         </h3>
                         <p class="mt-1 text-base text-gray-900 dark:text-gray-100">
-                            {{ operacao?.data_operacao }}
+                            {{ operacao?.data_operacao ? formatDate(operacao.data_operacao, true) : '-' }}
                         </p>
                     </div>
                 </div>

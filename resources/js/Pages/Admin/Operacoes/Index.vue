@@ -10,6 +10,7 @@ import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 import { Operacao, PaginatedData, Ativo, Corretora, TipoOperacao } from '@/types';
 import Pagination from '@/Components/Pagination.vue';
 import SearchInput from '@/Components/SearchInput.vue';
+import { formatCurrency, formatNumber, formatDate } from '@/Utils/formatters';
 
 const isLoading = ref(false);
 
@@ -177,19 +178,19 @@ const handleConfirmarExclusao = () => {
                                         {{ operacao.classe_nome }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ operacao.quantidade }}
+                                        {{ formatNumber(operacao.quantidade) }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ operacao.cotacao_preco }}
+                                        {{ formatCurrency(operacao.cotacao_preco) }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ operacao.valor_total }}
+                                        {{ formatCurrency(operacao.valor_total) }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
                                         {{ operacao.corretora_nome }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ operacao.data_operacao }}
+                                        {{ formatDate(operacao.data_operacao) }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm">
                                         <div class="flex gap-2">

@@ -6,19 +6,11 @@ import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import DefaultButton from '@/Components/DefaultButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import { Operacao } from '@/types';
 
 const props = defineProps<{
     show: boolean;
-    operacao?: {
-        ativo: string;
-        operacao: string;
-        categoria: string;
-        quantidade: string;
-        cotacao: string;
-        valorTotal: string;
-        corretora: string;
-        data: string;
-    } | null;
+    operacao?: Operacao | null;
 }>();
 
 const emit = defineEmits<{
@@ -44,22 +36,45 @@ const form = ref({
 watch(() => props.operacao, (newOperacao) => {
     if (newOperacao) {
         form.value = {
-            ativo: newOperacao.ativo,
-            tipo_operacao: newOperacao.operacao,
-            classe: newOperacao.categoria,
-            banco_corretora: newOperacao.corretora,
-            data_operacao: formatDateToLocal(newOperacao.data),
-            cotacao: newOperacao.cotacao.replace('R$ ', '').replace('.', '').replace(',', '.'),
-            quantidade: newOperacao.quantidade.replace(',', '.'),
+            ativo: newOperacao.ativo_codigo || '',
+            tipo_operacao: newOperacao.tipo_operacao_nome || '',
+            classe: newOperacao.classe_nome || '',
+            banco_corretora: newOperacao.corretora_nome || '',
+            data_operacao: formatDateToLocal(newOperacao.data_operacao || ''),
+            cotacao: String(newOperacao.cotacao_preco || 0),
+            quantidade: String(newOperacao.quantidade || 0),
         };
     }
 }, { immediate: true });
 
 // Função auxiliar para formatar a data
 const formatDateToLocal = (dateStr: string) => {
-    const [date, time] = dateStr.split(' ');
-    const [day, month, year] = date.split('/');
-    return `${year}-${month}-${day}T${time}`;
+    if (!dateStr) return '';
+
+    try {
+        // Check if the date is already in ISO format
+        if (dateStr.includes('-') && !dateStr.includes('/')) {
+            return dateStr; // Already in the right format
+        }
+
+        // Handle 'DD/MM/YYYY HH:mm:ss' format
+        if (dateStr.includes('/')) {
+            const parts = dateStr.split(' ');
+            const datePart = parts[0];
+            const timePart = parts.length > 1 ? parts[1] : '';
+
+            const [day, month, year] = datePart.split('/');
+            return timePart
+                ? `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${timePart}`
+                : `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+        }
+
+        // If it's in another format, just return it
+        return dateStr;
+    } catch (error) {
+        console.error('Error formatting date:', error, dateStr);
+        return '';
+    }
 };
 
 const submit = () => {
