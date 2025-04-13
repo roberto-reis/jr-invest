@@ -7,77 +7,24 @@ import VisualizarProvento from './VisualizarProvento.vue';
 import EditarProvento from './EditarProvento.vue';
 import ExcluirProvento from './ExcluirProvento.vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
-import { Provento, Ativo, TipoProvento, Corretora } from '@/types';
+import { Provento, Ativo, TipoProvento, Corretora, PaginatedData } from '@/types';
+import { formatDate, formatCurrency, formatNumber } from '@/Utils/formatters';
+import Pagination from '@/Components/Pagination.vue';
+import SearchInput from '@/Components/SearchInput.vue';
 
-const search = ref('');
-const currentPage = ref(1);
-const perPage = ref(10);
+const isLoading = ref(false);
 
 const props = defineProps<{
-    proventos: Provento[];
     ativos: Ativo[];
     tiposProventos: TipoProvento[];
     corretoras: Corretora[];
+    proventos: PaginatedData<Provento>;
 }>();
 
 // Breadcrumbs data
 const breadcrumbItems = [
     { label: 'Início', url: route('dashboard') },
     { label: 'Proventos' }
-];
-
-// Dados de exemplo para a tabela
-const proventos = [
-    {
-        ativo: 'URPR11',
-        tipo: 'Rendimento',
-        dataCom: '14/04/2023',
-        dataPagamento: '14/04/2023',
-        qtd: '50,00',
-        valor: 'R$ 1,20',
-        valorTotal: 'R$ 65,00',
-        yield: '1,20%'
-    },
-    {
-        ativo: 'YXZK11',
-        tipo: 'Rendimento',
-        dataCom: '14/04/2023',
-        dataPagamento: '14/04/2023',
-        qtd: '60,00',
-        valor: 'R$ 1,10',
-        valorTotal: 'R$ 75,00',
-        yield: '1,30%'
-    },
-    {
-        ativo: 'AFHI11',
-        tipo: 'Rendimento',
-        dataCom: '14/04/2023',
-        dataPagamento: '14/04/2023',
-        qtd: '50,00',
-        valor: 'R$ 1,20',
-        valorTotal: 'R$ 65,00',
-        yield: '1,20%'
-    },
-    {
-        ativo: 'JURO11',
-        tipo: 'Rendimento',
-        dataCom: '14/04/2023',
-        dataPagamento: '14/04/2023',
-        qtd: '65,00',
-        valor: 'R$ 1,10',
-        valorTotal: 'R$ 75,00',
-        yield: '1,30%'
-    },
-    {
-        ativo: 'URPR11',
-        tipo: 'Rendimento',
-        dataCom: '14/04/2023',
-        dataPagamento: '14/04/2023',
-        qtd: '60,00',
-        valor: 'R$ 1,20',
-        valorTotal: 'R$ 65,00',
-        yield: '1,20%'
-    },
 ];
 
 const showNovoRecebimentoModal = ref(false);
@@ -146,19 +93,11 @@ const handleConfirmarExclusao = () => {
                                 </button>
                             </div>
                             <div class="flex-1 md:max-w-sm">
-                                <div class="relative">
-                                    <input
-                                        v-model="search"
-                                        type="text"
-                                        placeholder="Buscar..."
-                                        class="w-full rounded-md border-gray-300 pr-10 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                                    />
-                                    <button class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
-                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                        </svg>
-                                    </button>
-                                </div>
+                                <SearchInput
+                                    route="proventos.index"
+                                    :only-params="['proventos']"
+                                    @update:loading="(val) => isLoading = val"
+                                />
                             </div>
                         </div>
                     </div>
@@ -167,7 +106,7 @@ const handleConfirmarExclusao = () => {
                 <!-- Card da tabela -->
                 <div class="overflow-hidden bg-white shadow-sm dark:bg-gray-800 sm:rounded-lg">
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <table v-if="props.proventos.data.length > 0" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-700">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
@@ -200,30 +139,30 @@ const handleConfirmarExclusao = () => {
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-                                <tr v-for="provento in proventos" :key="provento.ativo + provento.dataCom">
+                                <tr v-for="provento in props.proventos.data" :key="provento.uid">
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ provento.ativo }}
+                                        {{ provento.ativo_codigo }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ provento.tipo }}
+                                        {{ provento.tipo_provento_nome }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ provento.dataCom }}
+                                        {{ formatDate(provento.data_com) }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ provento.dataPagamento }}
+                                        {{ formatDate(provento.data_pagamento) }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ provento.qtd }}
+                                        {{ formatNumber(provento.quantidade_ativo) }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ provento.valor }}
+                                        {{ formatCurrency(provento.valor) }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ provento.valorTotal }}
+                                        {{ formatCurrency(provento.valor_total) }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                        {{ provento.yield }}
+                                        {{ formatNumber(provento.yield_on_cost) }} %
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-sm">
                                         <div class="flex gap-2">
@@ -260,47 +199,20 @@ const handleConfirmarExclusao = () => {
                                 </tr>
                             </tbody>
                         </table>
+                        <div v-else class="flex h-full items-center justify-center">
+                            <p class="text-gray-500 dark:text-gray-400">Nenhum provento encontrado</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Card da paginação separado -->
-                <div class="mt-6 overflow-hidden">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <select
-                                v-model="perPage"
-                                class="rounded-md border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                            >
-                                <option value="10">10</option>
-                                <option value="25">25</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                            </select>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button class="rounded-md border border-gray-300 bg-white px-3 py-1 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
-                                Anterior
-                            </button>
-                            <div class="flex gap-1">
-                                <button
-                                    v-for="page in 6"
-                                    :key="page"
-                                    :class="[
-                                        'px-3 py-1 text-sm rounded-md border',
-                                        currentPage === page
-                                            ? 'bg-blue-600 text-white border-blue-600'
-                                            : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600'
-                                    ]"
-                                >
-                                    {{ page }}
-                                </button>
-                            </div>
-                            <button class="rounded-md border border-gray-300 bg-white px-3 py-1 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
-                                Próximo
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <!-- Use the Pagination component -->
+                <Pagination
+                    :data="props.proventos"
+                    route="proventos.index"
+                    :only-params="['proventos']"
+                    :preserve-params="['search']"
+                    @update:loading="(val) => isLoading = val"
+                />
             </div>
         </div>
 
