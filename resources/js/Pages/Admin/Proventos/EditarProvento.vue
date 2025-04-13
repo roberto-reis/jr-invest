@@ -1,74 +1,67 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue';
+import { watch, computed } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import DefaultButton from '@/Components/DefaultButton.vue';
+import { Provento, Ativo, TipoProvento, Corretora } from '@/types';
+import { useForm } from '@inertiajs/vue3';
 
 const props = defineProps<{
     show: boolean;
-    provento?: {
-        ativo: string;
-        tipo: string;
-        dataCom: string;
-        dataPagamento: string;
-        qtd: string;
-        valor: string;
-        valorTotal: string;
-        yield: string;
-    } | null;
+    provento?: Provento | null;
+    ativos: Ativo[];
+    tiposProventos: TipoProvento[];
+    corretoras: Corretora[];
 }>();
 
 const emit = defineEmits<{
     (e: 'close'): void;
-    (e: 'submit', data: any): void;
 }>();
 
-const form = ref({
-    ativo: '',
-    tipo_provento: '',
+const form = useForm({
+    ativo_uid: '',
+    tipo_provento_uid: '',
+    corretora_uid: '',
     data_com: '',
     data_pagamento: '',
-    quantidade: '',
-    valor_unitario: '',
+    quantidade_ativo: '',
+    valor: '',
 });
 
 // Atualiza o formulário quando o provento é passado para o modal
 watch(() => props.provento, (newProvento) => {
     if (newProvento) {
-        form.value = {
-            ativo: newProvento.ativo,
-            tipo_provento: newProvento.tipo,
-            data_com: formatDateToInput(newProvento.dataCom),
-            data_pagamento: formatDateToInput(newProvento.dataPagamento),
-            quantidade: newProvento.qtd.replace(',', '.'),
-            valor_unitario: newProvento.valor.replace('R$ ', '').replace(',', '.'),
-        };
+        form.ativo_uid = newProvento.ativo_uid;
+        form.tipo_provento_uid = newProvento.tipo_provento_uid;
+        form.corretora_uid = newProvento.corretora_uid;
+        form.data_com = newProvento.data_com;
+        form.data_pagamento = newProvento.data_pagamento;
+        form.quantidade_ativo = String(newProvento.quantidade_ativo);
+        form.valor = String(newProvento.valor);
     }
 }, { immediate: true });
-
-// Função para formatar a data do formato DD/MM/YYYY para YYYY-MM-DD (formato aceito pelo input date)
-const formatDateToInput = (dateStr: string) => {
-    if (!dateStr) return '';
-    const [day, month, year] = dateStr.split('/');
-    return `${year}-${month}-${day}`;
-};
 
 const closeModal = () => {
     emit('close');
 };
 
 const submit = () => {
-    emit('submit', form.value);
+    form.put(route('proventos.update', props.provento?.uid), {
+        preserveScroll: true,
+        onSuccess: () => {
+            emit('close');
+        },
+    });
 };
 
 // Calcula o valor total baseado na quantidade e valor unitário
 const valorTotal = computed(() => {
-    if (!form.value.quantidade || !form.value.valor_unitario) return 'R$ 0,00';
+    if (!form.quantidade_ativo || !form.valor) return 'R$ 0,00';
 
-    const quantidade = parseFloat(form.value.quantidade);
-    const valorUnitario = parseFloat(form.value.valor_unitario);
+    const quantidade = parseFloat(form.quantidade_ativo);
+    const valorUnitario = parseFloat(form.valor);
 
     if (isNaN(quantidade) || isNaN(valorUnitario)) return 'R$ 0,00';
 
@@ -93,36 +86,48 @@ const valorTotal = computed(() => {
                     <InputLabel for="ativo" value="Ativo" />
                     <select
                         id="ativo"
-                        v-model="form.ativo"
+                        v-model="form.ativo_uid"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
                         required
                     >
                         <option value="">Digite para pesquisar...</option>
-                        <option value="URPR11">URPR11</option>
-                        <option value="YXZK11">YXZK11</option>
-                        <option value="AFHI11">AFHI11</option>
-                        <option value="JURO11">JURO11</option>
-                        <option value="MANA11">MANA11</option>
-                        <option value="BTC">BTC</option>
+                        <option v-for="ativo in props.ativos" :key="ativo.uid" :value="ativo.uid">
+                            {{ ativo.codigo }}
+                        </option>
                     </select>
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" v-if="form.errors.ativo_uid" :message="form.errors.ativo_uid" />
                 </div>
 
                 <div>
                     <InputLabel for="tipo_provento" value="Tipo de Provento" />
                     <select
                         id="tipo_provento"
-                        v-model="form.tipo_provento"
+                        v-model="form.tipo_provento_uid"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
                         required
                     >
                         <option value="">Selecione o tipo</option>
-                        <option value="Rendimento">Rendimento</option>
-                        <option value="Dividendo">Dividendo</option>
-                        <option value="JCP">JCP</option>
-                        <option value="Amortização">Amortização</option>
+                        <option v-for="tipoProvento in props.tiposProventos" :key="tipoProvento.uid" :value="tipoProvento.uid">
+                            {{ tipoProvento.nome }}
+                        </option>
                     </select>
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" v-if="form.errors.tipo_provento_uid" :message="form.errors.tipo_provento_uid" />
+                </div>
+
+                <div>
+                    <InputLabel for="corretora" value="Corretora" />
+                    <select
+                        id="corretora"
+                        v-model="form.corretora_uid"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
+                        required
+                    >
+                        <option value="">Selecione a corretora</option>
+                        <option v-for="corretora in corretoras" :key="corretora.uid" :value="corretora.uid">
+                            {{ corretora.nome }}
+                        </option>
+                    </select>
+                    <InputError class="mt-2" v-if="form.errors.corretora_uid" :message="form.errors.corretora_uid" />
                 </div>
 
                 <div>
@@ -134,7 +139,7 @@ const valorTotal = computed(() => {
                         v-model="form.data_com"
                         required
                     />
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" v-if="form.errors.data_com" :message="form.errors.data_com" />
                 </div>
 
                 <div>
@@ -146,7 +151,7 @@ const valorTotal = computed(() => {
                         v-model="form.data_pagamento"
                         required
                     />
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" v-if="form.errors.data_pagamento" :message="form.errors.data_pagamento" />
                 </div>
 
                 <div>
@@ -155,10 +160,10 @@ const valorTotal = computed(() => {
                         id="quantidade"
                         type="text"
                         class="mt-1 block w-full"
-                        v-model="form.quantidade"
+                        v-model="form.quantidade_ativo"
                         required
                     />
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" v-if="form.errors.quantidade_ativo" :message="form.errors.quantidade_ativo" />
                 </div>
 
                 <div>
@@ -167,10 +172,10 @@ const valorTotal = computed(() => {
                         id="valor_unitario"
                         type="text"
                         class="mt-1 block w-full"
-                        v-model="form.valor_unitario"
+                        v-model="form.valor"
                         required
                     />
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" v-if="form.errors.valor" :message="form.errors.valor" />
                 </div>
 
                 <div>

@@ -43,12 +43,6 @@ const handleEditarProvento = (provento: any) => {
     showEditarProventoModal.value = true;
 };
 
-const handleSubmitEdicao = (data: any) => {
-    // Aqui você implementa a lógica para salvar as alterações do provento
-    console.log('Provento editado:', data);
-    showEditarProventoModal.value = false;
-};
-
 const handleExcluirProvento = (provento: any) => {
     proventoSelecionado.value = provento;
     showExcluirProventoModal.value = true;
@@ -236,8 +230,10 @@ const handleConfirmarExclusao = () => {
         <EditarProvento
             :show="showEditarProventoModal"
             :provento="proventoSelecionado"
+            :ativos="props.ativos"
+            :tiposProventos="props.tiposProventos"
+            :corretoras="props.corretoras"
             @close="showEditarProventoModal = false"
-            @submit="handleSubmitEdicao"
         />
 
         <!-- Modal de Excluir Provento -->

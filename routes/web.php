@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\Ativo\RemoverAtivoController;
 use App\Http\Controllers\Admin\Operacao\NovaOperacaoController;
 use App\Http\Controllers\Admin\Provento\NovoProventoController;
 use App\Http\Controllers\Admin\Operacao\UpdateOperacaoController;
+use App\Http\Controllers\Admin\Provento\UpdateProventoController;
 use App\Http\Controllers\Admin\Operacao\ListarOperacoesController;
 use App\Http\Controllers\Admin\Operacao\RemoverOperacaoController;
 use App\Http\Controllers\Admin\Provento\ListarProventosController;
@@ -65,6 +66,8 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::prefix('proventos')->group(function () {
         Route::get('/', ListarProventosController::class)->name('proventos.index');
         Route::post('/', NovoProventoController::class)->name('proventos.store');
+        Route::put('/{uid}', UpdateProventoController::class)->name('proventos.update');
+        // Route::delete('/{uid}', RemoverProventoController::class)->name('proventos.delete');
     });
 
     Route::prefix('rebalanceamento')->group(function () {
