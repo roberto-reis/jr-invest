@@ -134,7 +134,7 @@ const submit = () => {
                     <TextInput
                         id="quantidade"
                         type="number"
-                        step="1"
+                        step="0.00000001"
                         class="mt-1 block w-full"
                         v-model="form.quantidade"
                         required

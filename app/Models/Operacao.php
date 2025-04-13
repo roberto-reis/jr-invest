@@ -32,7 +32,7 @@ class Operacao extends Model
     ];
 
     protected $casts = [
-        'data_operacao' => 'date:d/m/Y',
+        'data_operacao' => 'date:Y-m-d',
     ];
 
     public function user()

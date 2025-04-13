@@ -14,7 +14,6 @@ class ListarOperacoesController
 {
     public function __invoke(Request $request)
     {
-        // Pegar a classe ativa tambem
         $query = Operacao::where('user_id', Auth::user()->id)
             ->select(
                 'operacoes.*',

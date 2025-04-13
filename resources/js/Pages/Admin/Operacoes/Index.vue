@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import NovoAporte from './NovaOperacao.vue';
 import EditarOperacao from './EditarOperacao.vue';
 import VisualizarOperacao from './VisualizarOperacao.vue';
@@ -57,12 +57,6 @@ const operacaoSelecionada = ref<Operacao | null>(null);
 const handleEditarOperacao = (operacao: Operacao) => {
     operacaoSelecionada.value = operacao;
     showEditarOperacaoModal.value = true;
-};
-
-const handleSubmitEdicao = (data: any) => {
-    // Aqui você implementa a lógica para salvar as alterações da operação
-    console.log('Operação editada:', data);
-    showEditarOperacaoModal.value = false;
 };
 
 const handleVisualizarOperacao = (operacao: Operacao) => {
@@ -255,8 +249,10 @@ const handleConfirmarExclusao = () => {
         <EditarOperacao
             :show="showEditarOperacaoModal"
             :operacao="operacaoSelecionada"
+            :ativos="props.ativos"
+            :corretoras="props.corretoras"
+            :tiposOperacoes="props.tiposOperacoes"
             @close="showEditarOperacaoModal = false"
-            @submit="handleSubmitEdicao"
         />
 
         <!-- Modal de Visualizar Operação -->
