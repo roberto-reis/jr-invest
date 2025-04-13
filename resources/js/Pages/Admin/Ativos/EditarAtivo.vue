@@ -21,7 +21,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (e: 'close'): void;
-    (e: 'submit', data: any): void;
 }>();
 
 const closeModal = () => {
@@ -48,11 +47,11 @@ watch(() => props.ativo, (newAtivo: any) => {
 const submit = () => {
     if (props.ativo) {
         form.put(route('ativos.update', props.ativo.uid), {
-        preserveScroll: true,
-        onSuccess: () => {
-            emit('close');
-        },
-    });
+            preserveScroll: true,
+            onSuccess: () => {
+                emit('close');
+            },
+        });
     }
 };
 </script>

@@ -49,10 +49,6 @@ const handleEditarAtivo = (ativo: any) => {
     showEditarAtivoModal.value = true;
 };
 
-const handleSubmitEdicao = (data: any) => {
-    showEditarAtivoModal.value = false;
-};
-
 const handleVisualizarAtivo = (ativo: any) => {
     ativoSelecionado.value = ativo;
     showVisualizarAtivoModal.value = true;
@@ -61,10 +57,6 @@ const handleVisualizarAtivo = (ativo: any) => {
 const handleExcluirAtivo = (ativo: any) => {
     ativoSelecionado.value = ativo;
     showExcluirAtivoModal.value = true;
-};
-
-const handleConfirmarExclusao = () => {
-    showExcluirAtivoModal.value = false;
 };
 </script>
 
@@ -200,38 +192,35 @@ const handleConfirmarExclusao = () => {
                     :preserve-params="['search']"
                     @update:loading="(val) => isLoading = val"
                 />
-
-                <!-- Modal de Novo Ativo -->
-                <NovoAtivo
-                    :show="showNovoAtivoModal"
-                    @close="showNovoAtivoModal = false"
-                    :classes="props.classes"
-                />
-
-                <!-- Modal de Editar Ativo -->
-                <EditarAtivo
-                    :show="showEditarAtivoModal"
-                    :ativo="ativoSelecionado"
-                    :classes="props.classes"
-                    @close="showEditarAtivoModal = false"
-                    @submit="handleSubmitEdicao"
-                />
-
-                <!-- Modal de Visualizar Ativo -->
-                <VisualizarAtivo
-                    :show="showVisualizarAtivoModal"
-                    :ativo="ativoSelecionado"
-                    @close="showVisualizarAtivoModal = false"
-                />
-
-                <!-- Modal de Excluir Ativo -->
-                <ExcluirAtivo
-                    :show="showExcluirAtivoModal"
-                    :ativo="ativoSelecionado"
-                    @close="showExcluirAtivoModal = false"
-                    @confirm="handleConfirmarExclusao"
-                />
             </div>
         </div>
+        <!-- Modal de Novo Ativo -->
+        <NovoAtivo
+            :show="showNovoAtivoModal"
+            @close="showNovoAtivoModal = false"
+            :classes="props.classes"
+        />
+
+        <!-- Modal de Editar Ativo -->
+        <EditarAtivo
+            :show="showEditarAtivoModal"
+            :ativo="ativoSelecionado"
+            :classes="props.classes"
+            @close="showEditarAtivoModal = false"
+        />
+
+        <!-- Modal de Visualizar Ativo -->
+        <VisualizarAtivo
+            :show="showVisualizarAtivoModal"
+            :ativo="ativoSelecionado"
+            @close="showVisualizarAtivoModal = false"
+        />
+
+        <!-- Modal de Excluir Ativo -->
+        <ExcluirAtivo
+            :show="showExcluirAtivoModal"
+            :ativo="ativoSelecionado"
+            @close="showExcluirAtivoModal = false"
+        />
     </AuthenticatedLayout>
 </template>

@@ -6,64 +6,56 @@ import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import DefaultButton from '@/Components/DefaultButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import { Operacao, Ativo, Corretora, TipoOperacao } from '@/types';
+import { formatCurrency, parseCurrency } from '@/Utils/formatters';
+import { useForm } from '@inertiajs/vue3';
 
 const props = defineProps<{
     show: boolean;
-    operacao?: {
-        ativo: string;
-        operacao: string;
-        categoria: string;
-        quantidade: string;
-        cotacao: string;
-        valorTotal: string;
-        corretora: string;
-        data: string;
-    } | null;
+    operacao?: Operacao | null;
+    ativos: Ativo[];
+    corretoras: Corretora[];
+    tiposOperacoes: TipoOperacao[];
 }>();
 
 const emit = defineEmits<{
     (e: 'close'): void;
-    (e: 'submit', data: any): void;
 }>();
 
 const closeModal = () => {
     emit('close');
 };
 
-const form = ref({
-    ativo: '',
-    tipo_operacao: '',
-    classe: '',
-    banco_corretora: '',
+const form = useForm({
+    ativo_uid: '',
+    tipo_operacao_uid: '',
+    corretora_uid: '',
     data_operacao: '',
-    cotacao: '',
+    cotacao_preco: '',
     quantidade: '',
 });
 
 // Atualiza o formulário quando a operação é passada para o modal
 watch(() => props.operacao, (newOperacao) => {
     if (newOperacao) {
-        form.value = {
-            ativo: newOperacao.ativo,
-            tipo_operacao: newOperacao.operacao,
-            classe: newOperacao.categoria,
-            banco_corretora: newOperacao.corretora,
-            data_operacao: formatDateToLocal(newOperacao.data),
-            cotacao: newOperacao.cotacao.replace('R$ ', '').replace('.', '').replace(',', '.'),
-            quantidade: newOperacao.quantidade.replace(',', '.'),
-        };
+        form.ativo_uid = newOperacao.ativo_uid || '';
+        form.tipo_operacao_uid = newOperacao.tipo_operacao_uid || '';
+        form.corretora_uid = newOperacao.corretora_uid || '';
+        form.data_operacao = newOperacao.data_operacao || '';
+        form.cotacao_preco = String(newOperacao.cotacao_preco || 0);
+        form.quantidade = String(newOperacao.quantidade || 0);
     }
 }, { immediate: true });
 
-// Função auxiliar para formatar a data
-const formatDateToLocal = (dateStr: string) => {
-    const [date, time] = dateStr.split(' ');
-    const [day, month, year] = date.split('/');
-    return `${year}-${month}-${day}T${time}`;
-};
 
 const submit = () => {
-    emit('submit', form.value);
+    // Converte strings para números antes de enviar
+    form.put(route('operacoes.update', props.operacao?.uid), {
+        preserveScroll: true,
+        onSuccess: () => {
+            emit('close');
+        },
+    });
 };
 </script>
 
@@ -84,100 +76,84 @@ const submit = () => {
                     <InputLabel for="ativo" value="Ativo" />
                     <select
                         id="ativo"
-                        v-model="form.ativo"
+                        v-model="form.ativo_uid"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
                         required
                     >
                         <option value="">Digite para pesquisar...</option>
-                        <option value="BTC">BTC</option>
-                        <option value="YXZK11">YXZK11</option>
+                        <option v-for="ativo in props.ativos" :key="ativo.uid" :value="ativo.uid">
+                            {{ ativo.codigo }}
+                        </option>
                     </select>
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" v-if="form.errors.ativo_uid" :message="form.errors.ativo_uid" />
                 </div>
 
                 <div>
                     <InputLabel for="tipo_operacao" value="Tipo de Operação" />
                     <select
                         id="tipo_operacao"
-                        v-model="form.tipo_operacao"
+                        v-model="form.tipo_operacao_uid"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
                         required
                     >
                         <option value="">Selecione o tipo</option>
-                        <option value="Compra">Compra</option>
-                        <option value="Venda">Venda</option>
+                        <option v-for="tipoOperacao in props.tiposOperacoes" :key="tipoOperacao.uid" :value="tipoOperacao.uid">
+                            {{ tipoOperacao.nome }}
+                        </option>
                     </select>
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" v-if="form.errors.tipo_operacao_uid" :message="form.errors.tipo_operacao_uid" />
                 </div>
 
                 <div>
-                    <InputLabel for="classe" value="Classe" />
+                    <InputLabel for="corretora" value="Corretora" />
                     <select
-                        id="classe"
-                        v-model="form.classe"
+                        id="corretora"
+                        v-model="form.corretora_uid"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
                         required
                     >
-                        <option value="">Selecione uma classe</option>
-                        <option value="ACAO">Ação</option>
-                        <option value="FII">FII</option>
-                        <option value="CRIPTO">Criptomoeda</option>
-                        <option value="RENDA_FIXA">Renda Fixa</option>
-                        <option value="BDR">BDR</option>
-                        <option value="ETF">ETF</option>
-                        <option value="STOCK">Stock</option>
+                        <option value="">Selecione a corretora</option>
+                        <option v-for="corretora in props.corretoras" :key="corretora.uid" :value="corretora.uid">
+                            {{ corretora.nome }}
+                        </option>
                     </select>
-                    <InputError class="mt-2" />
-                </div>
-
-                <div>
-                    <InputLabel for="banco_corretora" value="Banco/Corretora" />
-                    <TextInput
-                        id="banco_corretora"
-                        type="text"
-                        class="mt-1 block w-full"
-                        v-model="form.banco_corretora"
-                        required
-                    />
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" v-if="form.errors.corretora_uid" :message="form.errors.corretora_uid" />
                 </div>
 
                 <div>
                     <InputLabel for="data_operacao" value="Data da Operação" />
                     <TextInput
                         id="data_operacao"
-                        type="datetime-local"
+                        type="date"
                         class="mt-1 block w-full"
                         v-model="form.data_operacao"
                         required
                     />
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" v-if="form.errors.data_operacao" :message="form.errors.data_operacao" />
                 </div>
 
                 <div>
                     <InputLabel for="cotacao" value="Cotação" />
                     <TextInput
-                        id="cotacao"
-                        type="number"
-                        step="0.01"
+                        id="cotacao_preco"
+                        type="text"
                         class="mt-1 block w-full"
-                        v-model="form.cotacao"
+                        v-model="form.cotacao_preco"
                         required
                     />
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" v-if="form.errors.cotacao_preco" :message="form.errors.cotacao_preco" />
                 </div>
 
                 <div>
                     <InputLabel for="quantidade" value="Quantidade" />
                     <TextInput
                         id="quantidade"
-                        type="number"
-                        step="0.00000001"
+                        type="text"
                         class="mt-1 block w-full"
                         v-model="form.quantidade"
                         required
                     />
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" v-if="form.errors.quantidade" :message="form.errors.quantidade" />
                 </div>
 
                 <div class="mt-6 flex justify-end gap-3">
