@@ -7,6 +7,18 @@ import EditarAtivoRebalanceamento from './EditarAtivoRebalanceamento.vue';
 import ExcluirClasseRebalanceamento from './ExcluirClasseRebalanceamento.vue';
 import ExcluirAtivoRebalanceamento from './ExcluirAtivoRebalanceamento.vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
+import { ClasseAtivo, Ativo } from '@/types';
+import { useForm } from '@inertiajs/vue3';
+import { formatNumber } from '@/Utils/formatters';
+import InputError from '@/Components/InputError.vue';
+
+const props = defineProps<{
+    rebalanceamentoClasses: any[];
+    rebalanceamentoAtivos: any[];
+    classeAtivos: ClasseAtivo[];
+    ativos: Ativo[];
+}>();
+
 // Estado para controlar a aba ativa
 const activeTab = ref('classe'); // 'classe' ou 'ativo'
 
@@ -15,29 +27,6 @@ const breadcrumbItems = [
     { label: 'Início', url: route('dashboard') },
     { label: 'Rebalanceamento' }
 ];
-
-// Dados de exemplo para a tabela de classes
-const classesRebalanceamento = [
-    { classe: 'CRIPTO', percentualMeta: '15,00%' },
-    { classe: 'FII', percentualMeta: '15,00%' },
-    { classe: 'STABLECOIN', percentualMeta: '15,00%' }
-];
-
-// Dados de exemplo para a tabela de ativos
-const ativosRebalanceamento = [
-    { ativo: 'BTC', classe: 'CRIPTO', percentualMeta: '15,00%' },
-    { ativo: 'XYZF11', classe: 'FII', percentualMeta: '15,00%' },
-    { ativo: 'ADA', classe: 'CRIPTO', percentualMeta: '15,00%' },
-    { ativo: 'USDC', classe: 'STABLECOIN', percentualMeta: '15,00%' }
-];
-
-// Formulário para adicionar nova classe
-const novaClasse = ref('');
-const novoPercentualClasse = ref('');
-
-// Formulário para adicionar novo ativo
-const novoAtivo = ref('');
-const novoPercentualAtivo = ref('');
 
 // Estado para controlar os modais
 const showEditarClasseModal = ref(false);
@@ -48,19 +37,32 @@ const showExcluirClasseModal = ref(false);
 const showExcluirAtivoModal = ref(false);
 
 // Função para incluir nova classe
+const formClasse = useForm({
+    classe_ativo_uid: '',
+    percentual: '',
+});
+
+const formAtivo = useForm({
+    ativo_uid: '',
+    percentual: '',
+});
+
 const incluirClasse = () => {
-    console.log('Incluindo classe:', novaClasse.value, novoPercentualClasse.value);
-    // Implementar lógica para incluir nova classe
-    novaClasse.value = '';
-    novoPercentualClasse.value = '';
+    formClasse.post(route('rebalanceamento-classe.store'), {
+        onSuccess: () => {
+            formClasse.reset();
+        }
+    });
 };
 
 // Função para incluir novo ativo
 const incluirAtivo = () => {
-    console.log('Incluindo ativo:', novoAtivo.value, novoPercentualAtivo.value);
-    // Implementar lógica para incluir novo ativo
-    novoAtivo.value = '';
-    novoPercentualAtivo.value = '';
+    console.log('Incluindo ativo:', formAtivo.data);
+    formAtivo.post(route('rebalanceamento-ativo.store'), {
+        onSuccess: () => {
+            formAtivo.reset();
+        }
+    });
 };
 
 // Funções para editar e excluir classes
@@ -154,28 +156,26 @@ const handleConfirmarExclusaoAtivo = () => {
                                 <label for="classe" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Classe</label>
                                 <select
                                     id="classe"
-                                    v-model="novaClasse"
+                                    v-model="formClasse.classe_ativo_uid"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
                                     required
                                 >
                                     <option value="">Selecione uma classe...</option>
-                                    <option value="ACAO">ACAO</option>
-                                    <option value="FII">FII</option>
-                                    <option value="CRIPTO">CRIPTO</option>
-                                    <option value="STABLECOIN">STABLECOIN</option>
-                                    <option value="RENDA_FIXA">RENDA FIXA</option>
+                                    <option v-for="classe in classeAtivos" :key="classe.uid" :value="classe.uid">{{ classe.nome }}</option>
                                 </select>
+                                <InputError class="mt-2" v-if="formClasse.errors.classe_ativo_uid" :message="formClasse.errors.classe_ativo_uid" />
                             </div>
                             <div class="md:w-1/4">
                                 <label for="percentualMeta" class="block text-sm font-medium text-gray-700 dark:text-gray-300">% Meta/Objetivo</label>
                                 <input
                                     id="percentualMeta"
                                     type="text"
-                                    v-model="novoPercentualClasse"
+                                    v-model="formClasse.percentual"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
                                     placeholder="Ex: 15,00"
                                     required
                                 />
+                                <InputError class="mt-2" v-if="formClasse.errors.percentual" :message="formClasse.errors.percentual" />
                             </div>
                             <div>
                                 <button
@@ -190,7 +190,7 @@ const handleConfirmarExclusaoAtivo = () => {
 
                     <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="overflow-x-auto">
-                            <table class="min-w-full">
+                            <table v-if="rebalanceamentoClasses.length > 0" class="min-w-full">
                                 <thead class="bg-gray-50 border-b border-gray-200 dark:bg-gray-700 dark:border-gray-600">
                                     <tr>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
@@ -205,12 +205,12 @@ const handleConfirmarExclusaoAtivo = () => {
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-                                    <tr v-for="(classe, index) in classesRebalanceamento" :key="index">
+                                    <tr v-for="classe in rebalanceamentoClasses" :key="classe.uid">
                                         <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                            {{ classe.classe }}
+                                            {{ classe.classe_nome }}
                                         </td>
                                         <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
-                                            {{ classe.percentualMeta }}
+                                            {{ formatNumber(classe.percentual) }} %
                                         </td>
                                         <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
                                             <div class="flex space-x-2">
@@ -235,6 +235,9 @@ const handleConfirmarExclusaoAtivo = () => {
                                     </tr>
                                 </tbody>
                             </table>
+                            <div v-else class="flex justify-center items-center h-full">
+                                <p class="text-gray-500 dark:text-gray-300">Nenhuma classe de rebalanceamento definida</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -247,27 +250,26 @@ const handleConfirmarExclusaoAtivo = () => {
                                 <label for="ativo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ativo</label>
                                 <select
                                     id="ativo"
-                                    v-model="novoAtivo"
+                                    v-model="formAtivo.ativo_uid"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
                                     required
                                 >
                                     <option value="">Selecione um ativo...</option>
-                                    <option value="BTC">BTC</option>
-                                    <option value="XYZF11">XYZF11</option>
-                                    <option value="ADA">ADA</option>
-                                    <option value="USDC">USDC</option>
+                                    <option v-for="ativo in ativos" :key="ativo.uid" :value="ativo.uid">{{ ativo.codigo }}</option>
                                 </select>
+                                <InputError class="mt-2" v-if="formAtivo.errors.ativo_uid" :message="formAtivo.errors.ativo_uid" />
                             </div>
                             <div class="md:w-1/4">
                                 <label for="percentualMetaAtivo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">% Meta/Objetivo</label>
                                 <input
                                     id="percentualMetaAtivo"
                                     type="text"
-                                    v-model="novoPercentualAtivo"
+                                    v-model="formAtivo.percentual"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
                                     placeholder="Ex: 15,00"
                                     required
                                 />
+                                <InputError class="mt-2" v-if="formAtivo.errors.percentual" :message="formAtivo.errors.percentual" />
                             </div>
                             <div>
                                 <button
@@ -282,7 +284,7 @@ const handleConfirmarExclusaoAtivo = () => {
 
                     <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="overflow-x-auto">
-                            <table class="min-w-full">
+                            <table v-if="rebalanceamentoAtivos.length > 0" class="min-w-full">
                                 <thead class="bg-gray-50 border-b border-gray-200 dark:bg-gray-700 dark:border-gray-600">
                                     <tr>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
@@ -300,15 +302,15 @@ const handleConfirmarExclusaoAtivo = () => {
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-                                    <tr v-for="(ativo, index) in ativosRebalanceamento" :key="index">
+                                    <tr v-for="ativo in rebalanceamentoAtivos" :key="ativo.uid">
                                         <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                            {{ ativo.ativo }}
+                                            {{ ativo.ativo_codigo }}
                                         </td>
                                         <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
-                                            {{ ativo.classe }}
+                                            {{ ativo.classe_nome }}
                                         </td>
                                         <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
-                                            {{ ativo.percentualMeta }}
+                                            {{ formatNumber(ativo.percentual) }} %
                                         </td>
                                         <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
                                             <div class="flex space-x-2">
@@ -333,6 +335,9 @@ const handleConfirmarExclusaoAtivo = () => {
                                     </tr>
                                 </tbody>
                             </table>
+                            <div v-else class="flex justify-center items-center h-full">
+                                <p class="text-gray-500 dark:text-gray-300">Nenhum ativo de rebalanceamento definido</p>
+                            </div>
                         </div>
                     </div>
                 </div>
