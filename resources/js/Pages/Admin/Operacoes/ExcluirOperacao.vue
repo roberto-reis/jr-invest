@@ -2,29 +2,34 @@
 import Modal from '@/Components/Modal.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import { Operacao } from '@/types';
+import { formatCurrency, formatNumber, formatDate } from '@/Utils/formatters';
+import { useForm } from '@inertiajs/vue3';
+
 const props = defineProps<{
     show: boolean;
-    operacao?: {
-        ativo: string;
-        operacao: string;
-        categoria: string;
-        quantidade: string;
-        valorTotal: string;
-        data: string;
-    } | null;
+    operacao?: Operacao | null;
 }>();
 
 const emit = defineEmits<{
     (e: 'close'): void;
-    (e: 'confirm'): void;
 }>();
 
 const closeModal = () => {
     emit('close');
 };
 
+const form = useForm({});
+
 const confirmarExclusao = () => {
-    emit('confirm');
+    if (props.operacao) {
+        form.delete(route('operacoes.delete', props.operacao.uid), {
+            preserveScroll: true,
+            onSuccess: () => {
+                emit('close');
+            },
+        });
+    }
 };
 </script>
 
@@ -42,16 +47,16 @@ const confirmarExclusao = () => {
 
             <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
                 <p>
-                    Tem certeza que deseja excluir esta operação de <strong class="text-gray-900 dark:text-gray-200">{{ operacao?.operacao }}</strong> do ativo <strong class="text-gray-900 dark:text-gray-200">{{ operacao?.ativo }}</strong>?
+                    Tem certeza que deseja excluir esta operação de <strong class="text-gray-900 dark:text-gray-200">{{ operacao?.tipo_operacao_nome }}</strong> do ativo <strong class="text-gray-900 dark:text-gray-200">{{ operacao?.ativo_codigo }}</strong>?
                 </p>
                 <p class="mt-2">
                     <span class="font-medium">Detalhes da operação:</span>
                     <br>
-                    Quantidade: {{ operacao?.quantidade }}
+                    Quantidade: {{ operacao?.quantidade !== undefined ? formatNumber(operacao.quantidade) : '-' }}
                     <br>
-                    Valor Total: {{ operacao?.valorTotal }}
+                    Valor Total: {{ operacao?.valor_total !== undefined ? formatCurrency(operacao.valor_total) : '-' }}
                     <br>
-                    Data: {{ operacao?.data }}
+                    Data: {{ operacao?.data_operacao ? formatDate(operacao.data_operacao) : '-' }}
                 </p>
                 <p class="mt-3 font-medium text-red-600 dark:text-red-400">
                     Esta ação não pode ser desfeita.

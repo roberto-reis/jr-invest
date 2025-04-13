@@ -17,13 +17,10 @@ class ListarAtivosController
             ->select('ativos.*', 'classes_ativos.nome as classe_nome');
 
         if ($request->has('search') && !empty($request->search)) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('ativos.codigo', 'like', "%{$search}%")
-                  ->orWhere('ativos.nome', 'like', "%{$search}%")
-                  ->orWhere('classes_ativos.nome', 'like', "%{$search}%")
-                  ->orWhere('ativos.setor', 'like', "%{$search}%");
-            });
+            $query->where('ativos.codigo', 'like', "%{$request->search}%")
+                ->orWhere('ativos.nome', 'like', "%{$request->search}%")
+                ->orWhere('classes_ativos.nome', 'like', "%{$request->search}%")
+                ->orWhere('ativos.setor', 'like', "%{$request->search}%");
         }
 
         $ativos = $query->orderBy('ativos.codigo')

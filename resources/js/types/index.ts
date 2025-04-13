@@ -27,6 +27,37 @@ export interface ClasseAtivo {
     uid: string;
     nome: string;
     descricao: string | null;
-    created_at: string;
-    updated_at: string;
+}
+
+export interface Corretora {
+    uid: string;
+    nome: string;
+}
+
+export interface TipoOperacao {
+    uid: string;
+    nome: string;
+    nome_interno: string;
+}
+
+export interface Operacao {
+    uid: string;
+    user_id?: number;
+    ativo_uid: string;
+    corretora_uid: string;
+    tipo_operacao_uid: string;
+    data_operacao: string;
+    quantidade: number;
+    cotacao_preco: number;
+    valor_total: number;
+
+    // Additional fields from relationships
+    ativo_codigo: string;
+    classe_nome: string;
+    corretora_nome: string;
+    tipo_operacao_nome: string;
+
+    // Optional fields that might be present
+    created_at?: string;
+    updated_at?: string;
 }

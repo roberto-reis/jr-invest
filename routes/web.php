@@ -8,7 +8,10 @@ use App\Http\Controllers\Admin\Ativo\NovoAtivoController;
 use App\Http\Controllers\Admin\Ativo\UpdateAtivoController;
 use App\Http\Controllers\Admin\Ativo\ListarAtivosController;
 use App\Http\Controllers\Admin\Ativo\RemoverAtivoController;
+use App\Http\Controllers\Admin\Operacao\NovaOperacaoController;
+use App\Http\Controllers\Admin\Operacao\UpdateOperacaoController;
 use App\Http\Controllers\Admin\Operacao\ListarOperacoesController;
+use App\Http\Controllers\Admin\Operacao\RemoverOperacaoController;
 use App\Http\Controllers\Admin\Provento\ListarProventosController;
 use App\Http\Controllers\Admin\Portfolio\ListarPortfolioController;
 use App\Http\Controllers\Admin\ClasseAtivo\NovaClasseAtivoController;
@@ -53,6 +56,9 @@ Route::middleware('auth')->prefix('admin')->group(function () {
 
     Route::prefix('operacoes')->group(function () {
         Route::get('/', ListarOperacoesController::class)->name('operacoes.index');
+        Route::post('/', NovaOperacaoController::class)->name('operacoes.store');
+        Route::put('/{uid}', UpdateOperacaoController::class)->name('operacoes.update');
+        Route::delete('/{uid}', RemoverOperacaoController::class)->name('operacoes.delete');
     });
 
     Route::prefix('proventos')->group(function () {
@@ -68,4 +74,4 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
