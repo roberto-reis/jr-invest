@@ -48,11 +48,6 @@ const handleExcluirProvento = (provento: any) => {
     showExcluirProventoModal.value = true;
 };
 
-const handleConfirmarExclusao = () => {
-    // Aqui você implementa a lógica para excluir o provento
-    console.log('Excluindo provento:', proventoSelecionado.value);
-    showExcluirProventoModal.value = false;
-};
 </script>
 
 <template>
@@ -241,7 +236,6 @@ const handleConfirmarExclusao = () => {
             :show="showExcluirProventoModal"
             :provento="proventoSelecionado"
             @close="showExcluirProventoModal = false"
-            @confirm="handleConfirmarExclusao"
         />
     </AuthenticatedLayout>
 </template>

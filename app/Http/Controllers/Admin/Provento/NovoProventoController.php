@@ -15,7 +15,6 @@ class NovoProventoController extends Controller
     public function __invoke(NovoProventoRequest $request, CriarProventoAction $action)
     {
         try {
-            // dd($request->validated());
             $action->execute($request->validated());
 
             // Redireciona para a página de listagem de ativos com mensagem de sucesso
