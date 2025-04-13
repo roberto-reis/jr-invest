@@ -13,7 +13,8 @@ class RemoverProventoController
 
             $provento->delete();
 
-            return redirect()->route('proventos.index')->with('success', "Provento do ativo {$provento->ativo->codigo} excluído com sucesso");
+            return redirect()->route('proventos.index')
+            >with('success', "Provento do ativo {$provento->ativo->codigo} excluído com sucesso");
         } catch (\Exception $e) {
             return redirect()->route('proventos.index')
                     ->with('error', 'Erro ao excluir o provento');
