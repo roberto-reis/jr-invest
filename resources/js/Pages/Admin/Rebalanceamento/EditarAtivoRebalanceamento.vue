@@ -6,13 +6,16 @@ import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import DefaultButton from '@/Components/DefaultButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import { formatNumber } from '@/Utils/formatters';
 
 const props = defineProps<{
     show: boolean;
     ativo?: {
-        ativo: string;
-        classe: string;
-        percentualMeta: string;
+        uid?: string;
+        ativo_codigo?: string;
+        classe_nome?: string;
+        percentual?: number;
+        ativo_uid?: string;
     } | null;
 }>();
 
@@ -22,6 +25,7 @@ const emit = defineEmits<{
 }>();
 
 const form = ref({
+    uid: '',
     ativo: '',
     classe: '',
     percentualMeta: '',
@@ -31,9 +35,10 @@ const form = ref({
 watch(() => props.ativo, (novoAtivo) => {
     if (novoAtivo) {
         form.value = {
-            ativo: novoAtivo.ativo,
-            classe: novoAtivo.classe,
-            percentualMeta: novoAtivo.percentualMeta.replace('%', ''),
+            uid: novoAtivo.uid || '',
+            ativo: novoAtivo.ativo_codigo || '',
+            classe: novoAtivo.classe_nome || '',
+            percentualMeta: novoAtivo.percentual ? String(novoAtivo.percentual) : '',
         };
     }
 }, { immediate: true });
@@ -62,38 +67,23 @@ const submit = () => {
             <form @submit.prevent="submit" class="mt-6 space-y-6">
                 <div>
                     <InputLabel for="ativo" value="Ativo" />
-                    <select
+                    <TextInput
                         id="ativo"
                         v-model="form.ativo"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
-                        required
+                        class="mt-1 block w-full"
                         disabled
-                    >
-                        <option value="">Selecione um ativo...</option>
-                        <option value="BTC">BTC</option>
-                        <option value="XYZF11">XYZF11</option>
-                        <option value="ADA">ADA</option>
-                        <option value="USDC">USDC</option>
-                    </select>
+                    />
                     <InputError class="mt-2" />
                 </div>
 
                 <div>
                     <InputLabel for="classe" value="Classe" />
-                    <select
+                    <TextInput
                         id="classe"
                         v-model="form.classe"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
-                        required
+                        class="mt-1 block w-full"
                         disabled
-                    >
-                        <option value="">Selecione uma classe...</option>
-                        <option value="ACAO">ACAO</option>
-                        <option value="FII">FII</option>
-                        <option value="CRIPTO">CRIPTO</option>
-                        <option value="STABLECOIN">STABLECOIN</option>
-                        <option value="RENDA_FIXA">RENDA FIXA</option>
-                    </select>
+                    />
                     <InputError class="mt-2" />
                 </div>
 

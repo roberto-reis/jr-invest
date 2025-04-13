@@ -6,12 +6,14 @@ import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import DefaultButton from '@/Components/DefaultButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import { formatNumber } from '@/Utils/formatters';
 
 const props = defineProps<{
     show: boolean;
     classe?: {
-        classe: string;
-        percentualMeta: string;
+        uid?: string;
+        classe_nome?: string;
+        percentual?: number;
     } | null;
 }>();
 
@@ -25,6 +27,7 @@ const closeModal = () => {
 };
 
 const form = ref({
+    uid: '',
     classe: '',
     percentualMeta: '',
 });
@@ -33,8 +36,9 @@ const form = ref({
 watch(() => props.classe, (novaClasse) => {
     if (novaClasse) {
         form.value = {
-            classe: novaClasse.classe,
-            percentualMeta: novaClasse.percentualMeta.replace('%', ''),
+            uid: novaClasse.uid || '',
+            classe: novaClasse.classe_nome || '',
+            percentualMeta: novaClasse.percentual ? String(novaClasse.percentual) : '',
         };
     }
 }, { immediate: true });
@@ -59,20 +63,12 @@ const submit = () => {
             <form @submit.prevent="submit" class="mt-6 space-y-6">
                 <div>
                     <InputLabel for="classe" value="Classe" />
-                    <select
+                    <TextInput
                         id="classe"
                         v-model="form.classe"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
-                        required
+                        class="mt-1 block w-full"
                         disabled
-                    >
-                        <option value="">Selecione uma classe...</option>
-                        <option value="ACAO">ACAO</option>
-                        <option value="FII">FII</option>
-                        <option value="CRIPTO">CRIPTO</option>
-                        <option value="STABLECOIN">STABLECOIN</option>
-                        <option value="RENDA_FIXA">RENDA FIXA</option>
-                    </select>
+                    />
                     <InputError class="mt-2" />
                 </div>
 

@@ -2,25 +2,31 @@
 import Modal from '@/Components/Modal.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import { formatNumber } from '@/Utils/formatters';
+import { RebalanceamentoClasse } from '@/types';
+import { useForm } from '@inertiajs/vue3';
+
 const props = defineProps<{
     show: boolean;
-    classe?: {
-        classe: string;
-        percentualMeta: string;
-    } | null;
+    classe?: RebalanceamentoClasse | null;
 }>();
 
 const emit = defineEmits<{
     (e: 'close'): void;
-    (e: 'confirm'): void;
 }>();
 
 const closeModal = () => {
     emit('close');
 };
 
+const form = useForm({});
+
 const confirmarExclusao = () => {
-    emit('confirm');
+    form.delete(route('rebalanceamento-classe.delete', props.classe?.uid), {
+        onSuccess: () => {
+            emit('close');
+        },
+    });
 };
 </script>
 
@@ -38,12 +44,12 @@ const confirmarExclusao = () => {
 
             <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
                 <p>
-                    Tem certeza que deseja excluir a meta de rebalanceamento para a classe <strong class="text-gray-900 dark:text-gray-200">{{ classe?.classe }}</strong>?
+                    Tem certeza que deseja excluir a meta de rebalanceamento para a classe <strong class="text-gray-900 dark:text-gray-200">{{ classe?.classe_nome }}</strong>?
                 </p>
                 <p class="mt-2">
                     <span class="font-medium">Detalhes da meta:</span>
                     <br>
-                    Percentual Meta/Objetivo: {{ classe?.percentualMeta }}
+                    Percentual Meta/Objetivo: {{ classe?.percentual ? formatNumber(classe.percentual) + ' %' : '' }}
                 </p>
                 <p class="mt-3 font-medium text-red-600 dark:text-red-400">
                     Esta ação não pode ser desfeita.

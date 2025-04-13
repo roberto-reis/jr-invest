@@ -7,14 +7,14 @@ import EditarAtivoRebalanceamento from './EditarAtivoRebalanceamento.vue';
 import ExcluirClasseRebalanceamento from './ExcluirClasseRebalanceamento.vue';
 import ExcluirAtivoRebalanceamento from './ExcluirAtivoRebalanceamento.vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
-import { ClasseAtivo, Ativo } from '@/types';
+import { ClasseAtivo, Ativo, RebalanceamentoClasse, RebalanceamentoAtivo } from '@/types';
 import { useForm } from '@inertiajs/vue3';
 import { formatNumber } from '@/Utils/formatters';
 import InputError from '@/Components/InputError.vue';
 
 const props = defineProps<{
-    rebalanceamentoClasses: any[];
-    rebalanceamentoAtivos: any[];
+    rebalanceamentoClasses: RebalanceamentoClasse[];
+    rebalanceamentoAtivos: RebalanceamentoAtivo[];
     classeAtivos: ClasseAtivo[];
     ativos: Ativo[];
 }>();
@@ -80,12 +80,6 @@ const handleSubmitEdicaoClasse = (data: any) => {
     showEditarClasseModal.value = false;
 };
 
-const handleConfirmarExclusaoClasse = () => {
-    // Aqui você implementa a lógica para excluir a classe
-    console.log('Excluindo classe:', classeSelecionada.value);
-    showExcluirClasseModal.value = false;
-};
-
 // Funções para editar e excluir ativos
 const editarAtivo = (ativo: any) => {
     ativoSelecionado.value = ativo;
@@ -101,11 +95,6 @@ const handleSubmitEdicaoAtivo = (data: any) => {
     showEditarAtivoModal.value = false;
 };
 
-const handleConfirmarExclusaoAtivo = () => {
-    // Aqui você implementa a lógica para excluir o ativo
-    console.log('Excluindo ativo:', ativoSelecionado.value);
-    showExcluirAtivoModal.value = false;
-};
 </script>
 
 <template>
@@ -161,7 +150,7 @@ const handleConfirmarExclusaoAtivo = () => {
                                     required
                                 >
                                     <option value="">Selecione uma classe...</option>
-                                    <option v-for="classe in classeAtivos" :key="classe.uid" :value="classe.uid">{{ classe.nome }}</option>
+                                    <option v-for="classe in props.classeAtivos" :key="classe.uid" :value="classe.uid">{{ classe.nome }}</option>
                                 </select>
                                 <InputError class="mt-2" v-if="formClasse.errors.classe_ativo_uid" :message="formClasse.errors.classe_ativo_uid" />
                             </div>
@@ -205,7 +194,7 @@ const handleConfirmarExclusaoAtivo = () => {
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-                                    <tr v-for="classe in rebalanceamentoClasses" :key="classe.uid">
+                                    <tr v-for="classe in props.rebalanceamentoClasses" :key="classe.uid">
                                         <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-300">
                                             {{ classe.classe_nome }}
                                         </td>
@@ -235,7 +224,7 @@ const handleConfirmarExclusaoAtivo = () => {
                                     </tr>
                                 </tbody>
                             </table>
-                            <div v-else class="flex justify-center items-center h-full">
+                            <div v-else class="flex justify-center items-center h-full p-4">
                                 <p class="text-gray-500 dark:text-gray-300">Nenhuma classe de rebalanceamento definida</p>
                             </div>
                         </div>
@@ -255,7 +244,7 @@ const handleConfirmarExclusaoAtivo = () => {
                                     required
                                 >
                                     <option value="">Selecione um ativo...</option>
-                                    <option v-for="ativo in ativos" :key="ativo.uid" :value="ativo.uid">{{ ativo.codigo }}</option>
+                                    <option v-for="ativo in props.ativos" :key="ativo.uid" :value="ativo.uid">{{ ativo.codigo }}</option>
                                 </select>
                                 <InputError class="mt-2" v-if="formAtivo.errors.ativo_uid" :message="formAtivo.errors.ativo_uid" />
                             </div>
@@ -302,7 +291,7 @@ const handleConfirmarExclusaoAtivo = () => {
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-                                    <tr v-for="ativo in rebalanceamentoAtivos" :key="ativo.uid">
+                                    <tr v-for="ativo in props.rebalanceamentoAtivos" :key="ativo.uid">
                                         <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-300">
                                             {{ ativo.ativo_codigo }}
                                         </td>
@@ -335,7 +324,7 @@ const handleConfirmarExclusaoAtivo = () => {
                                     </tr>
                                 </tbody>
                             </table>
-                            <div v-else class="flex justify-center items-center h-full">
+                            <div v-else class="flex justify-center items-center h-full p-4">
                                 <p class="text-gray-500 dark:text-gray-300">Nenhum ativo de rebalanceamento definido</p>
                             </div>
                         </div>
@@ -365,7 +354,6 @@ const handleConfirmarExclusaoAtivo = () => {
             :show="showExcluirClasseModal"
             :classe="classeSelecionada"
             @close="showExcluirClasseModal = false"
-            @confirm="handleConfirmarExclusaoClasse"
         />
 
         <!-- Modal de Excluir Ativo de Rebalanceamento -->
@@ -373,7 +361,6 @@ const handleConfirmarExclusaoAtivo = () => {
             :show="showExcluirAtivoModal"
             :ativo="ativoSelecionado"
             @close="showExcluirAtivoModal = false"
-            @confirm="handleConfirmarExclusaoAtivo"
         />
     </AuthenticatedLayout>
 </template>

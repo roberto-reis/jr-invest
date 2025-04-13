@@ -84,3 +84,18 @@ export interface TipoProvento {
     nome: string;
     nome_interno: string;
 }
+
+export interface RebalanceamentoClasse {
+    uid: string;
+    classe_nome: string;
+    percentual: number;
+    classe_ativo_uid: string;
+}
+
+export interface RebalanceamentoAtivo {
+    uid: string;
+    ativo_codigo: string;
+    classe_nome: string;
+    percentual: number;
+    ativo_uid: string;
+}
