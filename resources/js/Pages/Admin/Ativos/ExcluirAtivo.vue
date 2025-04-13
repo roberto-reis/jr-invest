@@ -16,7 +16,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (e: 'close'): void;
-    (e: 'confirm'): void;
 }>();
 
 const closeModal = () => {
@@ -30,7 +29,7 @@ const confirmarExclusao = () => {
         form.delete(route('ativos.delete', props.ativo.uid), {
             preserveScroll: true,
             onSuccess: () => {
-                emit('confirm');
+                emit('close');
             },
         });
     }

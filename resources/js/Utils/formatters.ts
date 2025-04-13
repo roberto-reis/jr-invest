@@ -69,33 +69,52 @@ export function formatDate(dateStr: string, includeTime: boolean = false): strin
     if (!dateStr) return '';
 
     try {
-        const date = new Date(dateStr);
+        // Se a data já está no formato DD/MM/YYYY, apenas retorna
+        if (dateStr.match(/^\d{2}\/\d{2}\/\d{4}/)) {
+            return dateStr;
+        }
+
+        // Para datas em formato ISO, vamos tratar com cuidado o problema de timezone
+        let date: Date;
+
+        // Verifica se a data já tem 'T' (formato ISO)
+        if (dateStr.includes('T')) {
+            // Data ISO completa com tempo - usar diretamente
+            date = new Date(dateStr);
+        } else if (dateStr.includes('-')) {
+            // Data em formato YYYY-MM-DD sem tempo
+            // Adiciona T00:00:00 para evitar que o JS interprete como UTC e subtrai horas
+            const [year, month, day] = dateStr.split('-');
+            date = new Date(`${year}-${month}-${day}T00:00:00`);
+
+            // Ajusta a data para o fuso horário local
+            date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+        } else {
+            // Outro formato, deixa o JS interpretar
+            date = new Date(dateStr);
+        }
 
         // Verifica se a data é válida
         if (isNaN(date.getTime())) {
-            // Tenta interpretar datas no formato DD/MM/YYYY
-            if (dateStr.includes('/')) {
-                const parts = dateStr.split('/');
-                if (parts.length === 3) {
-                    const day = parseInt(parts[0], 10);
-                    const month = parseInt(parts[1], 10) - 1; // Mês em JavaScript é base 0
-                    const year = parseInt(parts[2], 10);
-                    const dateObj = new Date(year, month, day);
-
-                    return includeTime
-                        ? dateObj.toLocaleString('pt-BR')
-                        : dateObj.toLocaleDateString('pt-BR');
-                }
-            }
-            return dateStr; // Retorna a string original se não conseguir parseá-la
+            return dateStr; // Retorna a string original em caso de data inválida
         }
 
-        // Formata a data usando o Intl.DateTimeFormat
-        return includeTime
-            ? date.toLocaleString('pt-BR')
-            : date.toLocaleDateString('pt-BR');
+        // Extrai os componentes da data manualmente para evitar problemas de timezone
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+
+        // Formata no estilo brasileiro
+        if (includeTime) {
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            const seconds = date.getSeconds().toString().padStart(2, '0');
+            return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+        }
+
+        return `${day}/${month}/${year}`;
     } catch (error) {
-        console.error('Error formatting date:', error);
+        console.error('Error formatting date:', error, dateStr);
         return dateStr; // Retorna a string original em caso de erro
     }
 }

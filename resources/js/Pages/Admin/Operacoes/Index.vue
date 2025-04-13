@@ -69,11 +69,6 @@ const handleExcluirOperacao = (operacao: Operacao) => {
     showExcluirOperacaoModal.value = true;
 };
 
-const handleConfirmarExclusao = () => {
-    // Aqui você implementa a lógica para excluir a operação
-    console.log('Excluindo operação:', operacaoSelecionada.value);
-    showExcluirOperacaoModal.value = false;
-};
 </script>
 
 <template>
@@ -267,7 +262,6 @@ const handleConfirmarExclusao = () => {
             :show="showExcluirOperacaoModal"
             :operacao="operacaoSelecionada"
             @close="showExcluirOperacaoModal = false"
-            @confirm="handleConfirmarExclusao"
         />
     </AuthenticatedLayout>
 </template>

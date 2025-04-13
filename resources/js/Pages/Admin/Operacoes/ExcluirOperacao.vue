@@ -3,6 +3,8 @@ import Modal from '@/Components/Modal.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Operacao } from '@/types';
+import { formatCurrency, formatNumber, formatDate } from '@/Utils/formatters';
+import { useForm } from '@inertiajs/vue3';
 
 const props = defineProps<{
     show: boolean;
@@ -11,15 +13,23 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (e: 'close'): void;
-    (e: 'confirm'): void;
 }>();
 
 const closeModal = () => {
     emit('close');
 };
 
+const form = useForm({});
+
 const confirmarExclusao = () => {
-    emit('confirm');
+    if (props.operacao) {
+        form.delete(route('operacoes.delete', props.operacao.uid), {
+            preserveScroll: true,
+            onSuccess: () => {
+                emit('close');
+            },
+        });
+    }
 };
 </script>
 
@@ -42,11 +52,11 @@ const confirmarExclusao = () => {
                 <p class="mt-2">
                     <span class="font-medium">Detalhes da operação:</span>
                     <br>
-                    Quantidade: {{ operacao?.quantidade }}
+                    Quantidade: {{ operacao?.quantidade !== undefined ? formatNumber(operacao.quantidade) : '-' }}
                     <br>
-                    Valor Total: {{ operacao?.valor_total }}
+                    Valor Total: {{ operacao?.valor_total !== undefined ? formatCurrency(operacao.valor_total) : '-' }}
                     <br>
-                    Data: {{ operacao?.data_operacao }}
+                    Data: {{ operacao?.data_operacao ? formatDate(operacao.data_operacao) : '-' }}
                 </p>
                 <p class="mt-3 font-medium text-red-600 dark:text-red-400">
                     Esta ação não pode ser desfeita.

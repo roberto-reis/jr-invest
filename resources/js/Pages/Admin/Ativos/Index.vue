@@ -49,10 +49,6 @@ const handleEditarAtivo = (ativo: any) => {
     showEditarAtivoModal.value = true;
 };
 
-const handleSubmitEdicao = (data: any) => {
-    showEditarAtivoModal.value = false;
-};
-
 const handleVisualizarAtivo = (ativo: any) => {
     ativoSelecionado.value = ativo;
     showVisualizarAtivoModal.value = true;
@@ -61,10 +57,6 @@ const handleVisualizarAtivo = (ativo: any) => {
 const handleExcluirAtivo = (ativo: any) => {
     ativoSelecionado.value = ativo;
     showExcluirAtivoModal.value = true;
-};
-
-const handleConfirmarExclusao = () => {
-    showExcluirAtivoModal.value = false;
 };
 </script>
 
@@ -215,7 +207,6 @@ const handleConfirmarExclusao = () => {
             :ativo="ativoSelecionado"
             :classes="props.classes"
             @close="showEditarAtivoModal = false"
-            @submit="handleSubmitEdicao"
         />
 
         <!-- Modal de Visualizar Ativo -->
@@ -230,7 +221,6 @@ const handleConfirmarExclusao = () => {
             :show="showExcluirAtivoModal"
             :ativo="ativoSelecionado"
             @close="showExcluirAtivoModal = false"
-            @confirm="handleConfirmarExclusao"
         />
     </AuthenticatedLayout>
 </template>
