@@ -61,3 +61,26 @@ export interface Operacao {
     created_at?: string;
     updated_at?: string;
 }
+
+export interface Provento {
+    uid: string;
+    user_id: number;
+    ativo_uid: string;
+    tipo_provento_uid: string;
+    corretora_uid: string;
+    data_com: string;
+    data_pagamento: string;
+    quantidade_ativo: number;
+    valor: number;
+    yield_on_cost: number;
+    ativo_codigo: string;
+    tipo_provento_nome: string;
+    corretora_nome: string;
+    valor_total: number;
+}
+
+export interface TipoProvento {
+    uid: string;
+    nome: string;
+    nome_interno: string;
+}

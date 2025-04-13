@@ -18,9 +18,7 @@ class UpdateOperacaoRequest extends FormRequest
     public function prepareForValidation()
     {
         $this->merge([
-            'user_id' => Auth::user()->id,
-            'cotacao_preco' => (float) $this->input('cotacao_preco'),
-            'quantidade' => (float) $this->input('quantidade'),
+            'user_id' => Auth::user()->id
         ]);
     }
 

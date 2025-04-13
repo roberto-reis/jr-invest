@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CriarOperacaoRequest extends FormRequest
+class NovoProventoRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -18,14 +18,7 @@ class CriarOperacaoRequest extends FormRequest
     public function prepareForValidation()
     {
         $this->merge([
-            'user_id' => Auth::user()->id,
-        ]);
-
-        // Converte o preço para um número decimal
-        $this->merge([
-            'cotacao_preco' => (float) $this->input('cotacao_preco'),
-            'cotacao_preco' => (float) $this->input('cotacao_preco'),
-            'quantidade' => (float) $this->input('quantidade'),
+            'user_id' => Auth::user()->id
         ]);
     }
 
@@ -38,12 +31,13 @@ class CriarOperacaoRequest extends FormRequest
     {
         return [
             'user_id' => 'required|exists:users,id',
-            'ativo_uid' => 'required|string|exists:ativos,uid',
-            'tipo_operacao_uid' => 'required|string|exists:tipos_operacoes,uid',
-            'corretora_uid' => 'required|string|exists:corretoras,uid',
-            'cotacao_preco' => 'required|numeric',
-            'quantidade' => 'required|numeric',
-            'data_operacao' => 'required|date',
+            'ativo_uid' => 'required|exists:ativos,uid',
+            'tipo_provento_uid' => 'required|exists:tipos_proventos,uid',
+            'corretora_uid' => 'required|exists:corretoras,uid',
+            'data_com' => 'required|date:Y-m-d',
+            'data_pagamento' => 'required|date:Y-m-d',
+            'quantidade_ativo' => 'required|numeric',
+            'valor' => 'required|numeric',
         ];
     }
 

@@ -32,6 +32,13 @@ class Provento extends Model
         'yield_on_cost'
     ];
 
+    protected $appends = ['valor_total'];
+
+    public function getValorTotalAttribute()
+    {
+        return $this->valor * $this->attributes['quantidade_ativo'];
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_uid');
