@@ -14,7 +14,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (e: 'close'): void;
-    (e: 'submit', data: any): void;
 }>();
 
 const closeModal = () => {

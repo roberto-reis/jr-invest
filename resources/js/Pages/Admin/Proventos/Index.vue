@@ -1,16 +1,24 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import NovoRecebimento from './NovoRecebimento.vue';
 import VisualizarProvento from './VisualizarProvento.vue';
 import EditarProvento from './EditarProvento.vue';
 import ExcluirProvento from './ExcluirProvento.vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
+import { Provento, Ativo, TipoProvento, Corretora } from '@/types';
 
 const search = ref('');
 const currentPage = ref(1);
 const perPage = ref(10);
+
+const props = defineProps<{
+    proventos: Provento[];
+    ativos: Ativo[];
+    tiposProventos: TipoProvento[];
+    corretoras: Corretora[];
+}>();
 
 // Breadcrumbs data
 const breadcrumbItems = [
@@ -77,12 +85,6 @@ const showVisualizarProventoModal = ref(false);
 const showEditarProventoModal = ref(false);
 const showExcluirProventoModal = ref(false);
 const proventoSelecionado = ref(null);
-
-const handleNovoRecebimento = (data: any) => {
-    // Aqui você implementa a lógica para salvar o novo recebimento
-    console.log('Novo recebimento:', data);
-    showNovoRecebimentoModal.value = false;
-};
 
 const handleVisualizarProvento = (provento: any) => {
     proventoSelecionado.value = provento;
@@ -306,7 +308,9 @@ const handleConfirmarExclusao = () => {
         <NovoRecebimento
             :show="showNovoRecebimentoModal"
             @close="showNovoRecebimentoModal = false"
-            @submit="handleNovoRecebimento"
+            :ativos="props.ativos"
+            :tiposProventos="props.tiposProventos"
+            :corretoras="props.corretoras"
         />
 
         <!-- Modal de Visualizar Provento -->
