@@ -9,13 +9,6 @@ class NovoRebalanceamentoClasseAction
 {
     public function execute(array $data)
     {
-        // Verificar se classe já existe percentual
-        $classe = RebalanceamentoClasse::where('user_id', $data['user_id'])
-                    ->where('classe_ativo_uid', $data['classe_ativo_uid'])->first();
-        if ($classe) {
-            throw new RebalanceamentoException('Classe já existe percentual: ' . $classe->percentual . '%');
-        }
-
         // Validar a classe o percentual não pode atingir maior 100%
         $percentualTotal = RebalanceamentoClasse::where('user_id', $data['user_id'])->sum('percentual');
 

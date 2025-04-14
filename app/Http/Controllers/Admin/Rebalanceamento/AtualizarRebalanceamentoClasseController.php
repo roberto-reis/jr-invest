@@ -25,7 +25,11 @@ class AtualizarRebalanceamentoClasseController
                     Rule::unique('rebalanceamento_classes')->where('user_id', Auth::user()->id)->ignore($uid, 'uid'),
                 ],
                 'percentual' => ['required', 'numeric', 'min:0', 'max:100'],
-            ]);
+            ],
+            [
+                'classe_ativo_uid.unique' => 'A classe já está sendo utilizada em outro rebalanceamento.',
+            ]
+        );
 
             $atualizarRebalanceamento->execute($dataValidados, $uid);
 
