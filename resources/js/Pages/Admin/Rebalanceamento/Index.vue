@@ -86,10 +86,6 @@ const excluirAtivo = (ativo: any) => {
     showExcluirAtivoModal.value = true;
 };
 
-const handleSubmitEdicaoAtivo = (data: any) => {
-    showEditarAtivoModal.value = false;
-};
-
 </script>
 
 <template>
@@ -340,8 +336,8 @@ const handleSubmitEdicaoAtivo = (data: any) => {
         <EditarAtivoRebalanceamento
             :show="showEditarAtivoModal"
             :ativo="ativoSelecionado"
+            :ativos="props.ativos"
             @close="showEditarAtivoModal = false"
-            @submit="handleSubmitEdicaoAtivo"
         />
 
         <!-- Modal de Excluir Classe de Rebalanceamento -->

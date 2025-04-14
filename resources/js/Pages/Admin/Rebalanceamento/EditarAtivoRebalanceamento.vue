@@ -6,40 +6,31 @@ import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import DefaultButton from '@/Components/DefaultButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { formatNumber } from '@/Utils/formatters';
+import { RebalanceamentoAtivo, Ativo } from '@/types';
+import { useForm } from '@inertiajs/vue3';
 
 const props = defineProps<{
     show: boolean;
-    ativo?: {
-        uid?: string;
-        ativo_codigo?: string;
-        classe_nome?: string;
-        percentual?: number;
-        ativo_uid?: string;
-    } | null;
+    ativo?: RebalanceamentoAtivo | null;
+    ativos: Ativo[];
 }>();
 
 const emit = defineEmits<{
     (e: 'close'): void;
-    (e: 'submit', data: any): void;
 }>();
 
-const form = ref({
+const form = useForm({
     uid: '',
-    ativo: '',
-    classe: '',
-    percentualMeta: '',
+    ativo_uid: '',
+    percentual: '',
 });
 
 // Atualiza o formulário quando o ativo é passado para o modal
 watch(() => props.ativo, (novoAtivo) => {
     if (novoAtivo) {
-        form.value = {
-            uid: novoAtivo.uid || '',
-            ativo: novoAtivo.ativo_codigo || '',
-            classe: novoAtivo.classe_nome || '',
-            percentualMeta: novoAtivo.percentual ? String(novoAtivo.percentual) : '',
-        };
+        form.uid = novoAtivo.uid || '';
+        form.ativo_uid = novoAtivo.ativo_uid || '';
+        form.percentual = novoAtivo.percentual ? String(novoAtivo.percentual) : '';
     }
 }, { immediate: true });
 
@@ -48,7 +39,11 @@ const closeModal = () => {
 };
 
 const submit = () => {
-    emit('submit', form.value);
+    form.put(route('rebalanceamento-ativo.update', form.uid), {
+        onSuccess: () => {
+            emit('close');
+        },
+    });
 };
 </script>
 
@@ -65,39 +60,29 @@ const submit = () => {
             </h2>
 
             <form @submit.prevent="submit" class="mt-6 space-y-6">
-                <div>
-                    <InputLabel for="ativo" value="Ativo" />
-                    <TextInput
+                <div class="flex-1">
+                    <label for="ativo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ativo</label>
+                    <select
                         id="ativo"
-                        v-model="form.ativo"
-                        class="mt-1 block w-full"
-                        disabled
-                    />
-                    <InputError class="mt-2" />
-                </div>
-
-                <div>
-                    <InputLabel for="classe" value="Classe" />
-                    <TextInput
-                        id="classe"
-                        v-model="form.classe"
-                        class="mt-1 block w-full"
-                        disabled
-                    />
-                    <InputError class="mt-2" />
-                </div>
-
-                <div>
-                    <InputLabel for="percentualMeta" value="% Meta/Objetivo" />
-                    <TextInput
-                        id="percentualMeta"
-                        type="text"
-                        class="mt-1 block w-full"
-                        v-model="form.percentualMeta"
-                        placeholder="Ex: 15,00"
+                        v-model="form.ativo_uid"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
                         required
+                    >
+                        <option value="">Selecione um ativo...</option>
+                        <option v-for="ativo in props.ativos" :key="ativo.uid" :value="ativo.uid">{{ ativo.codigo }}</option>
+                    </select>
+                    <InputError class="mt-2" v-if="form.errors.ativo_uid" :message="form.errors.ativo_uid" />
+                </div>
+
+                <div>
+                    <InputLabel for="percentual" value="% Meta/Objetivo" />
+                    <TextInput
+                        id="percentual"
+                        v-model="form.percentual"
+                        class="mt-1 block w-full"
+                        placeholder="Ex: 15,00"
                     />
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" v-if="form.errors.percentual" :message="form.errors.percentual" />
                 </div>
 
                 <div class="mt-6 flex justify-end gap-3">
