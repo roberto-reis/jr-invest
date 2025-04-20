@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\SalvarAcoesEFIICotacaoJob;
 use App\Models\ClasseAtivo;
 use Illuminate\Console\Command;
 
@@ -42,7 +43,7 @@ class CotacaoCammand extends Command
                     break;
                 case 'cripto':
                 case 'stablecoin':
-                    SalvarCriptoAtivosCotacaoJob::dispatch($classeAtivo->ativos);
+                    // SalvarCriptoAtivosCotacaoJob::dispatch($classeAtivo->ativos);
                     break;
             }
         }
