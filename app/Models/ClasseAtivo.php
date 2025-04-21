@@ -24,6 +24,6 @@ class ClasseAtivo extends Model
 
     public function ativos()
     {
-        return $this->hasMany(Ativo::class, 'classe_ativo_id', 'id');
+        return $this->hasMany(Ativo::class, 'classe_ativo_uid', 'uid');
     }
 }

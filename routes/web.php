@@ -22,6 +22,12 @@ use App\Http\Controllers\Admin\ClasseAtivo\UpdateClasseAtivoController;
 use App\Http\Controllers\Admin\ClasseAtivo\RemoverClasseAtivoController;
 use App\Http\Controllers\Admin\ClasseAtivo\ListarClassesAtivosController;
 use App\Http\Controllers\Admin\Rebalanceamento\ListarRebalanceamentoController;
+use App\Http\Controllers\Admin\Rebalanceamento\NovoRebalanceamentoAtivoController;
+use App\Http\Controllers\Admin\Rebalanceamento\NovoRebalanceamentoClasseController;
+use App\Http\Controllers\Admin\Rebalanceamento\RemoverRebalanceamentoAtivoController;
+use App\Http\Controllers\Admin\Rebalanceamento\RemoverRebalanceamentoClasseController;
+use App\Http\Controllers\Admin\Rebalanceamento\AtualizarRebalanceamentoAtivoController;
+use App\Http\Controllers\Admin\Rebalanceamento\AtualizarRebalanceamentoClasseController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -73,6 +79,12 @@ Route::middleware('auth')->prefix('admin')->group(function () {
 
     Route::prefix('rebalanceamento')->group(function () {
         Route::get('/', ListarRebalanceamentoController::class)->name('rebalanceamento.index');
+        Route::post('/ativo', NovoRebalanceamentoAtivoController::class)->name('rebalanceamento-ativo.store');
+        Route::put('/ativo/{uid}', AtualizarRebalanceamentoAtivoController::class)->name('rebalanceamento-ativo.update');
+        Route::delete('/ativo/{uid}', RemoverRebalanceamentoAtivoController::class)->name('rebalanceamento-ativo.delete');
+        Route::post('/classe', NovoRebalanceamentoClasseController::class)->name('rebalanceamento-classe.store');
+        Route::put('/classe/{uid}', AtualizarRebalanceamentoClasseController::class)->name('rebalanceamento-classe.update');
+        Route::delete('/classe/{uid}', RemoverRebalanceamentoClasseController::class)->name('rebalanceamento-classe.delete');
     });
 
     Route::prefix('portfolio')->group(function () {

@@ -6,41 +6,45 @@ import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import DefaultButton from '@/Components/DefaultButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import { formatNumber } from '@/Utils/formatters';
+import { RebalanceamentoClasse, ClasseAtivo } from '@/types';
+import { useForm } from '@inertiajs/vue3';
 
 const props = defineProps<{
     show: boolean;
-    classe?: {
-        classe: string;
-        percentualMeta: string;
-    } | null;
+    classe?: RebalanceamentoClasse | null;
+    classeAtivos: ClasseAtivo[];
 }>();
 
 const emit = defineEmits<{
     (e: 'close'): void;
-    (e: 'submit', data: any): void;
 }>();
 
 const closeModal = () => {
     emit('close');
 };
 
-const form = ref({
-    classe: '',
-    percentualMeta: '',
+const form = useForm({
+    uid: '',
+    classe_ativo_uid: '',
+    percentual: '',
 });
 
 // Atualiza o formulário quando a classe é passada para o modal
 watch(() => props.classe, (novaClasse) => {
     if (novaClasse) {
-        form.value = {
-            classe: novaClasse.classe,
-            percentualMeta: novaClasse.percentualMeta.replace('%', ''),
-        };
+        form.uid = novaClasse.uid || '';
+        form.classe_ativo_uid = novaClasse.classe_ativo_uid || '';
+        form.percentual = novaClasse.percentual ? String(novaClasse.percentual) : '';
     }
 }, { immediate: true });
 
 const submit = () => {
-    emit('submit', form.value);
+    form.put(route('rebalanceamento-classe.update', form.uid), {
+        onSuccess: () => {
+            emit('close');
+        },
+    });
 };
 </script>
 
@@ -57,36 +61,31 @@ const submit = () => {
             </h2>
 
             <form @submit.prevent="submit" class="mt-6 space-y-6">
-                <div>
-                    <InputLabel for="classe" value="Classe" />
+                <div class="flex-1">
+                    <label for="classe" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Classe</label>
                     <select
                         id="classe"
-                        v-model="form.classe"
+                        v-model="form.classe_ativo_uid"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
                         required
-                        disabled
                     >
                         <option value="">Selecione uma classe...</option>
-                        <option value="ACAO">ACAO</option>
-                        <option value="FII">FII</option>
-                        <option value="CRIPTO">CRIPTO</option>
-                        <option value="STABLECOIN">STABLECOIN</option>
-                        <option value="RENDA_FIXA">RENDA FIXA</option>
+                        <option v-for="classe in props.classeAtivos" :key="classe.uid" :value="classe.uid">{{ classe.nome }}</option>
                     </select>
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" v-if="form.errors.classe_ativo_uid" :message="form.errors.classe_ativo_uid" />
                 </div>
 
                 <div>
-                    <InputLabel for="percentualMeta" value="% Meta/Objetivo" />
+                    <InputLabel for="percentual" value="% Meta/Objetivo" />
                     <TextInput
-                        id="percentualMeta"
+                        id="percentual"
                         type="text"
                         class="mt-1 block w-full"
-                        v-model="form.percentualMeta"
+                        v-model="form.percentual"
                         placeholder="Ex: 15,00"
                         required
                     />
-                    <InputError class="mt-2" />
+                    <InputError class="mt-2" v-if="form.errors.percentual" :message="form.errors.percentual" />
                 </div>
 
                 <div class="mt-6 flex justify-end gap-3">
