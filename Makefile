@@ -10,7 +10,7 @@ BLUE = \033[34m
 CONTAINER_APP = jrinvest_app
 CONTAINER_NODE = jrinvest_node
 
-.PHONY: help up down restart build bash logs ps artisan migrate migrate-fresh seed test npm-install npm-dev npm-build
+.PHONY: help up down restart build bash logs ps artisan migrate migrate-fresh seed test npm-install npm-dev npm-build queue queue-listen queue-retry queue-failed
 
 help: ## Exibe ajuda com os comandos disponíveis
 	@echo "${BLUE}Uso:${RESET}"
@@ -107,3 +107,32 @@ composer-update: ## Atualiza as dependências do Composer
 # Comando para inicialização completa do projeto
 init: up composer-install npm-install migrate ## Inicializa o projeto completo (containers, dependências e migrações)
 	@echo "${GREEN}Projeto inicializado com sucesso!${RESET}"
+
+# Comandos para filas
+queue: ## Executa o worker de filas (uso: make queue [queue="high,default,low"])
+	@echo "${GREEN}Iniciando worker de filas...${RESET}"
+	@if test -n "$(queue)"; then \
+		echo "${GREEN}Processando filas: $(queue)${RESET}"; \
+		docker exec -it $(CONTAINER_APP) php artisan queue:work --queue=$(queue); \
+	else \
+		echo "${GREEN}Processando todas as filas${RESET}"; \
+		docker exec -it $(CONTAINER_APP) php artisan queue:work; \
+	fi
+
+queue-listen: ## Executa o listener de filas (uso: make queue-listen [queue="high,default,low"])
+	@echo "${GREEN}Iniciando listener de filas...${RESET}"
+	@if test -n "$(queue)"; then \
+		echo "${GREEN}Escutando filas: $(queue)${RESET}"; \
+		docker exec -it $(CONTAINER_APP) php artisan queue:listen --queue=$(queue); \
+	else \
+		echo "${GREEN}Escutando todas as filas${RESET}"; \
+		docker exec -it $(CONTAINER_APP) php artisan queue:listen; \
+	fi
+
+queue-retry: ## Tenta novamente jobs que falharam
+	@echo "${GREEN}Tentando novamente jobs que falharam...${RESET}"
+	docker exec -it $(CONTAINER_APP) php artisan queue:retry all
+
+queue-failed: ## Lista jobs que falharam
+	@echo "${GREEN}Listando jobs que falharam...${RESET}"
+	docker exec -it $(CONTAINER_APP) php artisan queue:failed
