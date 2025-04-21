@@ -24,7 +24,7 @@ class BrApiService
     public function getCotacoes(array $ativos)
     {
         $ativosImploded = implode(',', $ativos);
-        $endpoint = "/quote/URPR11";
+        $endpoint = "/quote/{$ativosImploded}";
 
         $params = ['token' => $this->apiKey];
 
@@ -33,6 +33,26 @@ class BrApiService
         $response->throw();
 
         return $response->json('results');
+    }
+
+    /**
+     * Busca cotações de criptoativos na API BrAPI
+     *
+     * @param array $symbols Array de códigos de criptoativos (ex: ['BTC', 'ETH', 'XRP'])
+     * @return array Array com as cotações
+     */
+    public function getCriptoCotacoes(array $symbols)
+    {
+        $symbolsImploded = implode(',', $symbols);
+        $endpoint = "/v2/crypto?coin={$symbolsImploded}";
+
+        $params = ['token' => $this->apiKey];
+
+        $response = Http::get($this->baseUrl . $endpoint, $params);
+
+        $response->throw();
+
+        return $response->json('coins') ?? [];
     }
 
     /**

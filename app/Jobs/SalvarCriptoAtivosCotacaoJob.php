@@ -8,12 +8,14 @@ use Illuminate\Bus\Queueable;
 use App\Services\BrApiService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+
+
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class SalvarAcoesEFIICotacaoJob implements ShouldQueue
+class SalvarCriptoAtivosCotacaoJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -28,7 +30,7 @@ class SalvarAcoesEFIICotacaoJob implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param Collection $ativos Coleção de ativos (Ações e FIIs)
+     * @param Collection $ativos Coleção de criptoativos
      */
     public function __construct(Collection $ativos)
     {
@@ -40,12 +42,12 @@ class SalvarAcoesEFIICotacaoJob implements ShouldQueue
      */
     public function handle(BrApiService $brApiService)
     {
-        Log::info("Iniciando processamento de cotações, tentativa: " . $this->attempts());
+        Log::info("Iniciando processamento de cotações de criptoativos, tentativa: " . $this->attempts());
 
         $this->ativos->chunk($this->sizeChunk)->each(function ($loteAtivos) use ($brApiService) {
             $codigos = $loteAtivos->pluck('codigo')->toArray();
 
-            $cotacoes = $brApiService->getCotacoes($codigos);
+            $cotacoes = $brApiService->getCriptoCotacoes($codigos);
 
             foreach ($cotacoes as $cotacao) {
                 $this->processarCotacao($loteAtivos, $cotacao);
@@ -53,8 +55,10 @@ class SalvarAcoesEFIICotacaoJob implements ShouldQueue
         });
     }
 
+
+
     /**
-     * Processa e salva a cotação de um ativo
+     * Processa e salva a cotação de um criptoativo
      *
      * @param Collection $ativos
      * @param array $cotacaoData
@@ -62,11 +66,11 @@ class SalvarAcoesEFIICotacaoJob implements ShouldQueue
      */
     protected function processarCotacao(Collection $ativos, array $cotacaoData)
     {
-        if (!isset($cotacaoData['symbol']) || !isset($cotacaoData['regularMarketPrice'])) {
-            throw new \Exception("Dados da cotação incompletos: 'symbol' ou 'regularMarketPrice' ausente.");
+        if (!isset($cotacaoData['coin']) || !isset($cotacaoData['regularMarketPrice'])) {
+            throw new \Exception("Dados da cotação incompletos: 'coin' ou 'regularMarketPrice' ausente.");
         }
 
-        $ativo = $ativos->firstWhere('codigo', $cotacaoData['symbol']);
+        $ativo = $ativos->firstWhere('codigo', $cotacaoData['coin']);
 
         Cotacao::create([
             'ativo_uid' => $ativo->uid,
@@ -75,10 +79,14 @@ class SalvarAcoesEFIICotacaoJob implements ShouldQueue
         ]);
     }
 
+    /**
+     * Handle a job failure.
+     */
     public function failed(Throwable $exception): void
     {
-        Log::error('Erro ao processar cotação', [
-            'exception' => $exception
+        Log::error('Erro ao processar cotação de criptoativos', [
+            'exception' => $exception->getMessage(),
+            'trace' => $exception->getTraceAsString()
         ]);
     }
 }
