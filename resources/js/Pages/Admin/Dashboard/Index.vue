@@ -3,7 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import PatrimonioChart from '@/Components/PatrimonioChart.vue';
 import ProventosChart from '@/Components/ProventosChart.vue';
-
+import ComposicaoCarteiraChart from '@/Components/ComposicaoCarteiraChart.vue';
 
 </script>
 
@@ -61,6 +61,20 @@ import ProventosChart from '@/Components/ProventosChart.vue';
             <!-- Gráfico de Proventos -->
             <div class="mb-6">
                 <ProventosChart />
+            </div>
+
+            <!-- Composição da Carteira e Últimas Operações -->
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <!-- Composição da Carteira -->
+                <div>
+                    <ComposicaoCarteiraChart />
+                </div>
+
+                <!-- Últimas Operações -->
+                <div class="px-4 pt-4 bg-white rounded-lg shadow dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Últimas Operações</h2>
+                    <!-- Conteúdo para Últimas Operações será adicionado posteriormente -->
+                </div>
             </div>
 
         </div>
