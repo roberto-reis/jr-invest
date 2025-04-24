@@ -4,6 +4,7 @@ import { Head } from '@inertiajs/vue3';
 import PatrimonioChart from '@/Components/PatrimonioChart.vue';
 import ProventosChart from '@/Components/ProventosChart.vue';
 import ComposicaoCarteiraChart from '@/Components/ComposicaoCarteiraChart.vue';
+import UltimasOperacoesTable from '@/Components/UltimasOperacoesTable.vue';
 
 </script>
 
@@ -13,7 +14,7 @@ import ComposicaoCarteiraChart from '@/Components/ComposicaoCarteiraChart.vue';
     <AuthenticatedLayout>
         <div>
             <!-- Cards de Rentabilidade -->
-            <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3">
+            <div class="grid grid-cols-1 gap-4 mb-5 md:grid-cols-3">
                 <!-- Card Rentabilidade (Dia) -->
                 <div class="p-4 bg-white rounded-lg shadow dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                     <div class="text-center">
@@ -54,25 +55,25 @@ import ComposicaoCarteiraChart from '@/Components/ComposicaoCarteiraChart.vue';
                 </div>
             </div>
 
-            <div class="mb-6">
+            <div class="mb-5">
                 <PatrimonioChart />
             </div>
 
             <!-- Gráfico de Proventos -->
-            <div class="mb-6">
+            <div class="mb-5">
                 <ProventosChart />
             </div>
 
             <!-- Composição da Carteira e Últimas Operações -->
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div class="grid grid-cols-1 gap-4 mb-5 md:grid-cols-2">
                 <!-- Composição da Carteira -->
                 <div>
                     <ComposicaoCarteiraChart />
                 </div>
 
-                <!-- Últimas Operações -->
                 <div class="px-4 pt-4 bg-white rounded-lg shadow dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                     <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Últimas Operações</h2>
+                    <UltimasOperacoesTable />
                     <!-- Conteúdo para Últimas Operações será adicionado posteriormente -->
                 </div>
             </div>
