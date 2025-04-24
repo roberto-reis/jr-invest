@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Link } from '@inertiajs/vue3';
+
 defineProps<{
     items: Array<{
         label: string;
@@ -11,13 +13,13 @@ defineProps<{
     <div class="text-sm text-gray-600 dark:text-gray-400 flex items-center">
         <template v-for="(item, index) in items" :key="index">
             <!-- Link if URL is provided -->
-            <a
+            <Link
                 v-if="item.url"
                 :href="item.url"
                 class="hover:text-blue-500 dark:hover:text-blue-400"
             >
                 {{ item.label }}
-            </a>
+            </Link>
 
             <!-- Plain text if no URL -->
             <span

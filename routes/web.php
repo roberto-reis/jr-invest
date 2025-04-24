@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\Ativo\NovoAtivoController;
 use App\Http\Controllers\Admin\Ativo\UpdateAtivoController;
 use App\Http\Controllers\Admin\Ativo\ListarAtivosController;
 use App\Http\Controllers\Admin\Ativo\RemoverAtivoController;
+use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\Operacao\NovaOperacaoController;
 use App\Http\Controllers\Admin\Provento\NovoProventoController;
 use App\Http\Controllers\Admin\Operacao\UpdateOperacaoController;
@@ -24,6 +25,7 @@ use App\Http\Controllers\Admin\ClasseAtivo\ListarClassesAtivosController;
 use App\Http\Controllers\Admin\Rebalanceamento\ListarRebalanceamentoController;
 use App\Http\Controllers\Admin\Rebalanceamento\NovoRebalanceamentoAtivoController;
 use App\Http\Controllers\Admin\Rebalanceamento\NovoRebalanceamentoClasseController;
+use App\Http\Controllers\Admin\Rebalanceamento\ListarConfigRebalanceamentoController;
 use App\Http\Controllers\Admin\Rebalanceamento\RemoverRebalanceamentoAtivoController;
 use App\Http\Controllers\Admin\Rebalanceamento\RemoverRebalanceamentoClasseController;
 use App\Http\Controllers\Admin\Rebalanceamento\AtualizarRebalanceamentoAtivoController;
@@ -38,10 +40,6 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -49,6 +47,11 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->prefix('admin')->group(function () {
+
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/', DashboardController::class)->name('dashboard');
+    });
+
     Route::prefix('classes-ativos')->group(function () {
         Route::get('/', ListarClassesAtivosController::class)->name('classes-ativos.index');
         Route::post('/', NovaClasseAtivoController::class)->name('classes-ativos.store');
@@ -79,6 +82,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
 
     Route::prefix('rebalanceamento')->group(function () {
         Route::get('/', ListarRebalanceamentoController::class)->name('rebalanceamento.index');
+        Route::get('/config', ListarConfigRebalanceamentoController::class)->name('rebalanceamento.config');
         Route::post('/ativo', NovoRebalanceamentoAtivoController::class)->name('rebalanceamento-ativo.store');
         Route::put('/ativo/{uid}', AtualizarRebalanceamentoAtivoController::class)->name('rebalanceamento-ativo.update');
         Route::delete('/ativo/{uid}', RemoverRebalanceamentoAtivoController::class)->name('rebalanceamento-ativo.delete');
