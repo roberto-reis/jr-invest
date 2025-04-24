@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\Ativo\NovoAtivoController;
 use App\Http\Controllers\Admin\Ativo\UpdateAtivoController;
 use App\Http\Controllers\Admin\Ativo\ListarAtivosController;
 use App\Http\Controllers\Admin\Ativo\RemoverAtivoController;
+use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\Operacao\NovaOperacaoController;
 use App\Http\Controllers\Admin\Provento\NovoProventoController;
 use App\Http\Controllers\Admin\Operacao\UpdateOperacaoController;
@@ -38,10 +39,6 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -49,6 +46,11 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->prefix('admin')->group(function () {
+
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/', DashboardController::class)->name('dashboard');
+    });
+
     Route::prefix('classes-ativos')->group(function () {
         Route::get('/', ListarClassesAtivosController::class)->name('classes-ativos.index');
         Route::post('/', NovaClasseAtivoController::class)->name('classes-ativos.store');

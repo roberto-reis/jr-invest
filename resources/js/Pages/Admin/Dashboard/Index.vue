@@ -2,6 +2,9 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import PatrimonioChart from '@/Components/PatrimonioChart.vue';
+import ProventosChart from '@/Components/ProventosChart.vue';
+
+
 </script>
 
 <template>
@@ -51,8 +54,15 @@ import PatrimonioChart from '@/Components/PatrimonioChart.vue';
                 </div>
             </div>
 
-            <!-- Gráfico de Evolução Patrimonial -->
-            <PatrimonioChart />
+            <div class="mb-6">
+                <PatrimonioChart />
+            </div>
+
+            <!-- Gráfico de Proventos -->
+            <div class="mb-6">
+                <ProventosChart />
+            </div>
+
         </div>
     </AuthenticatedLayout>
 </template>
