@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\ClasseAtivo\ListarClassesAtivosController;
 use App\Http\Controllers\Admin\Rebalanceamento\ListarRebalanceamentoController;
 use App\Http\Controllers\Admin\Rebalanceamento\NovoRebalanceamentoAtivoController;
 use App\Http\Controllers\Admin\Rebalanceamento\NovoRebalanceamentoClasseController;
+use App\Http\Controllers\Admin\Rebalanceamento\ListarConfigRebalanceamentoController;
 use App\Http\Controllers\Admin\Rebalanceamento\RemoverRebalanceamentoAtivoController;
 use App\Http\Controllers\Admin\Rebalanceamento\RemoverRebalanceamentoClasseController;
 use App\Http\Controllers\Admin\Rebalanceamento\AtualizarRebalanceamentoAtivoController;
@@ -81,6 +82,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
 
     Route::prefix('rebalanceamento')->group(function () {
         Route::get('/', ListarRebalanceamentoController::class)->name('rebalanceamento.index');
+        Route::get('/config', ListarConfigRebalanceamentoController::class)->name('rebalanceamento.config');
         Route::post('/ativo', NovoRebalanceamentoAtivoController::class)->name('rebalanceamento-ativo.store');
         Route::put('/ativo/{uid}', AtualizarRebalanceamentoAtivoController::class)->name('rebalanceamento-ativo.update');
         Route::delete('/ativo/{uid}', RemoverRebalanceamentoAtivoController::class)->name('rebalanceamento-ativo.delete');
