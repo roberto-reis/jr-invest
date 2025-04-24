@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import PatrimonioChart from '@/Components/PatrimonioChart.vue';
-import ProventosChart from '@/Components/ProventosChart.vue';
-import ComposicaoCarteiraChart from '@/Components/ComposicaoCarteiraChart.vue';
-import UltimasOperacoesTable from '@/Components/UltimasOperacoesTable.vue';
+import PatrimonioChart from '@/Pages/Admin/Dashboard/PatrimonioChart.vue';
+import ProventosChart from '@/Pages/Admin/Dashboard/ProventosChart.vue';
+import ComposicaoCarteiraChart from '@/Pages/Admin/Dashboard/ComposicaoCarteiraChart.vue';
+import UltimasOperacoesTable from '@/Pages/Admin/Dashboard/UltimasOperacoesTable.vue';
 
 </script>
 
@@ -70,7 +70,6 @@ import UltimasOperacoesTable from '@/Components/UltimasOperacoesTable.vue';
                 <div>
                     <ComposicaoCarteiraChart />
                 </div>
-
                 <div class="px-4 pt-4 bg-white rounded-lg shadow dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                     <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Últimas Operações</h2>
                     <UltimasOperacoesTable />
