@@ -23,7 +23,8 @@ class MontaCarteiraListener implements ShouldQueue
      */
     public function handle(ConsolidaCarteiraEvent $event): void
     {
-        $operacoesAgrupadasAtivos = Operacao::query()
+        $operacoesAgrupadasAtivos = Operacao::select('operacoes.*', 'tipos_operacoes.nome_interno AS tipo_operacao')
+            ->join('tipos_operacoes', 'operacoes.tipo_operacao_uid', '=', 'tipos_operacoes.uid')
             ->where('user_id', $event->userId)
             ->get()
             ->groupBy('ativo_uid');
