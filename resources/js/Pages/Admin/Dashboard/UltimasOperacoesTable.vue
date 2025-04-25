@@ -123,7 +123,7 @@ const operacoes = ref<Operacao[]>([
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-                <tr v-for="operacao in operacoes" :key="operacao.id" class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <tr v-for="operacao in operacoes" :key="operacao.id" class="hover:bg-gray-100 dark:hover:bg-gray-700">
                     <td class="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                         {{ operacao.ativo }}
                     </td>
