@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('uid')->primary();
             $table->string('nome', 50)->unique();
             $table->string('nome_interno', 50)->index();
-            $table->string('descricao', 60)->index();
+            $table->longText('descricao');
             $table->timestamps();
         });
     }

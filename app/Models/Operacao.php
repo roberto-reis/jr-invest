@@ -55,10 +55,29 @@ class Operacao extends Model
         return $this->belongsTo(Corretora::class, 'corretora_uid');
     }
 
-
     public function getValorTotalAttribute()
     {
         return $this->cotacao_preco * $this->attributes['quantidade'];
+    }
+
+    public function scopeJoinAtivo($query)
+    {
+        return $query->join('ativos', 'operacoes.ativo_uid', '=', 'ativos.uid');
+    }
+
+    public function scopeJoinTipoOperacao($query)
+    {
+        return $query->join('tipos_operacoes', 'operacoes.tipo_operacao_uid', '=', 'tipos_operacoes.uid');
+    }
+
+    public function scopeJoinCorretora($query)
+    {
+        return $query->join('corretoras', 'operacoes.corretora_uid', '=', 'corretoras.uid');
+    }
+
+    public function scopeJoinClasseAtivo($query)
+    {
+        return $query->join('classes_ativos', 'ativos.classe_ativo_uid', '=', 'classes_ativos.uid');
     }
 
 }

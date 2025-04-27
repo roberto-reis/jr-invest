@@ -2,7 +2,13 @@
 import { ref, onMounted } from 'vue';
 import VueApexCharts from 'vue3-apexcharts';
 
-// Dados de exemplo para o gru00e1fico de composiu00e7u00e3o da carteira
+const props = defineProps({
+    carteiraTotalPercentual: {
+        type: Object,
+        default: () => ({})
+    }
+});
+
 const composicaoOptions = ref({
     chart: {
         type: 'donut',
@@ -33,7 +39,7 @@ const composicaoOptions = ref({
             donut: {
                 size: '65%',
                 background: 'transparent',
-                
+
                 labels: {
                     show: false, // Mostar label total
                     name: {
@@ -79,7 +85,7 @@ const composicaoOptions = ref({
         },
     },
     colors: ['#0ea5e9', '#10b981', '#6366f1', '#8b5cf6', '#f59e0b'],
-    labels: ['FIIs', 'AÇÕES', 'FIAGRO', 'FI-INFRA', 'OUTROS'],
+    labels: Object.keys(props.carteiraTotalPercentual),
     legend: {
         show: true,
         position: 'bottom',
@@ -124,10 +130,6 @@ const composicaoOptions = ref({
     }]
 });
 
-// Dados de exemplo para o gru00e1fico (valores por tipo de ativo)
-const composicaoSeries = ref([125000, 75000, 30000, 15000, 5250.66]);
-
-// Funu00e7u00e3o para alternar entre modo claro e escuro no gru00e1fico
 const updateChartTheme = (isDark) => {
     composicaoOptions.value = {
         ...composicaoOptions.value,
@@ -189,7 +191,7 @@ onMounted(() => {
             <VueApexCharts
                 height="350"
                 :options="composicaoOptions"
-                :series="composicaoSeries"
+                :series="Object.values(props.carteiraTotalPercentual)"
             />
         </div>
     </div>

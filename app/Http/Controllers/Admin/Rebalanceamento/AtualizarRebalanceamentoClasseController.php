@@ -33,14 +33,14 @@ class AtualizarRebalanceamentoClasseController
 
             $atualizarRebalanceamento->execute($dataValidados, $uid);
 
-            return redirect()->route('rebalanceamento.index')->with('success', 'Classe percentual atualizada com sucesso');
+            return redirect()->route('rebalanceamento.config')->with('success', 'Classe percentual atualizada com sucesso');
         } catch (RebalanceamentoException $e) {
-            return redirect()->route('rebalanceamento.index')->with('error', 'Erro ao atualizar classe percentual: ' . $e->getMessage());
+            return redirect()->route('rebalanceamento.config')->with('error', 'Erro ao atualizar classe percentual: ' . $e->getMessage());
         } catch (\Throwable $th) {
             if ($th instanceof ValidationException) {
                 throw $th;
             }
-            return redirect()->route('rebalanceamento.index')->with('error', 'Erro ao atualizar classe percentual');
+            return redirect()->route('rebalanceamento.config')->with('error', 'Erro ao atualizar classe percentual');
         }
     }
 }
