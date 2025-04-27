@@ -30,14 +30,14 @@ class NovoRebalanceamentoAtivoController
 
             $novoRebalanceamento->execute($dataValidados);
 
-            return redirect()->route('rebalanceamento.index')->with('success', 'Ativo percentual adicionado com sucesso');
+            return redirect()->route('rebalanceamento.config')->with('success', 'Ativo percentual adicionado com sucesso');
         } catch (RebalanceamentoException $e) {
-            return redirect()->route('rebalanceamento.index')->with('error', 'Erro ao adicionar ativo percentual: ' . $e->getMessage());
+            return redirect()->route('rebalanceamento.config')->with('error', 'Erro ao adicionar ativo percentual: ' . $e->getMessage());
         } catch (\Throwable $th) {
             if ($th instanceof ValidationException) {
                 throw $th;
             }
-            return redirect()->route('rebalanceamento.index')->with('error', 'Erro ao adicionar ativo percentual');
+            return redirect()->route('rebalanceamento.config')->with('error', 'Erro ao adicionar ativo percentual');
         }
     }
 }
