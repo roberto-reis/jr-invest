@@ -5,12 +5,20 @@ import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 import { Link } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
 import VueApexCharts from 'vue3-apexcharts';
+import { formatCurrency, formatNumber } from '@/Utils/formatters';
 
 // Breadcrumbs data
 const breadcrumbItems = [
     { label: 'Início', url: route('dashboard') },
     { label: 'Rebalanceamento' }
 ];
+
+const props = defineProps({
+    carteira: {
+        type: Object,
+        required: true
+    }
+});
 
 // Dados para os gráficos de categorias
 const minhaCarteiraOptions = ref({
@@ -54,6 +62,7 @@ const posicaoIdealOptions = ref({
 });
 
 const posicaoIdealSeries = ref([25, 25, 25, 25]);
+
 </script>
 
 <template>
@@ -115,29 +124,11 @@ const posicaoIdealSeries = ref([25, 25, 25, 25]);
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y text-xs divide-gray-200 dark:divide-gray-700 text-gray-700 dark:text-gray-200">
-                                        <tr>
-                                            <td class="px-2 py-2">BTC</td>
-                                            <td class="px-2 py-2">0,02445566</td>
-                                            <td class="px-2 py-2">R$ 5.000,00</td>
-                                            <td class="px-2 py-2">15,00</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="px-2 py-2">GORIC11</td>
-                                            <td class="px-2 py-2">45</td>
-                                            <td class="px-2 py-2">R$ 5.000,00</td>
-                                            <td class="px-2 py-2">15,00</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="px-2 py-2">ENBR3</td>
-                                            <td class="px-2 py-2">100</td>
-                                            <td class="px-2 py-2">R$ 5.000,00</td>
-                                            <td class="px-2 py-2">15,00</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="px-2 py-2">ETH</td>
-                                            <td class="px-2 py-2">0,02445566</td>
-                                            <td class="px-2 py-2">R$ 5.000,00</td>
-                                            <td class="px-2 py-2">15,00</td>
+                                        <tr v-for="(item) in carteira" :key="item.uid">
+                                            <td class="px-2 py-2">{{ item.codigo_ativo }}</td>
+                                            <td class="px-2 py-2">{{ formatNumber(item.quantidade) }}</td>
+                                            <td class="px-2 py-2">{{ formatCurrency(item.patrimonio) }}</td>
+                                            <td class="px-2 py-2">{{ formatNumber(item.percentual_na_carteira) }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -164,29 +155,11 @@ const posicaoIdealSeries = ref([25, 25, 25, 25]);
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y text-xs divide-gray-200 dark:divide-gray-700 text-gray-700 dark:text-gray-200">
-                                        <tr>
-                                            <td class="px-2 py-2">BTC</td>
-                                            <td class="px-2 py-2">0,02445566</td>
-                                            <td class="px-2 py-2">R$ 5.000,00</td>
-                                            <td class="px-2 py-2">15,00</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="px-2 py-2">GORIC11</td>
-                                            <td class="px-2 py-2">45</td>
-                                            <td class="px-2 py-2">R$ 5.000,00</td>
-                                            <td class="px-2 py-2">15,00</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="px-2 py-2">ENBR3</td>
-                                            <td class="px-2 py-2">100</td>
-                                            <td class="px-2 py-2">R$ 5.000,00</td>
-                                            <td class="px-2 py-2">15,00</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="px-2 py-2">ETH</td>
-                                            <td class="px-2 py-2">0,02445566</td>
-                                            <td class="px-2 py-2">R$ 5.000,00</td>
-                                            <td class="px-2 py-2">15,00</td>
+                                        <tr v-for="(item) in carteira" :key="item.uid">
+                                            <td class="px-2 py-2">{{ item.codigo_ativo }}</td>
+                                            <td class="px-2 py-2">{{ formatNumber(item.quntidade_ideal) }}</td>
+                                            <td class="px-2 py-2">{{ formatCurrency(item.valor_ideal) }}</td>
+                                            <td class="px-2 py-2">{{ formatNumber(item.percentual_ideal) }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -212,40 +185,22 @@ const posicaoIdealSeries = ref([25, 25, 25, 25]);
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y text-xs divide-gray-200 dark:divide-gray-700 text-gray-700 dark:text-gray-200">
-                                        <tr>
-                                            <td class="px-2 py-2">ETH</td>
-                                            <td class="px-2 py-2">0,02445566</td>
-                                            <td class="px-2 py-2 text-green-600">R$ 15.000,00</td>
-                                            <td class="px-2 py-2 text-green-600">15,00</td>
-                                            <td class="px-2 py-2">
-                                                <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.4 font-medium text-green-800">Comprar</span>
+                                        <tr v-for="(item) in carteira" :key="item.uid">
+                                            <td class="px-2 py-2">{{ item.codigo_ativo }}</td>
+                                            <td class="px-2 py-2">{{ formatNumber(item.quantidade_ajuste) }}</td>
+                                            <td class="px-2 py-2" :class="item.tipo_ajuste == 'comprar' ? 'text-green-600' : 'text-red-600'">
+                                                {{ formatCurrency(item.valor_ajuste) }}
                                             </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="px-2 py-2">XYZ711</td>
-                                            <td class="px-2 py-2">40</td>
-                                            <td class="px-2 py-2 text-green-600">R$ 15.000,00</td>
-                                            <td class="px-2 py-2 text-green-600">15,00</td>
-                                            <td class="px-2 py-2">
-                                                <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.4 font-medium text-green-800">Comprar</span>
+                                            <td class="px-2 py-2" :class="item.tipo_ajuste == 'comprar' ? 'text-green-600' : 'text-red-600'">
+                                                {{ formatNumber(item.percentual_ajuste) }}
                                             </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="px-2 py-2">BTC</td>
-                                            <td class="px-2 py-2">0,02445566</td>
-                                            <td class="px-2 py-2 text-red-600">R$ -15.000,00</td>
-                                            <td class="px-2 py-2 text-red-600">-15,00</td>
                                             <td class="px-2 py-2">
-                                                <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.4 font-medium text-red-800">Vender</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="px-2 py-2">BTC</td>
-                                            <td class="px-2 py-2">0,02445566</td>
-                                            <td class="px-2 py-2 text-red-600">R$ -15.000,00</td>
-                                            <td class="px-2 py-2 text-red-600">-15,00</td>
-                                            <td class="px-2 py-2">
-                                                <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.4 font-medium text-red-800">Vender</span>
+                                                <span
+                                                    class="inline-flex items-center rounded-full px-2.5 py-0.4 font-medium"
+                                                    :class="item.tipo_ajuste == 'comprar' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                                                >
+                                                    {{ item.tipo_ajuste }}
+                                                </span>
                                             </td>
                                         </tr>
                                     </tbody>
