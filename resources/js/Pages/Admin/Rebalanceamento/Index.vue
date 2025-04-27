@@ -17,6 +17,22 @@ const props = defineProps({
     carteira: {
         type: Object,
         required: true
+    },
+    posicaoAtualClasseKeys: {
+        type: Array,
+        required: true
+    },
+    posicaoAtualClasseValues: {
+        type: Array,
+        required: true
+    },
+    posicaoIdealClasseKeys: {
+        type: Array,
+        required: true
+    },
+    posicaoIdealClasseValues: {
+        type: Array,
+        required: true
     }
 });
 
@@ -26,7 +42,7 @@ const minhaCarteiraOptions = ref({
         type: 'pie',
         height: 220,
     },
-    labels: ['Ações', 'FIIs', 'Criptomoedas', 'Renda Fixa'],
+    labels: props.posicaoAtualClasseKeys,
     colors: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
     legend: {
         position: 'bottom',
@@ -39,15 +55,13 @@ const minhaCarteiraOptions = ref({
         }
     }
 });
-
-const minhaCarteiraSeries = ref([30, 30, 25, 15]);
 
 const posicaoIdealOptions = ref({
     chart: {
         type: 'pie',
         height: 220,
     },
-    labels: ['Ações', 'FIIs', 'Criptomoedas', 'Renda Fixa'],
+    labels: props.posicaoIdealClasseKeys,
     colors: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
     legend: {
         position: 'bottom',
@@ -60,8 +74,6 @@ const posicaoIdealOptions = ref({
         }
     }
 });
-
-const posicaoIdealSeries = ref([25, 25, 25, 25]);
 
 </script>
 
@@ -226,7 +238,7 @@ const posicaoIdealSeries = ref([25, 25, 25, 25]);
                                 height="350"
                                 type="pie"
                                 :options="minhaCarteiraOptions"
-                                :series="minhaCarteiraSeries"
+                                :series="props.posicaoAtualClasseValues"
                             />
                         </div>
                     </div>
@@ -241,7 +253,7 @@ const posicaoIdealSeries = ref([25, 25, 25, 25]);
                                 height="350"
                                 type="pie"
                                 :options="posicaoIdealOptions"
-                                :series="posicaoIdealSeries"
+                                :series="props.posicaoIdealClasseValues"
                             />
                         </div>
                     </div>

@@ -5,22 +5,23 @@ namespace App\Http\Controllers\Admin\Rebalanceamento;
 use Inertia\Inertia;
 use App\Actions\Portfolio\ListarPortifolioAction;
 use App\Models\RebalanceamentoAtivo;
+use App\Models\RebalanceamentoClasse;
 use Illuminate\Support\Facades\Auth;
 
 class ListarRebalanceamentoController
 {
     public function __construct(
         public ListarPortifolioAction $listarPortifolioAction
-    )
-    {
-    }
+    ){}
 
     public function __invoke()
     {
         // Calcular posição atual
         $posicaoAtual = $this->listarPortifolioAction->execute();
-
         $posicaoIdeal = RebalanceamentoAtivo::where('user_id', Auth::user()->id)->pluck('percentual', 'ativo_uid');
+        $rebalanceamentoClasseIdeal = RebalanceamentoClasse::where('user_id', Auth::user()->id)
+                                        ->join('classes_ativos', 'rebalanceamento_classes.classe_ativo_uid', '=', 'classes_ativos.uid')
+                                        ->pluck('percentual', 'nome');
 
         $patrimonioTotal = $posicaoAtual->sum('patrimonio');
         $posicaoAtual->each(function ($carteiraItem) use ($posicaoIdeal, $patrimonioTotal) {
@@ -39,8 +40,16 @@ class ListarRebalanceamentoController
         // Ordenar a posição atual por patrimônio em ordem decrescente e reindexar a coleção
         $posicaoAtual = $posicaoAtual->sortByDesc('valor_ajuste')->values();
 
+        $posicaoAtualClasse = $posicaoAtual->groupBy('classe_ativo')->map(function ($item) {
+            return $item->sum('percentual_na_carteira');
+        });
+
         return Inertia::render('Admin/Rebalanceamento/Index', [
             'carteira' => $posicaoAtual,
+            'posicaoAtualClasseKeys' => $posicaoAtualClasse->keys(),
+            'posicaoAtualClasseValues' => $posicaoAtualClasse->values(),
+            'posicaoIdealClasseKeys' => $rebalanceamentoClasseIdeal->keys(),
+            'posicaoIdealClasseValues' => $rebalanceamentoClasseIdeal->values(),
         ]);
     }
 }
