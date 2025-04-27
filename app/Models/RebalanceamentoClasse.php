@@ -31,4 +31,9 @@ class RebalanceamentoClasse extends Model
     {
         return $this->hasOne(ClasseAtivo::class,  'uid', 'classe_ativo_uid');
     }
+
+    public function scopeJoinClasseAtivo($query)
+    {
+        return $query->join('classes_ativos', 'rebalanceamento_classes.classe_ativo_uid', '=', 'classes_ativos.uid');
+    }
 }

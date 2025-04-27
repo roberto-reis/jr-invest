@@ -16,9 +16,8 @@ class ListarRebalanceamentoController
 
     public function __invoke()
     {
-
         $rebalanceamentoClasseIdeal = RebalanceamentoClasse::where('user_id', Auth::user()->id)
-                                        ->join('classes_ativos', 'rebalanceamento_classes.classe_ativo_uid', '=', 'classes_ativos.uid')
+                                        ->joinClasseAtivo()
                                         ->pluck('percentual', 'nome');
 
         $posicaoAtualComAjuste = $this->listarPosicaoAjusteAction->execute();
