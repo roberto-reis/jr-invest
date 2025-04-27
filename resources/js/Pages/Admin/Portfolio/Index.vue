@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
+import { formatCurrency, formatNumber } from '@/Utils/formatters';
 
 // Breadcrumbs data
 const breadcrumbItems = [
@@ -10,64 +11,16 @@ const breadcrumbItems = [
     { label: 'Portfólio' }
 ];
 
-// Dados de exemplo para a tabela de portfólio
-const portfolioItems = [
-    {
-        ativo: 'BTC',
-        classe: 'CRIPTO',
-        qtd: '0,00256565',
-        precoMedio: 'R$ 290.000,00',
-        custo: 'R$ 5.505,97',
-        patrimonio: 'R$ 6.079,84',
-        percentualClasse: '7,20%',
-        percentualCarteira: '3,50%'
-    },
-    {
-        ativo: 'HCTR11',
-        classe: 'FII',
-        qtd: '20,00000000',
-        precoMedio: '11/12/2021 23:27',
-        custo: 'R$ 5.505,97',
-        patrimonio: 'R$ 6.079,84',
-        percentualClasse: '7,20%',
-        percentualCarteira: '3,50%'
-    },
-    {
-        ativo: 'ETH',
-        classe: 'CRIPTO',
-        qtd: '0,00256565',
-        precoMedio: 'R$ 95,50',
-        custo: 'R$ 5.505,97',
-        patrimonio: 'R$ 6.079,84',
-        percentualClasse: '7,20%',
-        percentualCarteira: '3,50%'
-    },
-    {
-        ativo: 'VGIA11',
-        classe: 'FII',
-        qtd: '20,00000000',
-        precoMedio: 'R$ 95,50',
-        custo: 'R$ 5.505,97',
-        patrimonio: 'R$ 6.079,84',
-        percentualClasse: '7,20%',
-        percentualCarteira: '3,50%'
-    },
-    {
-        ativo: 'ETH',
-        classe: 'CRIPTO',
-        qtd: '0,00256565',
-        precoMedio: 'R$ 290.000,00',
-        custo: 'R$ 5.505,97',
-        patrimonio: 'R$ 6.079,84',
-        percentualClasse: '7,20%',
-        percentualCarteira: '3,50%'
+// Recebe as propriedades do componente
+const props = defineProps({
+    carteira: {
+        type: Object,
+        required: true
     }
-];
+});
 
 // Estado para busca e paginação
 const search = ref('');
-const currentPage = ref(1);
-const perPage = ref(10);
 
 // Função para exportar dados
 const exportarDados = () => {
@@ -77,12 +30,12 @@ const exportarDados = () => {
 
 // Filtra os itens do portfólio com base na busca
 const filteredItems = computed(() => {
-    if (!search.value) return portfolioItems;
+    if (!search.value) return props.carteira;
 
     const searchLower = search.value.toLowerCase();
-    return portfolioItems.filter(item =>
-        item.ativo.toLowerCase().includes(searchLower) ||
-        item.classe.toLowerCase().includes(searchLower)
+    return props.carteira.filter((item: any) =>
+        item.codigo_ativo.toLowerCase().includes(searchLower) ||
+        item.classe_ativo.toLowerCase().includes(searchLower)
     );
 });
 </script>
@@ -162,30 +115,30 @@ const filteredItems = computed(() => {
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-                            <tr v-for="(item, index) in filteredItems" :key="index">
-                                <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                    {{ item.ativo }}
+                            <tr v-for="item in filteredItems" :key="item.uid" class="text-sm font-medium text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <td class="whitespace-nowrap px-6 py-4 text-gray-800 dark:text-gray-300">
+                                    {{ item.codigo_ativo }}
                                 </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
-                                    {{ item.classe }}
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    {{ item.classe_ativo }}
                                 </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
-                                    {{ item.qtd }}
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    {{ formatNumber(item.quantidade) }}
                                 </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
-                                    {{ item.precoMedio }}
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    {{ formatCurrency(item.preco_medio) }}
                                 </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
-                                    {{ item.custo }}
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    {{ formatCurrency(item.custo_total) }}
                                 </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-green-600 dark:text-green-400">
-                                    {{ item.patrimonio }}
+                                <td class="whitespace-nowrap px-6 py-4 text-green-600 dark:text-green-400">
+                                    {{ formatCurrency(item.patrimonio) }}
                                 </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
-                                    {{ item.percentualClasse }}
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    {{ formatNumber(item.percentual_classe) }}
                                 </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
-                                    {{ item.percentualCarteira }}
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    {{ formatNumber(item.percentual_na_carteira) }}
                                 </td>
                             </tr>
                         </tbody>
@@ -194,62 +147,7 @@ const filteredItems = computed(() => {
             </div>
 
             <!-- Paginação -->
-            <div class="mt-4 flex items-center justify-between">
-                <div>
-                    <select
-                        v-model="perPage"
-                        class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
-                    >
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
-                </div>
 
-                <div class="flex space-x-1">
-                    <button
-                        class="rounded-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
-                    >
-                        Anterior
-                    </button>
-                    <button
-                        class="rounded-md border border-gray-300 bg-indigo-600 px-3 py-1 text-sm font-medium text-white hover:bg-indigo-700 dark:border-gray-600"
-                    >
-                        1
-                    </button>
-                    <button
-                        class="rounded-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
-                    >
-                        2
-                    </button>
-                    <button
-                        class="rounded-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
-                    >
-                        3
-                    </button>
-                    <button
-                        class="rounded-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
-                    >
-                        4
-                    </button>
-                    <button
-                        class="rounded-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
-                    >
-                        5
-                    </button>
-                    <button
-                        class="rounded-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
-                    >
-                        6
-                    </button>
-                    <button
-                        class="rounded-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
-                    >
-                        Próximo
-                    </button>
-                </div>
-            </div>
         </div>
     </AuthenticatedLayout>
 </template>

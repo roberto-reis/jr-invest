@@ -33,14 +33,14 @@ class NovoRebalanceamentoClasseController
 
             $novoRebalanceamento->execute($dataValidados);
 
-            return redirect()->route('rebalanceamento.index')->with('success', 'Classe percentual adicionada com sucesso');
+            return redirect()->route('rebalanceamento.config')->with('success', 'Classe percentual adicionada com sucesso');
         } catch (RebalanceamentoException $e) {
-            return redirect()->route('rebalanceamento.index')->with('error', 'Erro ao adicionar classe percentual: ' . $e->getMessage());
+            return redirect()->route('rebalanceamento.config')->with('error', 'Erro ao adicionar classe percentual: ' . $e->getMessage());
         } catch (\Throwable $th) {
             if ($th instanceof ValidationException) {
                 throw $th;
             }
-            return redirect()->route('rebalanceamento.index')->with('error', 'Erro ao adicionar classe percentual');
+            return redirect()->route('rebalanceamento.config')->with('error', 'Erro ao adicionar classe percentual');
         }
     }
 }

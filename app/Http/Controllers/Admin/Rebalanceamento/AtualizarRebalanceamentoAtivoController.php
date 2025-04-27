@@ -29,14 +29,14 @@ class AtualizarRebalanceamentoAtivoController
 
             $atualizarRebalanceamento->execute($dataValidados, $uid);
 
-            return redirect()->route('rebalanceamento.index')->with('success', 'Ativo percentual atualizado com sucesso');
+            return redirect()->route('rebalanceamento.config')->with('success', 'Ativo percentual atualizado com sucesso');
         } catch (RebalanceamentoException $e) {
-            return redirect()->route('rebalanceamento.index')->with('error', 'Erro ao atualizar ativo percentual: ' . $e->getMessage());
+            return redirect()->route('rebalanceamento.config')->with('error', 'Erro ao atualizar ativo percentual: ' . $e->getMessage());
         } catch (\Throwable $th) {
             if ($th instanceof ValidationException) {
                 throw $th;
             }
-            return redirect()->route('rebalanceamento.index')->with('error', 'Erro ao atualizar ativo percentual');
+            return redirect()->route('rebalanceamento.config')->with('error', 'Erro ao atualizar ativo percentual');
         }
     }
 }

@@ -31,7 +31,7 @@ class CriarClasseAtivoRequest extends FormRequest
     {
         return [
             'nome' => ['required', 'string', 'min:3', 'max:255'],
-            'descricao' => ['required', 'string', 'min:3', 'max:255'],
+            'descricao' => ['required', 'string', 'min:3'],
             'nome_interno' => ['unique:classes_ativos,nome_interno'],
         ];
     }

@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers\Admin\Portfolio;
 
-use App\Http\Controllers\Controller;
 use Inertia\Inertia;
+use App\Http\Controllers\Controller;
+use App\Actions\Portfolio\ListarPortifolioAction;
 
 class ListarPortfolioController extends Controller
 {
-    public function __invoke()
+    public function __invoke(ListarPortifolioAction $action)
     {
-        return Inertia::render('Admin/Portfolio/Index');
+        $carteira = $action->execute();
+
+        return Inertia::render('Admin/Portfolio/Index', [
+            'carteira' => $carteira,
+        ]);
     }
 }

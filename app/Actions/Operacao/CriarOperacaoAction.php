@@ -3,6 +3,7 @@
 namespace App\Actions\Operacao;
 
 use App\Models\Operacao;
+use App\Events\ConsolidaCarteiraEvent;
 
 class CriarOperacaoAction
 {
@@ -14,6 +15,11 @@ class CriarOperacaoAction
      */
     public function execute(array $data): Operacao
     {
-        return Operacao::create($data);
+        $operacao = Operacao::create($data);
+
+        // Dispara o evento para atualizar a carteira
+        event(new ConsolidaCarteiraEvent($operacao['user_id']));
+
+        return $operacao;
     }
 }
