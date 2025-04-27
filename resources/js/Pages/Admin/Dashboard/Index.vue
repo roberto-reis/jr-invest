@@ -6,6 +6,17 @@ import ProventosChart from '@/Pages/Admin/Dashboard/ProventosChart.vue';
 import ComposicaoCarteiraChart from '@/Pages/Admin/Dashboard/ComposicaoCarteiraChart.vue';
 import UltimasOperacoesTable from '@/Pages/Admin/Dashboard/UltimasOperacoesTable.vue';
 
+const props = defineProps({
+    operacoes: {
+        type: Object,
+        default: () => ({})
+    },
+    carteiraTotalPercentual: {
+        type: Object,
+        default: () => ({})
+    }
+});
+
 </script>
 
 <template>
@@ -68,11 +79,11 @@ import UltimasOperacoesTable from '@/Pages/Admin/Dashboard/UltimasOperacoesTable
             <div class="grid grid-cols-1 gap-4 mb-5 md:grid-cols-2">
                 <!-- Composição da Carteira -->
                 <div>
-                    <ComposicaoCarteiraChart />
+                    <ComposicaoCarteiraChart :carteira-total-percentual="props.carteiraTotalPercentual" />
                 </div>
                 <div class="px-4 pt-4 bg-white rounded-lg shadow dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                     <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Últimas Operações</h2>
-                    <UltimasOperacoesTable />
+                    <UltimasOperacoesTable :operacoes="props.operacoes" />
                     <!-- Conteúdo para Últimas Operações será adicionado posteriormente -->
                 </div>
             </div>
