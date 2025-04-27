@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Operacao;
 
 use App\Models\Operacao;
 use App\Http\Controllers\Controller;
+use App\Events\ConsolidaCarteiraEvent;
 use App\Http\Requests\UpdateOperacaoRequest;
 
 class UpdateOperacaoController extends Controller
@@ -14,6 +15,9 @@ class UpdateOperacaoController extends Controller
             $operacao = Operacao::where('uid', $uid)->firstOrFail();
 
             $operacao->update($request->validated());
+
+                    // Dispara o evento para atualizar a carteira
+            event(new ConsolidaCarteiraEvent($operacao['user_id']));
 
             return redirect()->route('operacoes.index')
                             ->with('success', "Operação atualizada com sucesso!");
