@@ -18,7 +18,6 @@ class ListarRebalanceamentoController
     public function __invoke()
     {
         // Calcular posição atual
-        // dd($this->listarPortifolioAction->execute());
         $posicaoAtual = $this->listarPortifolioAction->execute();
 
         $posicaoIdeal = RebalanceamentoAtivo::where('user_id', Auth::user()->id)->pluck('percentual', 'ativo_uid');
