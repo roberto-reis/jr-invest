@@ -2,6 +2,13 @@
 import { ref, onMounted } from 'vue';
 import VueApexCharts from 'vue3-apexcharts';
 
+const props = defineProps({
+    proventos: {
+        type: Object,
+        default: () => ({})
+    },
+});
+
 // Dados de exemplo para o gráfico de proventos
 const proventosOptions = ref({
     chart: {
@@ -84,7 +91,7 @@ const proventosOptions = ref({
         mode: 'light'
     },
     xaxis: {
-        categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+        categories: props.proventos.labels,
         labels: {
             style: {
                 colors: [],
@@ -117,7 +124,7 @@ const proventosOptions = ref({
 const proventosSeries = ref([
     {
         name: 'Proventos',
-        data: [2500, 3200, 2800, 3500, 4000, 3800, 4200, 4500, 4300, 5000, 5200, 5500]
+        data: props.proventos.data
     }
 ]);
 

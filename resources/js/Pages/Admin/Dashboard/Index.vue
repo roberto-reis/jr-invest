@@ -14,7 +14,11 @@ const props = defineProps({
     carteiraTotalPercentual: {
         type: Object,
         default: () => ({})
-    }
+    },
+    proventos: {
+        type: Object,
+        default: () => ({})
+    },
 });
 
 </script>
@@ -72,7 +76,7 @@ const props = defineProps({
 
             <!-- Gráfico de Proventos -->
             <div class="mb-5">
-                <ProventosChart />
+                <ProventosChart :proventos="props.proventos" />
             </div>
 
             <!-- Composição da Carteira e Últimas Operações -->
