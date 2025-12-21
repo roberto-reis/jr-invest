@@ -10,7 +10,9 @@ BLUE = \033[34m
 CONTAINER_APP = jrinvest_app
 CONTAINER_NODE = jrinvest_node
 
-.PHONY: help up down restart build bash logs ps artisan migrate migrate-fresh seed test npm-install npm-dev npm-build queue queue-listen queue-retry queue-failed
+export XDEBUG_HOST_WSL = $(shell hostname -I | awk '{print $$1}')
+
+.PHONY: help up down restart build bash logs ps artisan migrate migrate-fresh seed test npm-install npm-dev npm-build queue queue-listen queue-retry queue-failed xdebug-info xdebug-log xdebug-log-clear fix-permissions
 
 help: ## Exibe ajuda com os comandos disponíveis
 	@echo "${BLUE}Uso:${RESET}"
@@ -136,3 +138,27 @@ queue-retry: ## Tenta novamente jobs que falharam
 queue-failed: ## Lista jobs que falharam
 	@echo "${GREEN}Listando jobs que falharam...${RESET}"
 	docker exec -it $(CONTAINER_APP) php artisan queue:failed
+
+fix-permissions: ## Corrige permissões das pastas do Docker
+	@echo "${YELLOW}Corrigindo permissões...${RESET}"
+	@sudo chown -R $$USER:$$USER .docker 2>/dev/null || true
+	@echo "${GREEN}Permissões corrigidas!${RESET}"
+
+xdebug-info: ## Exibe informações do Xdebug
+	@echo "${BLUE}=== Informações do Xdebug ===${RESET}"
+	@echo "${YELLOW}IP do Host WSL:${RESET} $(XDEBUG_HOST_WSL)"
+	@echo ""
+	@echo "${YELLOW}Configuração no container:${RESET}"
+	@docker exec -it $(CONTAINER_APP) cat /usr/local/etc/php/conf.d/xdebug.ini 2>/dev/null || echo "${GREEN}Xdebug não configurado${RESET}"
+	@echo ""
+	@echo "${YELLOW}Status do Xdebug:${RESET}"
+	@docker exec -it $(CONTAINER_APP) php -v | grep -i xdebug || echo "${GREEN}Xdebug não está ativo${RESET}"
+
+xdebug-log: ## Exibe o log do Xdebug
+	@echo "${BLUE}=== Log do Xdebug ===${RESET}"
+	@docker exec -it $(CONTAINER_APP) tail -n 20 /tmp/xdebug.log 2>/dev/null || echo "${GREEN}Nenhum log encontrado${RESET}"
+
+xdebug-log-clear: ## Limpa o log do Xdebug
+	@echo "${YELLOW}Limpando log do Xdebug...${RESET}"
+	@docker exec -it $(CONTAINER_APP) truncate -s 0 /tmp/xdebug.log 2>/dev/null || echo "${GREEN}Log não encontrado${RESET}"
+	@echo "${GREEN}Log do Xdebug limpo!${RESET}"
