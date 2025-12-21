@@ -10,6 +10,8 @@ BLUE = \033[34m
 CONTAINER_APP = jrinvest_app
 CONTAINER_NODE = jrinvest_node
 
+export XDEBUG_HOST_WSL = $(shell hostname -I | awk '{print $$1}')
+
 .PHONY: help up down restart build bash logs ps artisan migrate migrate-fresh seed test npm-install npm-dev npm-build queue queue-listen queue-retry queue-failed
 
 help: ## Exibe ajuda com os comandos disponíveis
