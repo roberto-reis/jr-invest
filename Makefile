@@ -23,7 +23,7 @@ help: ## Exibe ajuda com os comandos disponíveis
 
 up: ## Inicia os containers da aplicação
 	@echo "${GREEN}Iniciando os containers...${RESET}"
-	docker compose up -d
+	docker compose up --build -d
 	@echo "${GREEN}Aplicação disponível em: http://localhost:8000${RESET}"
 
 down: ## Para e remove os containers da aplicação
