@@ -24,7 +24,6 @@ help: ## Exibe ajuda com os comandos disponíveis
 up: ## Inicia os containers da aplicação
 	@echo "${GREEN}Iniciando os containers...${RESET}"
 	docker compose up -d
-	@echo "${GREEN}Aplicação disponível em: http://localhost:8000${RESET}"
 
 down: ## Para e remove os containers da aplicação
 	@echo "${GREEN}Parando os containers...${RESET}"
@@ -107,8 +106,11 @@ composer-update: ## Atualiza as dependências do Composer
 	docker exec -it $(CONTAINER_APP) composer update
 
 # Comando para inicialização completa do projeto
-init: up composer-install npm-install migrate ## Inicializa o projeto completo (containers, dependências e migrações)
+init: down up composer-install npm-install migrate ## Inicializa o projeto completo (containers, dependências e migrações)
 	@echo "${GREEN}Projeto inicializado com sucesso!${RESET}"
+	@echo ""
+	@echo "${GREEN}Aplicação disponível em: http://localhost:8000${RESET}"
+	@echo ""
 
 # Comandos para filas
 queue: ## Executa o worker de filas (uso: make queue [queue="high,default,low"])
