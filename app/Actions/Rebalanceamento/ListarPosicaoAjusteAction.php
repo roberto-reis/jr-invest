@@ -22,19 +22,23 @@ class ListarPosicaoAjusteAction
         $patrimonioTotal = $posicaoAtual->sum('patrimonio');
 
         $posicaoAtual->each(function ($carteiraItem) use ($posicaoIdeal, $patrimonioTotal) {
-            $carteiraItem->percentual_ideal = $posicaoIdeal[$carteiraItem->ativo_uid];
+            $percentualIdeal = $posicaoIdeal->get($carteiraItem->ativo_uid, 0);
+
+            $carteiraItem->percentual_ideal = $percentualIdeal;
             $carteiraItem->valor_ideal = $patrimonioTotal * ($carteiraItem->percentual_ideal / 100);
-            $carteiraItem->quntidade_ideal = $carteiraItem->valor_ideal / $carteiraItem->cotacao_atual;
+
+            // proteger divisão por zero caso cotacao_atual seja zero ou nula
+            $cotacaoAtual = $carteiraItem->cotacao_atual ?? 0;
+            $carteiraItem->quntidade_ideal = $cotacaoAtual > 0 ? $carteiraItem->valor_ideal / $cotacaoAtual : 0;
 
             $valorAjuste = $carteiraItem->valor_ideal - $carteiraItem->patrimonio;
             $carteiraItem->valor_ajuste = abs($valorAjuste);
-            $carteiraItem->quantidade_ajuste = abs($carteiraItem->quntidade_ideal - $carteiraItem->quantidade);
-            $carteiraItem->percentual_ajuste = abs($carteiraItem->percentual_ideal - $carteiraItem->percentual_na_carteira);
+            $carteiraItem->quantidade_ajuste = abs($carteiraItem->quntidade_ideal - ($carteiraItem->quantidade ?? 0));
+            $carteiraItem->percentual_ajuste = abs($carteiraItem->percentual_ideal - ($carteiraItem->percentual_na_carteira ?? 0));
 
             $carteiraItem->tipo_ajuste = $valorAjuste > 0 ? 'comprar' : 'vender';
         });
 
-        // Ordenar a posição atual por patrimônio em ordem decrescente e reindexar a coleção
         $posicaoAtual = $posicaoAtual->sortByDesc('valor_ajuste')->values();
 
         return $posicaoAtual;
