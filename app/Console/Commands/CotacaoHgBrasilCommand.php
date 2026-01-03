@@ -26,6 +26,7 @@ class CotacaoHgBrasilCommand extends Command
             switch ($classeAtivo->nome_interno) {
                 case 'acoes':
                 case 'fii':
+                case 'etf':
                     foreach ($classeAtivo->ativos as $ativo) {
                         SalvarAcoesEFIICotacaoHgBrasilJob::dispatch($ativo);
                     }

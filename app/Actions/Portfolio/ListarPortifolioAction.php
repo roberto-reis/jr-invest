@@ -24,7 +24,6 @@ class ListarPortifolioAction
         $carteira->each(function ($carteiraItem) use ($cotacoes) {
             $cotacao = $cotacoes->firstWhere('ativo_uid', $carteiraItem->ativo_uid);
             if ($cotacao) {
-                $carteiraItem->cotacao_atual = $cotacao->preco;
                 $carteiraItem->patrimonio = $carteiraItem->quantidade * $cotacao->preco;
             }
         });
