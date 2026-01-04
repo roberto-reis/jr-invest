@@ -58,14 +58,40 @@ const submit = () => {
             </h2>
 
             <div class="mt-6">
-                <InputLabel for="file" value="Arquivo (CSV ou XLSX)" />
-                <input id="file" type="file" @change="handleFile" required accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="mt-1 block w-full text-sm text-gray-700 dark:text-gray-300" />
+                <InputLabel for="file" value="Arquivo (XLSX ou XLS)" />
+                <input
+                    id="file"
+                    type="file"
+                    @change="handleFile"
+                    required
+                    accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+                    class="mt-1 block w-full text-sm text-gray-700 dark:text-gray-300"
+                    :disabled="form.processing"
+                />
                 <InputError class="mt-2" v-if="form.errors.file" :message="form.errors.file" />
             </div>
 
+            <!-- Loading Overlay -->
+            <div v-if="form.processing" class="mt-4 flex items-center justify-center gap-3 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <svg class="animate-spin h-5 w-5 text-indigo-600 dark:text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span class="text-sm text-gray-600 dark:text-gray-300">Importando operações...</span>
+            </div>
+
             <div class="mt-6 flex justify-end gap-3">
-                <SecondaryButton @click="emit('close')">Cancelar</SecondaryButton>
-                <DefaultButton @click="submit">Importar</DefaultButton>
+                <SecondaryButton @click="emit('close')" :disabled="form.processing">Cancelar</SecondaryButton>
+                <DefaultButton @click="submit" :disabled="form.processing || !form.file">
+                    <span v-if="form.processing" class="flex items-center gap-2">
+                        <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Importando...
+                    </span>
+                    <span v-else>Importar</span>
+                </DefaultButton>
             </div>
         </div>
     </Modal>
