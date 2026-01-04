@@ -40,4 +40,8 @@ return [
         'key' => env('BRAPI_API_KEY'),
     ],
 
+    'hgbrasil' => [
+        'url'   => env('HGBRASIL_API_URL', 'https://api.hgbrasil.com/'),
+        'token' => env('HGBRASIL_API_TOKEN'),
+    ],
 ];
