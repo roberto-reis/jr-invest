@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libicu-dev \
+    libzip-dev \
     zip \
     unzip
 
@@ -20,7 +21,7 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Instalar extensões do PHP
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd sockets intl
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd sockets intl zip
 
 # RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
 # RUN apt-get install -y nodejs
