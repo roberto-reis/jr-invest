@@ -23,7 +23,7 @@ class ListarRebalanceamentoController
         $posicaoAtualComAjuste = $this->listarPosicaoAjusteAction->execute();
 
         $posicaoAtualClasse = $posicaoAtualComAjuste->groupBy('classe_ativo')->map(function ($item) {
-            return $item->sum('percentual_na_carteira');
+            return (float)number_format($item->sum('percentual_na_carteira'), 2);
         });
 
         $feedback = null;

@@ -22,10 +22,12 @@ class ListarPosicaoAjusteAction
         // Calcular posição atual
         $posicaoAtual = $this->listarPortifolioAction->execute();
 
-        $posicaoIdeal = RebalanceamentoAtivo::select('rebalanceamento_ativos.*', 'ativos.codigo AS codigo_ativo', 'classes_ativos.nome AS classe_ativo')
-            ->join('ativos', 'ativos.uid', '=', 'rebalanceamento_ativos.ativo_uid')
-            ->join('classes_ativos', 'classes_ativos.uid', '=', 'ativos.classe_ativo_uid')
-            ->where('user_id', Auth::id())->get();
+        $posicaoIdeal = RebalanceamentoAtivo::query()
+            ->select('rebalanceamento_ativos.*', 'ativos.codigo AS codigo_ativo', 'classes_ativos.nome AS classe_ativo')
+            ->joinAtivo()
+            ->joinClasseAtivo()
+            ->where('user_id', Auth::id())
+            ->get();
 
         $patrimonioTotal = $posicaoAtual->sum('patrimonio');
 
@@ -42,7 +44,7 @@ class ListarPosicaoAjusteAction
             $valorAjuste = $carteiraItem->valor_ideal - $carteiraItem->patrimonio;
             $carteiraItem->valor_ajuste = abs($valorAjuste);
             $carteiraItem->quantidade_ajuste = abs($carteiraItem->quntidade_ideal - ($carteiraItem->quantidade ?? 0));
-            $carteiraItem->percentual_ajuste = abs($carteiraItem->percentual_ideal - ($carteiraItem->percentual_na_carteira ?? 0));
+            $carteiraItem->percentual_ajuste = $carteiraItem->percentual_ideal - ($carteiraItem->percentual_na_carteira ?? 0);
 
             $carteiraItem->tipo_ajuste = $valorAjuste > 0 ? 'comprar' : 'vender';
         });
@@ -76,7 +78,7 @@ class ListarPosicaoAjusteAction
             }
         });
 
-        $posicaoAtual = $posicaoAtual->sortByDesc('valor_ajuste')->values();
+        $posicaoAtual = $posicaoAtual->sortByDesc('percentual_ajuste')->values();
 
         return $posicaoAtual;
     }
