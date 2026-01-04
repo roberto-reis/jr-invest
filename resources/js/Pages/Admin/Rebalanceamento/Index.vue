@@ -33,6 +33,10 @@ const props = defineProps({
     posicaoIdealClasseValues: {
         type: Array,
         required: true
+    },
+    feedback: {
+        type: String,
+        required: false
     }
 });
 
@@ -93,6 +97,28 @@ const posicaoIdealOptions = ref({
         </template>
 
         <div>
+            <!-- Feedback aviso -->
+            <div v-if="props.feedback" class="mb-6">
+                <div
+                    class="flex gap-3 items-start rounded-md border p-4
+                           bg-yellow-50 border-yellow-200 text-yellow-800
+                           dark:bg-yellow-900 dark:border-yellow-700 dark:text-yellow-100"
+                >
+                    <svg class="h-6 w-6 flex-shrink-0 text-yellow-600 dark:text-yellow-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.72-1.36 3.485 0l6.518 11.582C18.59 16.55 17.663 18 16.312 18H3.688c-1.351 0-2.278-1.45-1.948-3.319L8.257 3.1zM9 7a1 1 0 112 0v4a1 1 0 11-2 0V7zm0 8a1 1 0 112 0 1 1 0 01-2 0z" clip-rule="evenodd" />
+                    </svg>
+
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-base font-semibold">Atenção</h3>
+                        </div>
+                        <p class="mt-1 text-base leading-relaxed">
+                            {{ props.feedback }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Barra de ações em um card separado -->
             <div class="mb-6 overflow-hidden bg-white shadow-sm dark:bg-gray-800 sm:rounded-lg">
                 <div class="p-4">

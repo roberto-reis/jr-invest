@@ -26,12 +26,18 @@ class ListarRebalanceamentoController
             return $item->sum('percentual_na_carteira');
         });
 
+        $feedback = null;
+        if ($rebalanceamentoClasseIdeal->isEmpty()) {
+            $feedback = 'Nenhuma posição ideal configurada. Acesse "Config. Rebalanceamento" para definir a posição ideal por classe.';
+        }
+
         return Inertia::render('Admin/Rebalanceamento/Index', [
             'carteira' => $posicaoAtualComAjuste,
             'posicaoAtualClasseKeys' => $posicaoAtualClasse->keys(),
             'posicaoAtualClasseValues' => $posicaoAtualClasse->values(),
             'posicaoIdealClasseKeys' => $rebalanceamentoClasseIdeal->keys(),
             'posicaoIdealClasseValues' => $rebalanceamentoClasseIdeal->values(),
+            'feedback' => $feedback,
         ]);
     }
 }
