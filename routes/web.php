@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\Rebalanceamento\RemoverRebalanceamentoAtivoContro
 use App\Http\Controllers\Admin\Rebalanceamento\RemoverRebalanceamentoClasseController;
 use App\Http\Controllers\Admin\Rebalanceamento\AtualizarRebalanceamentoAtivoController;
 use App\Http\Controllers\Admin\Rebalanceamento\AtualizarRebalanceamentoClasseController;
+use App\Http\Controllers\Admin\Operacao\ImportarOperacoesController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -71,6 +72,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
         Route::post('/', NovaOperacaoController::class)->name('operacoes.store');
         Route::put('/{uid}', UpdateOperacaoController::class)->name('operacoes.update');
         Route::delete('/{uid}', RemoverOperacaoController::class)->name('operacoes.delete');
+        Route::post('/import', ImportarOperacoesController::class)->name('operacoes.import');
     });
 
     Route::prefix('proventos')->group(function () {
