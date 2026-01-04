@@ -6,6 +6,7 @@ import NovoAporte from './NovaOperacao.vue';
 import EditarOperacao from './EditarOperacao.vue';
 import VisualizarOperacao from './VisualizarOperacao.vue';
 import ExcluirOperacao from './ExcluirOperacao.vue';
+import ImportarOperacoes from './ImportarOperacoes.vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 import { Operacao, PaginatedData, Ativo, Corretora, TipoOperacao } from '@/types';
 import Pagination from '@/Components/Pagination.vue';
@@ -52,6 +53,7 @@ const showNovoAporteModal = ref(false);
 const showEditarOperacaoModal = ref(false);
 const showVisualizarOperacaoModal = ref(false);
 const showExcluirOperacaoModal = ref(false);
+const showImportOperacoesModal = ref(false);
 const operacaoSelecionada = ref<Operacao | null>(null);
 
 const handleEditarOperacao = (operacao: Operacao) => {
@@ -100,6 +102,9 @@ const handleExcluirOperacao = (operacao: Operacao) => {
                             </button>
                             <button class="rounded-md border border-gray-600 bg-white px-4 py-2 text-gray-600 hover:bg-gray-50 dark:border-gray-400 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600">
                                 Exportar
+                            </button>
+                            <button @click="showImportOperacoesModal = true" class="rounded-md border border-gray-600 bg-white px-4 py-2 text-gray-600 hover:bg-gray-50 dark:border-gray-400 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600">
+                                Importar
                             </button>
                         </div>
                         <div class="flex-1 md:max-w-sm">
@@ -236,6 +241,12 @@ const handleExcluirOperacao = (operacao: Operacao) => {
             :ativos="props.ativos"
             :corretoras="props.corretoras"
             :tiposOperacoes="props.tiposOperacoes"
+        />
+
+        <!-- Modal de Importar Operações -->
+        <ImportarOperacoes
+            :show="showImportOperacoesModal"
+            @close="showImportOperacoesModal = false"
         />
 
         <!-- Modal de Editar Operação -->
