@@ -36,8 +36,12 @@ class ListarPortifolioAction
             $somaTotalPorClasse = $ativos->sum('patrimonio');
 
             $ativos->each(function ($carteiraItem) use ($patrimonioTotal, $somaTotalPorClasse) {
-                $carteiraItem->percentual_na_carteira = ($carteiraItem->patrimonio / $patrimonioTotal) * 100;
-                $carteiraItem->percentual_classe = ($carteiraItem->patrimonio / $somaTotalPorClasse) * 100;
+                $carteiraItem->percentual_na_carteira = $patrimonioTotal > 0
+                    ? ($carteiraItem->patrimonio / $patrimonioTotal) * 100
+                    : 0;
+                $carteiraItem->percentual_classe = $somaTotalPorClasse > 0
+                    ? ($carteiraItem->patrimonio / $somaTotalPorClasse) * 100
+                    : 0;
             });
 
         });
