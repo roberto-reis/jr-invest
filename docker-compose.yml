@@ -18,7 +18,7 @@ services:
       - db
       - redis
     extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - "host.docker.internal:${XDEBUG_HOST_WSL:-host-gateway}"
 
   # Servidor Web Nginx
   nginx:

@@ -12,7 +12,7 @@ CONTAINER_NODE = jrinvest_node
 
 export XDEBUG_HOST_WSL = $(shell hostname -I | awk '{print $$1}')
 
-.PHONY: help up down restart build bash logs ps artisan migrate migrate-fresh seed test npm-install npm-dev npm-build queue queue-listen queue-retry queue-failed xdebug-info xdebug-log xdebug-log-clear fix-permissions
+.PHONY: help up down restart build bash stop logs ps artisan migrate migrate-fresh seed test npm-install npm-dev npm-build queue queue-listen queue-retry queue-failed xdebug-info xdebug-log xdebug-log-clear fix-permissions
 
 help: ## Exibe ajuda com os comandos disponíveis
 	@echo "${BLUE}Uso:${RESET}"
@@ -37,6 +37,10 @@ build: ## Reconstrói os containers da aplicação
 	@echo "${GREEN}Reconstruindo os containers...${RESET}"
 	docker compose build --no-cache
 	docker compose up -d
+
+stop: ## Para os containers da aplicação
+	@echo "${GREEN}Parando os containers...${RESET}"
+	docker compose stop
 
 bash: ## Acessa o shell do container da aplicação
 	@echo "${GREEN}Acessando o shell do container...${RESET}"
