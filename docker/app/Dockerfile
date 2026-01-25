@@ -3,7 +3,6 @@ FROM php:8.2-fpm
 # Argumentos definidos no docker-compose.yml
 ARG user=jrinvest
 ARG uid=1000
-ARG XDEBUG_HOST_WSL=host.docker.internal
 
 # Instalar dependências do sistema
 RUN apt-get update && apt-get install -y \
@@ -37,7 +36,7 @@ RUN mkdir -p /home/$user/.composer && \
 RUN pecl install xdebug-3.3.2 && docker-php-ext-enable xdebug
 RUN echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.client_host=${XDEBUG_HOST_WSL}" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.client_port=9003" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.log=/tmp/xdebug.log" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.log_level=7" >> /usr/local/etc/php/conf.d/xdebug.ini
